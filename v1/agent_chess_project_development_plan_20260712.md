@@ -192,6 +192,90 @@ Metrics:
 - recovery behavior,
 - prompt sensitivity.
 
+## Stage 3A: Local Stack vs Cloud Stack Comparison
+
+Use the same chess harness to compare a local AI stack against a cloud AI
+stack.
+
+Purpose:
+
+Determine whether local and cloud agentic systems differ in measurable ways
+when forced to operate inside the same bounded chess environment.
+
+Comparison conditions:
+
+- same board representation,
+- same move format,
+- same invalid-move policy,
+- same prompt template,
+- same legal-move visibility condition,
+- same move limit,
+- same logging schema,
+- randomized color assignment,
+- enough repeated games to avoid overreading a single result.
+
+Candidate pairings:
+
+```text
+local_stack_agent vs local_stack_agent
+cloud_stack_agent vs cloud_stack_agent
+local_stack_agent vs cloud_stack_agent
+cloud_stack_agent vs local_stack_agent
+```
+
+Metrics:
+
+- legal move rate,
+- illegal move recovery rate,
+- board-state fidelity,
+- hallucinated board-state claims,
+- average game length,
+- win/loss/draw rate,
+- termination reason,
+- latency per move,
+- token or compute cost per move,
+- local resource usage,
+- cloud API/resource cost,
+- repeatability across runs,
+- sensitivity to prompt scaffolding,
+- effect of human/tool assistance.
+
+Important separation:
+
+```text
+local_vs_cloud_result =
+agent behavior under a specific harness, model, prompt, runtime, and tool
+configuration; not a universal claim that local AI or cloud AI is better
+overall
+```
+
+This comparison should record full run identity:
+
+```text
+local_stack:
+  model:
+  quantization:
+  hardware:
+  inference runtime:
+  prompt:
+  temperature_or_sampling:
+
+cloud_stack:
+  provider:
+  model:
+  API surface:
+  prompt:
+  temperature_or_sampling:
+  tool availability:
+```
+
+Expected value:
+
+This creates a practical way to compare local AI and cloud AI without relying
+on vague impressions. The chess harness gives both systems the same formal
+task and exposes differences in state handling, rule compliance, cost, speed,
+and hallucination behavior.
+
 ## Stage 4: Human-Assisted Variant
 
 Introduce a human assistance rule after agent waffling or illegal moves.
@@ -392,6 +476,7 @@ This chess test could become a real `brilliance/v1` candidate because it is:
 - understandable to the public,
 - good at exposing hallucination,
 - good at separating fluent explanation from valid action,
+- useful for comparing local and cloud AI stacks under the same harness,
 - suitable for comparing same-agent and cross-agent statistical behavior.
 
 It is not a cash-reward problem by itself, but it may be a strong preliminary
