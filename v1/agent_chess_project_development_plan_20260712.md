@@ -2,6 +2,171 @@
 
 Created: 2026-07-12
 
+## Proposed Name
+
+Working name:
+
+```text
+AI Chess Match
+```
+
+Expanded name:
+
+```text
+AI Chess Match: Agentic-AI Hallucination and State-Fidelity Validation Test
+```
+
+Rationale:
+
+This should be treated as a legitimate AIH validation test rather than as
+another HybridAI version by itself.
+
+HybridAI versions can be developed as standalone local-agent implementations.
+The AI Chess Match can then be used as a validation harness against those
+implementations, cloud agents, and mixed local/cloud pairings.
+
+This separation keeps the architecture cleaner:
+
+```text
+HybridAI v1, v2, v3, ... = agent implementations
+AI Chess Match           = AIH validation and comparison harness
+Brilliance v1            = broader problem-analysis context
+```
+
+In that model, HybridAI is one class of system under test. AI Chess Match is
+the AIH test environment.
+
+Subproject nuance:
+
+AI Chess Match can still live as a subproject of HybridAI when the work is
+being used to develop, smoke-test, or compare HybridAI versions. There is no
+conflict as long as the role is clear:
+
+```text
+as AIH artifact:
+  AI Chess Match is a validation test for hallucination, state fidelity, and
+  bounded agent behavior.
+
+as HybridAI artifact:
+  AI Chess Match is a HybridAI subproject and smoke test used to guide local stack
+  development and compare HybridAI versions against other agentic AI stacks.
+```
+
+So the distinction is not ownership-exclusive. It is role-based.
+
+AIH test development:
+
+AI Chess Match should also help develop the broader concept of an AIH test.
+It is one concrete test case, but the design lessons should generalize.
+
+Questions for the broader AIH test concept:
+
+- What makes a test bounded enough to be fair?
+- What evidence must be preserved?
+- How should hallucination be distinguished from ordinary error?
+- How should state fidelity be measured?
+- How should timing and resource limits be handled?
+- How should local and cloud agents be compared?
+- How should human assistance be recorded?
+- What counts as a useful failure?
+- What result is strong enough to guide the next HybridAI version?
+- How should AI performance be measured beyond win/loss?
+- How reliable is the agent across repeated runs?
+- How suitable is a given agent or stack for the task being tested?
+- What cost, latency, maintainability, and operational constraints affect
+  suitability?
+
+In that sense, AI Chess Match is both a test and a test-design laboratory.
+
+Scope warning:
+
+The AIH test space is large enough that the project could spend the next year
+writing hallucination tests without exhausting the subject.
+
+Therefore, AIH development needs a disciplined selection process:
+
+- choose small bounded tests,
+- prefer tests that preserve evidence automatically,
+- prefer tests that compare agents under identical conditions,
+- prefer tests that reveal multiple failure modes at once,
+- avoid building a huge test catalog before any test is run,
+- convert lessons from each test into reusable AIH design rules.
+
+AI Chess Match is valuable partly because it is a first concrete test rather
+than an endless taxonomy exercise.
+
+Related AIH suite draft:
+
+```text
+v1/AIH_TEST_SUITE_v1_20260712.md
+```
+
+Current project implication:
+
+The project already has a working HybridAI v1 realization. AI Chess Match can
+now become a concrete AIH test applied to that working v1 stack. Future
+HybridAI development can then branch or version around the chess validation
+target as needed:
+
+```text
+HybridAI v1          = existing working local stack
+HybridAI v1-chess    = v1 adapted for AI Chess Match validation
+HybridAI v2          = later implementation informed by v1/v1-chess results
+AI Chess Match       = independent AIH test harness
+```
+
+The exact branch/version naming can remain open, but the architectural point is
+fixed: the chess match validates agent implementations; it is not itself the
+agent implementation.
+
+Recommended versioning strategy:
+
+Create an AI Chess variant for each HybridAI version:
+
+```text
+HybridAI v1        -> HybridAI v1-chess
+HybridAI v2        -> HybridAI v2-chess
+HybridAI v3        -> HybridAI v3-chess
+...
+HybridAI vn        -> HybridAI vn-chess
+```
+
+Process:
+
+1. Start with the current HybridAI version.
+2. Apply the AI Chess Match harness to create the corresponding chess-adapted
+   variant.
+3. Run the smoke test and collect results.
+4. Use those results to guide the next HybridAI version.
+5. Repeat for the next version.
+
+This gives the project a legitimate and useful smoke test for future HybridAI
+versions. The test does not need to prove intelligence in general. It only
+needs to reveal whether the current agent stack can maintain state, follow
+rules, produce valid actions, recover from errors, and operate under timing
+constraints inside a bounded formal environment.
+
+Strategic reframing:
+
+The goal is no longer to build a local AI stack that is simply "better than
+Codex" in some broad sense.
+
+The goal is to evaluate HybridAI relative to Codex or any other agentic AI
+stack under the same bounded validation harness.
+
+```text
+old_goal =
+build a local AI stack better than Codex
+
+new_goal =
+measure HybridAI, Codex, and other agentic AI stacks against the same formal
+AIH smoke tests and compare their observed strengths, weaknesses, costs,
+latency, hallucination rates, state fidelity, and error recovery
+```
+
+This is a stronger engineering posture. It avoids vague superiority claims and
+replaces them with comparable evidence.
+
 ## Concept
 
 Use chess as a bounded test environment for comparing agentic AI behavior.
@@ -103,6 +268,249 @@ Reason:
 
 The test is about agentic decision behavior, not whether this project can
 reimplement chess rules correctly.
+
+## Shared-File Referee Architecture
+
+The Python layer should be treated as the referee, not as an agent.
+
+A shared-file design makes that role explicit:
+
+```text
+referee process:
+  owns board_state.json
+  owns game_log.jsonl
+  validates proposed moves
+  updates board state
+  sets board status flags
+
+agent_white:
+  watches board_state.json
+  writes proposals/white_move.json
+
+agent_black:
+  watches board_state.json
+  writes proposals/black_move.json
+```
+
+The agents can watch the board in near real time, but neither agent is allowed
+to directly mutate the board. Only the referee can apply a move.
+
+### Referee-Owned Board State
+
+`board_state.json` should contain:
+
+```json
+{
+  "game_id": "game_001",
+  "ply": 0,
+  "side_to_move": "white",
+  "status": "waiting_for_white",
+  "fen": "startpos-or-current-fen",
+  "legal_moves": ["e2e4", "d2d4"],
+  "last_move": null,
+  "last_move_legal": null,
+  "result": null,
+  "termination": null,
+  "white_time_bank_s": 20.0,
+  "black_time_bank_s": 20.0,
+  "move_time_increment_s": 10.0,
+  "updated_at": "timestamp"
+}
+```
+
+### Board Status Flags
+
+Use explicit status flags so agents and humans can understand the board state
+without inferring it from partial data:
+
+```text
+initializing
+waiting_for_white
+waiting_for_black
+validating_white_move
+validating_black_move
+move_applied
+illegal_move_retry
+move_fault
+time_fault
+checkmate
+stalemate
+draw
+game_over
+aborted
+```
+
+### Candidate Clock Models
+
+Timing should be treated as part of the experiment design, not settled too
+early.
+
+One candidate is a sliding time-window clock.
+
+Candidate rule:
+
+If player A takes time `t_move` to return a valid move, compare `t_move` to
+the time available for that move:
+
+```text
+available_time = player_time_bank + Tlimit_per_move
+
+if t_move <= available_time:
+    player_time_bank = available_time - t_move
+    move may be validated and applied
+else:
+    player loses by time_fault
+```
+
+This is essentially a `Tlimit_next = Tlimit_previous + unused_time` idea. It is
+interesting, but not yet accepted as the final timing rule.
+
+Possible alternatives:
+
+1. Fixed per-move timeout.
+
+```text
+each move must complete within Tlimit_per_move
+```
+
+Simple and harsh. Good for latency testing, but may unfairly punish slower
+models before they can show useful reasoning.
+
+2. Conventional chess clock.
+
+```text
+each side starts with T_total
+each move consumes t_move
+optional increment adds T_increment after a valid move
+```
+
+Closer to real chess timing and easier to explain publicly.
+
+3. Warm-up-excluded clock.
+
+```text
+run one untimed model warm-up call
+then start timing actual game moves
+```
+
+Useful because first local model calls can include model-load overhead that is
+not really chess reasoning time.
+
+4. Sliding time-window / accumulating reserve.
+
+```text
+available_time = player_time_bank + Tlimit_per_move
+unused time remains in the player's bank
+```
+
+Useful for rewarding speedy play and letting agents accumulate flexibility,
+but it may over-reward fast trivial moves.
+
+5. Unused-time feedback clock.
+
+Another candidate is to compute the unused time for step `i`, add that unused
+time to the current limit for step `i`, and use the result as the time limit
+for step `i + 1`:
+
+```text
+Tlimit[i + 1] = Tlimit[i] + (Tlimit[i] - t_move[i])
+```
+
+Interpretation:
+
+The time limit grows when a player moves faster than the current limit. This
+rewards efficient move production and creates a reserve-like effect without
+directly rewarding slow moves.
+
+Expected practical effect:
+
+This will probably give each player more than enough time after the first few
+successful moves. If a player still exceeds the available limit, that failure
+is more clearly a real `time_fault` rather than an arbitrary timeout artifact.
+
+Open concern:
+
+This may over-reward very fast shallow moves and create runaway timing
+advantages. If used, it should be tested separately from fixed-time and
+conventional-clock variants so its effect on game outcome is visible rather
+than hidden.
+
+Monitoring requirement:
+
+The referee must monitor the timing model as the game progresses. For the
+unused-time feedback clock, log the full sequence:
+
+```text
+move_index
+t_move[i]
+Tlimit[i]
+Tlimit[i + 1]
+time_fault_margin
+```
+
+The referee should flag cases where the timing rule appears to dominate the
+game more than chess quality does, for example:
+
+- time limits grow without bound,
+- one player receives a runaway timing advantage,
+- slow invalid moves are indirectly rewarded,
+- the winner is determined primarily by clock mechanics rather than legal move
+  quality,
+- the timing model prevents meaningful comparison between local and cloud
+  stacks.
+
+Evaluation purpose:
+
+- Fast play is rewarded because unused time remains in the player's time bank.
+- Slow play is allowed if the player has accumulated enough time.
+- A slow first move can be handled by giving each player a reasonable starting
+  time bank or by running a warm-up call before the timed game begins.
+- Move time becomes an experimental factor rather than only a diagnostic log.
+
+Any timing model should make it possible to evaluate:
+
+- whether a larger/slower AI stack plays better when given enough time,
+- whether a smaller/faster stack wins by speed despite weaker reasoning,
+- whether time pressure increases illegal moves or hallucinated board states,
+- whether a local stack has a practical latency advantage over a cloud stack,
+- whether extra thinking time correlates with better moves or only with slower
+  failure.
+
+### Proposal Files
+
+Agents write proposal files instead of editing board state:
+
+```json
+{
+  "game_id": "game_001",
+  "ply": 3,
+  "agent_id": "hybridai_v1_local",
+  "side": "white",
+  "proposed_move": "g1f3",
+  "raw_response": "g1f3",
+  "confidence": null,
+  "created_at": "timestamp"
+}
+```
+
+The referee reads the proposal, validates it, logs it, and then either applies
+the move or updates the status to `illegal_move_retry`, `move_fault`, or
+`time_fault`.
+
+### Advantages
+
+- Both agents can watch the same board in real time.
+- The board has one source of truth.
+- Slow agents do not block the referee from logging status.
+- Human observers can inspect the current state without parsing terminal logs.
+- Local, cloud, and manual agents can all use the same adapter pattern.
+- The same design can later be moved from Python to C++ if needed.
+
+### C++ Migration Note
+
+Python is useful for the first referee because `python-chess` is mature and
+fast to integrate. A later HybridAI-native version can move the shared-file
+referee into C++ while preserving the same file protocol.
 
 ## Stage 0: Design
 
@@ -223,6 +631,40 @@ local_stack_agent vs cloud_stack_agent
 cloud_stack_agent vs local_stack_agent
 ```
 
+The local stack should not be limited to Qwen. The harness should use an
+adapter boundary so multiple top-level local agent layers can be compared:
+
+```text
+Ollama/Qwen adapter
+Ollama/non-Qwen adapter
+qwen CLI adapter
+HybridAI UI-mediated adapter
+future local agent adapter
+cloud API adapter
+manual cloud-agent adapter
+online chess-bot adapter
+```
+
+This prevents the experiment from confusing "HybridAI v1" with one specific
+model family. Qwen is the first available local family, not the entire test
+space.
+
+Online chess-bot option:
+
+AI Chess Match could also test an agent against an online chess bot, provided
+the platform rules and API allow automation.
+
+This should be treated as a future integration, not the default first run.
+Before attempting it, the project should verify:
+
+- platform terms of service,
+- bot/API rules,
+- whether automated play is allowed,
+- account requirements,
+- rate limits,
+- whether games can be exported as PGN,
+- whether the online bot's strength/settings are stable enough for comparison.
+
 Metrics:
 
 - legal move rate,
@@ -239,6 +681,38 @@ Metrics:
 - repeatability across runs,
 - sensitivity to prompt scaffolding,
 - effect of human/tool assistance.
+
+Clock rule:
+
+Each side should have a time bank. On each move, the side receives a per-move
+time allowance. If actual move time `t_move` is less than the per-move limit
+`Tlimit_per_move`, then the unused difference remains available in that side's
+time bank.
+
+```text
+available_time_before_move = side_time_bank + Tlimit_per_move
+t_move = elapsed time for the move decision
+
+if t_move <= available_time_before_move:
+    side_time_bank = available_time_before_move - t_move
+else:
+    side loses by time-fault
+```
+
+Purpose:
+
+This rewards speedy valid play and lets the experiment evaluate move-time as a
+factor in overall success. A fast but legal agent accumulates time flexibility;
+a slow agent may lose even if its moves are legal.
+
+Relevant timing metrics:
+
+- average move time,
+- maximum move time,
+- time-bank remaining at game end,
+- time-fault rate,
+- relationship between move time and move quality,
+- relationship between move time and illegal-move rate.
 
 Important separation:
 

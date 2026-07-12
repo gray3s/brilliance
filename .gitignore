@@ -1,0 +1,9 @@
+.hf-cache/
+.venv-chess/
+.venv-transcribe/
+misc/audio_sources_20260712/
+misc/transcriptions/
+misc/transcribe_three_wavs_20260712.py
+v1/experiments/*/runs/
+v1/experiments/chess_harness/
+v1/experiments/wikipedia_exam/run_wikipedia_exam_hybridai_v1.py

@@ -32,6 +32,8 @@ assumption quality, false certainty, waffling, and possible brilliance.
 
 - `PROBLEM_ANALYSIS.md` - public-facing analysis and link hub.
 - `PROJECT_GOALS.md` - concise goals for public readers.
+- `v1/AIH_APPROACH_v2_20260712.md` - concise AIH v2 approach summary.
+- `v1/AIH_TEST_SUITE_v1_20260712.md` - first AIH test-suite draft.
 - `misc/problem_description_20260712.md` - project problem statement and
   representative problem set.
 - `misc/stage1_problem_inventory_20260712.md` - categorized Stage 1 problem
@@ -45,6 +47,8 @@ assumption quality, false certainty, waffling, and possible brilliance.
   progress report and pause state.
 - `test_plans/staged_test_plan_20260712.md` - test plan for each project stage.
 - `linkedin/linkedin_post_draft_20260712.md` - working LinkedIn post draft.
+- `linkedin/linkedin_post_aih_approach_20260712_1741MDT.md` - concise
+  LinkedIn post for the AIH v2 approach.
 
 ## Publication Rule
 
