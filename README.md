@@ -34,6 +34,10 @@ assumption quality, false certainty, waffling, and possible brilliance.
 - `PROJECT_GOALS.md` - concise goals for public readers.
 - `v1/AIH_APPROACH_v2_20260712.md` - concise AIH v2 approach summary.
 - `v1/AIH_TEST_SUITE_v1_20260712.md` - first AIH test-suite draft.
+- `v1/personal_history/README.md` - personal-history agentic-AI failure test
+  family.
+- `v1/k_phd/README.md` - K-PhD knowledge-ladder AIH test family.
+- `v1/ai_chess_match/README.md` - AI Chess Match AIH test family.
 - `misc/problem_description_20260712.md` - project problem statement and
   representative problem set.
 - `misc/stage1_problem_inventory_20260712.md` - categorized Stage 1 problem

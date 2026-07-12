@@ -14,7 +14,12 @@ intentionally excluded.
 ├── misc/
 ├── test_plans/
 └── v1/
+    ├── ai_chess_match/
     ├── experiments/
     │   └── wikipedia_exam/
+    ├── k_phd/
+    │   └── exams/
+    │       └── wikipedia_only/
+    ├── personal_history/
     └── progress_reports/
 ```

@@ -23,18 +23,20 @@ readers can follow the chain from problem analysis to future validation.
 3. AIH Test Suite v1 turns the working material into three current test
    families: personal-history failures, K-PhD exams, and AI Chess Match.
 
-4. The personal-history test family uses observed agentic-AI failures such as
+4. The personal-history subtree uses observed agentic-AI failures such as
    provenance hallucination, continuity hallucination, and decision instability.
 
 5. The K-PhD knowledge-ladder test family evaluates agents through bounded
    exams with controlled time, I/O, and reference-source rules.
 
-6. The Wikipedia-only exam is the first concrete knowledge-ladder example,
+6. The K-PhD subtree contains the education/knowledge-ladder test family, and
+   the Wikipedia-only exam is the first concrete knowledge-ladder example,
    limiting the agent to a defined reference packet rather than another remote
    AI agent.
 
-7. AI Chess Match is the first formal state-fidelity test, using a referee to
-   validate legal moves, timing, board state, move faults, and game endings.
+7. The AI Chess Match subtree contains the first formal state-fidelity test,
+   using a referee to validate legal moves, timing, board state, move faults,
+   and game endings.
 
 8. HybridAI versions remain agent implementations; AI Chess Match is a
    HybridAI subproject and AIH smoke test used to evaluate those implementations.
@@ -92,7 +94,10 @@ Primary measurements:
 - Brilliance development plan: https://github.com/gray3s/brilliance/blob/main/docs/project_development_plan_20260712.md
 - Brilliance v1 direction: https://github.com/gray3s/brilliance/blob/main/docs/v1_direction_20260712.md
 - AIH Test Suite v1: https://github.com/gray3s/brilliance/blob/main/v1/AIH_TEST_SUITE_v1_20260712.md
-- Wikipedia-only exam definition: https://github.com/gray3s/brilliance/blob/main/v1/experiments/wikipedia_exam/wikipedia_only_exam_v1_20260712.md
+- Personal-history AIH test family: https://github.com/gray3s/brilliance/blob/main/v1/personal_history/README.md
+- K-PhD knowledge-ladder test family: https://github.com/gray3s/brilliance/blob/main/v1/k_phd/README.md
+- Wikipedia-only exam definition: https://github.com/gray3s/brilliance/blob/main/v1/k_phd/exams/wikipedia_only/wikipedia_only_exam_v1_20260712.md
+- AI Chess Match test family: https://github.com/gray3s/brilliance/blob/main/v1/ai_chess_match/README.md
 - AI Chess Match plan: https://github.com/gray3s/brilliance/blob/main/v1/agent_chess_project_development_plan_20260712.md
 - v1 progress report: https://github.com/gray3s/brilliance/blob/main/v1/progress_reports/v1_progress_report_20260712.md
 
