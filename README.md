@@ -39,6 +39,8 @@ assumption quality, false certainty, waffling, and possible brilliance.
 - `misc/stage2_solution_attempt_taxonomy_20260712.md` - categories and
   template for AI solution attempts.
 - `docs/project_development_plan_20260712.md` - staged implementation plan.
+- `docs/v1_direction_20260712.md` - v1 direction for evaluating prize/cash
+  reward problem families.
 - `test_plans/staged_test_plan_20260712.md` - test plan for each project stage.
 - `linkedin/linkedin_post_draft_20260712.md` - working LinkedIn post draft.
 

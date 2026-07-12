@@ -54,4 +54,5 @@ not solve the underlying problem.
 - Stage 1 problem inventory: https://github.com/gray3s/brilliance/blob/main/misc/stage1_problem_inventory_20260712.md
 - Stage 2 solution-attempt taxonomy: https://github.com/gray3s/brilliance/blob/main/misc/stage2_solution_attempt_taxonomy_20260712.md
 - Project development plan: https://github.com/gray3s/brilliance/blob/main/docs/project_development_plan_20260712.md
+- v1 direction: https://github.com/gray3s/brilliance/blob/main/docs/v1_direction_20260712.md
 - Staged test plan: https://github.com/gray3s/brilliance/blob/main/test_plans/staged_test_plan_20260712.md
