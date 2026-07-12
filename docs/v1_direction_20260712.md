@@ -45,6 +45,13 @@ track down and capture wanted individuals. Those problem types would shift the
 project away from AI analysis/brilliance testing and into personal-safety,
 legal, law-enforcement, and operational-risk territory.
 
+Nuance:
+
+This remains an intriguing thought experiment for AI analysis: how would an AI
+system reason about public-interest investigative problems, evidence,
+constraints, rights, and safety? But it is excluded as an implementation target
+for this project.
+
 Preferred `v1c` candidates should be intellectual, scientific, engineering,
 public-interest, or formally stated challenge problems with clear rules and
 non-coercive validation criteria.
