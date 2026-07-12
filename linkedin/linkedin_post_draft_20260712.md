@@ -1,3 +1,8 @@
+20260712 1500MT
+
+The following is written entirely by Codex from "notes" that I fed it over a
+few prompts.
+
 # LinkedIn Draft: Brilliance Test
 
 Draft date: 2026-07-12
@@ -14,7 +19,7 @@ Here is a simple test I want to try.
 I do not mean "pretend the AI can solve all of humanity's problems in one
 answer." That would be the wrong lesson.
 
-I mean something more useful:
+I mean something more useful.
 
 This is an example of what AI can do when the problem is bounded well enough.
 The task is not to solve everything. The task is to generate representative
@@ -31,8 +36,10 @@ and the point where human judgment has to intervene?
 Humanity has already named some of its hard problems. Nobel prizes recognize
 work that confers great benefit to humankind. The Clay Millennium Prize
 Problems identify mathematical problems that have resisted solution for
-generations. XPRIZE-style challenges try to focus money and attention on
-measurable breakthroughs.
+generations.
+
+XPRIZE-style challenges try to focus money and attention on measurable
+breakthroughs.
 
 So the test is not whether AI can solve everything.
 
@@ -50,13 +57,21 @@ That is where the interesting question begins:
 Does AI merely imitate established patterns, or can it help us find the next
 brilliant move?
 
+The point is not to solve the world's problems today.
+
+The point is to build examples of AI trying, failing, improving, and revealing
+where human brilliance is still required.
+
+Sometimes the useful result is not the solution.
+
+Sometimes the useful result is watching how the AI analyzes the problem
+without solving it.
+
 I have started a small public source-material project for this:
 
-TODO: add GitHub repository link after publication.
-
-The point is not to solve the world's problems today. The point is to build
-examples of AI trying, failing, improving, and revealing where human
-brilliance is still required.
-
-Sometimes the useful result is not the solution. Sometimes the useful result
-is watching how the AI analyzes the problem without solving it.
+- Repository: https://github.com/gray3s/brilliance
+- Problem description: https://github.com/gray3s/brilliance/blob/main/misc/problem_description_20260712.md
+- Stage 1 problem inventory: https://github.com/gray3s/brilliance/blob/main/misc/stage1_problem_inventory_20260712.md
+- Stage 2 solution-attempt taxonomy: https://github.com/gray3s/brilliance/blob/main/misc/stage2_solution_attempt_taxonomy_20260712.md
+- Project development plan: https://github.com/gray3s/brilliance/blob/main/docs/project_development_plan_20260712.md
+- Staged test plan: https://github.com/gray3s/brilliance/blob/main/test_plans/staged_test_plan_20260712.md
