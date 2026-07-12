@@ -28,7 +28,26 @@ The evaluation should consider:
 - usefulness as a bounded AI-analysis test,
 - feasibility of human-assisted decomposition,
 - risk of overclaiming,
-- public readability.
+- public readability,
+- whether the problem is realistically within the user's resources and lawful
+  role.
+
+## Scope Exclusion
+
+Do not select wanted-person, fugitive-capture, private investigation, bounty
+hunting, or similar law-enforcement-adjacent reward problems as Brilliance
+case studies.
+
+Reason:
+
+The user does not have the resources, authority, or operational purpose to
+track down and capture wanted individuals. Those problem types would shift the
+project away from AI analysis/brilliance testing and into personal-safety,
+legal, law-enforcement, and operational-risk territory.
+
+Preferred `v1c` candidates should be intellectual, scientific, engineering,
+public-interest, or formally stated challenge problems with clear rules and
+non-coercive validation criteria.
 
 ## v1a-c Branch Plan
 
