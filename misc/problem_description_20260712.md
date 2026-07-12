@@ -5,7 +5,8 @@ Created: 2026-07-12
 ## Working Prompt
 
 1. Make a list of a sufficient number of foreseeable problems facing humanity
-   today and in the near future.
+   today and in the near future. Try to cover the entire scope of all known
+   problems, as the detailed list would be far too long and unwieldy.
 2. Ask an AI agent to solve those problems.
 3. If it waffles on any problem, assist it.
 

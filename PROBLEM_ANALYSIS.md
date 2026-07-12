@@ -17,7 +17,8 @@ unreasonably large request?
 The seed request is:
 
 1. list a sufficient number of foreseeable problems facing humanity today and
-   in the near future,
+   in the near future; try to cover the entire scope of all known problems, as
+   the detailed list would be far too long and unwieldy,
 2. ask an AI agent to solve those problems,
 3. if the agent waffles, assist it.
 

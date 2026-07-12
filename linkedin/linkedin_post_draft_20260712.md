@@ -10,7 +10,8 @@ Draft date: 2026-07-12
 Here is a simple test I want to try.
 
 1. Make a list of a sufficient number of foreseeable problems facing humanity
-   today and in the near future.
+   today and in the near future. Try to cover the entire scope of all known
+   problems, as the detailed list would be far too long and unwieldy.
 
 2. Ask your favorite AI agent to solve those problems.
 

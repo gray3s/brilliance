@@ -11,7 +11,8 @@ The project does **not** attempt to solve all of humanity's problems. It
 creates a bounded demonstration:
 
 1. list a sufficient set of major problems facing humanity now and in the near
-   future,
+   future, trying to cover the entire scope of known problems without creating
+   an unwieldy exhaustive list,
 2. include established prize/challenge problems humanity has already framed as
    worth solving,
 3. ask an AI agent to propose solution paths,
