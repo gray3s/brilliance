@@ -78,3 +78,7 @@ Each branch should include:
 
 No v1 case study has been selected yet. The next task is to choose the first
 candidate problem family and identify a specific problem within it.
+
+Progress report:
+
+https://github.com/gray3s/brilliance/blob/main/v1/progress_reports/v1_progress_report_20260712.md

@@ -41,6 +41,8 @@ assumption quality, false certainty, waffling, and possible brilliance.
 - `docs/project_development_plan_20260712.md` - staged implementation plan.
 - `docs/v1_direction_20260712.md` - v1 direction for evaluating prize/cash
   reward problem families.
+- `v1/progress_reports/v1_progress_report_20260712.md` - timestamped v1
+  progress report and pause state.
 - `test_plans/staged_test_plan_20260712.md` - test plan for each project stage.
 - `linkedin/linkedin_post_draft_20260712.md` - working LinkedIn post draft.
 
