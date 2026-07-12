@@ -29,6 +29,7 @@ assumption quality, false certainty, waffling, and possible brilliance.
 
 ## Core Files
 
+- `PROBLEM_ANALYSIS.md` - public-facing analysis and link hub.
 - `PROJECT_GOALS.md` - concise goals for public readers.
 - `misc/problem_description_20260712.md` - project problem statement and
   representative problem set.

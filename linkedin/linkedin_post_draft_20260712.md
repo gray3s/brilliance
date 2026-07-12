@@ -69,8 +69,5 @@ without actually solving it.
 
 I have started a small public source-material project for this:
 
-Project goals:
-https://github.com/gray3s/brilliance/blob/main/PROJECT_GOALS.md
-
-Project repository:
-https://github.com/gray3s/brilliance
+Problem analysis:
+https://github.com/gray3s/brilliance/blob/main/PROBLEM_ANALYSIS.md
