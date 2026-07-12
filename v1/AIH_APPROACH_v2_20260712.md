@@ -109,3 +109,41 @@ The current publication is the approach and test design.
 The actual `vn` implementations, refined harnesses, and local/cloud stack
 results should be published later, after the bugs in the current test harnesses
 and HybridAI adapters have been worked through.
+
+## Development Workflow
+
+The intended workflow is:
+
+1. Define individual AIH tests inside the Brilliance project.
+2. Organize them under the canonical AIH tree:
+
+```text
+v1/AIH/[k-phd:AIchess:AIhistory]/v1..vn
+```
+
+3. Modify HybridAI so it can execute those tests as an agent implementation
+   under evaluation.
+4. Run the AIH tests against HybridAI and, where useful, against Codex, cloud
+   agents, local models, or other agentic stacks.
+5. Record the results back in the Brilliance project.
+6. If the results change the design direction, update the Brilliance plan.
+
+In short:
+
+```text
+define AIH test -> adapt HybridAI to run it -> execute test -> document result
+or update plan
+```
+
+Rationale:
+
+This lets the project do both things that matter:
+
+```text
+plan intelligently
+demonstrate capability through observed results
+```
+
+The point is not only to claim that the system is smart. The point is to build
+tests that show where the system is smart, where it fails, and how the next
+HybridAI version should improve.
