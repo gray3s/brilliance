@@ -69,9 +69,8 @@ without actually solving it.
 
 I have started a small public source-material project for this:
 
-- Repository: https://github.com/gray3s/brilliance
-- Problem description: https://github.com/gray3s/brilliance/blob/main/misc/problem_description_20260712.md
-- Stage 1 problem inventory: https://github.com/gray3s/brilliance/blob/main/misc/stage1_problem_inventory_20260712.md
-- Stage 2 solution-attempt taxonomy: https://github.com/gray3s/brilliance/blob/main/misc/stage2_solution_attempt_taxonomy_20260712.md
-- Project development plan: https://github.com/gray3s/brilliance/blob/main/docs/project_development_plan_20260712.md
-- Staged test plan: https://github.com/gray3s/brilliance/blob/main/test_plans/staged_test_plan_20260712.md
+Project goals:
+https://github.com/gray3s/brilliance/blob/main/PROJECT_GOALS.md
+
+Project repository:
+https://github.com/gray3s/brilliance
