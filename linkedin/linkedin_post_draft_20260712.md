@@ -65,7 +65,7 @@ where human brilliance is still required.
 Sometimes the useful result is not the solution.
 
 Sometimes the useful result is watching how the AI analyzes the problem
-without solving it.
+without actually solving it.
 
 I have started a small public source-material project for this:
 
