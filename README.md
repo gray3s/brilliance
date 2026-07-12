@@ -34,6 +34,7 @@ assumption quality, false certainty, waffling, and possible brilliance.
 - `PROJECT_GOALS.md` - concise goals for public readers.
 - `v1/AIH_APPROACH_v2_20260712.md` - concise AIH v2 approach summary.
 - `v1/AIH_TEST_SUITE_v1_20260712.md` - first AIH test-suite draft.
+- `v1/AIH/` - canonical versioned AIH test-family tree.
 - `v1/personal_history/README.md` - personal-history agentic-AI failure test
   family.
 - `v1/k_phd/README.md` - K-PhD knowledge-ladder AIH test family.
