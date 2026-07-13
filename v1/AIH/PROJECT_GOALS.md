@@ -12,6 +12,10 @@ was asked, what happened, what was accepted, and what should have been rejected.
 
 Anything we ask an AI agent to do is a valid hallucination-test candidate.
 
+AIH v1 does not need to be marketed as a formal test, study, certification, or
+evaluation program. For now it is a controlled project-development effort for
+managing each test's potential to induce AIH.
+
 For v1, AIH does not require a clean independent `x:y` agent test. If two roles
 share model state, context family, backend, or runtime assumptions, the result
 is still useful as an AI self-test or AI-mediated process test.
@@ -42,6 +46,23 @@ appear together.
 
 Therefore AIH reports should avoid assuming that one factor's measured effect
 can be linearly extrapolated across stack, workload, or review-process changes.
+
+## RAIH And UAIH
+
+Each test should identify whether it is expected to induce recoverable AIH,
+unrecoverable AIH, or both.
+
+`RAIH` means recoverable AIH. The process can detect the hallucination, reject
+the bad state, retry safely, ask for help, or terminate without damaging the
+project record.
+
+`UAIH` means unrecoverable AIH. The hallucination becomes accepted state,
+corrupts the record, causes invalid downstream work, or forces a manual reset
+because the process cannot reliably determine what happened.
+
+The current priority is not public marketing. The priority is controlling this
+boundary: make hallucination observable while preventing test-induced failures
+from contaminating project state.
 
 ## Current Class Order
 
