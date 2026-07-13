@@ -48,6 +48,10 @@ Class 1 -> Class 2 -> Class 3
 rule-bound state -> provenance/workflow -> source-bound knowledge
 ```
 
+Public summaries may use concise labels such as `Class 1 AIH test`, `Class 2
+AIH test`, or `Class 1 stack`. The repository implementation should carry the
+specific probe, stack, and resource-profile details for readers who want them.
+
 ## Runner Names
 
 Runner names use:
