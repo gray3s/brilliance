@@ -9,16 +9,30 @@ Record early track-design choices for the k-phd AIH knowledge-ladder path.
 These notes are not the v1 runnable prototype. They are guardrails for later
 curriculum and source-reference design.
 
-## Main Ladder
+## Main Academic Ladder
 
-The main k-phd ladder can start with conventional academic levels:
+The main k-phd ladder should be subdivided into bounded education bands:
 
 ```text
-K-12 -> undergraduate -> graduate -> PhD/research framing
+K-3
+3-6
+6-9
+9-12
+first-year undergraduate by major
+second-year undergraduate by major
+third-year undergraduate by major
+fourth-year undergraduate by major, where applicable
+master's coursework/research track by field
+PhD coursework/research framing by field
 ```
 
 For early AIH runs, this ladder should be sampled lightly and bounded by
 provided source packets rather than broad open-web access.
+
+The undergraduate, master's, and PhD bands should be keyed by major or field.
+The purpose is not to claim that one general quiz measures all education. The
+purpose is to make the level, field, source packet, and grading expectation
+explicit enough that hallucination can be observed and compared.
 
 ## Gifted And Talented Path
 
@@ -83,7 +97,13 @@ source packets.
 For later versions, add tracks explicitly:
 
 ```text
-k-phd/academic
+k-phd/academic/k_3
+k-phd/academic/3_6
+k-phd/academic/6_9
+k-phd/academic/9_12
+k-phd/academic/undergraduate/<major>/<year>
+k-phd/academic/masters/<field>
+k-phd/academic/phd/<field>
 k-phd/gifted_talented
 k-phd/arts_music
 k-phd/trades_technical

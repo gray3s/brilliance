@@ -53,6 +53,11 @@ Class 2 = provenance/workflow-history hallucination
 Class 3 = source-bound knowledge/education-ladder hallucination
 ```
 
+Class 3 can be subdivided into education bands such as K-3, 3-6, 6-9, 9-12,
+undergraduate years by major, master's tracks by field, and PhD tracks by
+field. Public summaries can still say `Class 3 AIH test`; the repository should
+carry the detailed level, field, source, and grading rules.
+
 ## CHRR Direction
 
 AIH is working toward a CHRR-style metric for resistance to common sources of

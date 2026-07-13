@@ -13,10 +13,12 @@ grading, and reference-source limits.
 ## Position In AIH v1
 
 ```text
-AIH test family 1: personal-history agentic-AI failure tests
-AIH test family 2: K-PhD knowledge-ladder tests
-AIH test family 3: AI Chess Match state-fidelity tests
+AIH class 1: rule-bound state/game-action hallucination
+AIH class 2: provenance/workflow-history hallucination
+AIH class 3: source-bound knowledge/education-ladder hallucination
 ```
+
+K-PhD is the current Class 3 prototype family.
 
 ## Core Idea
 
@@ -75,8 +77,9 @@ questions.
 
 - `kphd_track_taxonomy_notes_20260713.md`
 
-This note keeps gifted/talented, arts/music, and trades/technical certificate
-paths separate from the first academic AI/ML source-packet prototype.
+This note defines the banded K-PhD ladder and keeps gifted/talented,
+arts/music, and trades/technical certificate paths separate from the first
+academic AI/ML source-packet prototype.
 
 ## Bridge Test Environment
 
