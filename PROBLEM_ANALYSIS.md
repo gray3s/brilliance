@@ -67,6 +67,9 @@ Candidate variables include:
 - model families and versions, including Qwen variants;
 - Codex, Claude/Anthropic, and other cloud-agent comparison baselines,
   recorded by date and observed product surface;
+- future hardware environment changes such as more CPU cores, more RAM, GPU,
+  external GPU modules, Thunderbolt/advanced-I/O paths, faster storage, and
+  power/thermal profiles;
 - course/source-packet designs for BS-level and MS/MA-level knowledge-track
   tests.
 
@@ -83,6 +86,12 @@ Codex, Claude/Anthropic, and other cloud agentic-AI stacks should be comparison
 baselines, not fixed reference points. Because they can change over time, the
 project should record date, product surface, model identity where available,
 tool access, and prompt envelope for each cloud run.
+
+Hardware upgrades are a future environment track, not an immediate prerequisite.
+The project should first find what stack configurations run in the current
+Brilliance test environment. If later tests move to a higher-core, higher-RAM,
+GPU, external-GPU, or advanced-I/O system, that hardware change should be
+recorded as part of the test condition.
 
 ## Supporting Documents
 

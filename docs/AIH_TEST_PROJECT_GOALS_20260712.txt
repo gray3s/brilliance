@@ -33,6 +33,12 @@ state-fidelity, evidence handling, timing, uncertainty, and task suitability.
    reranking, vector-store choice, and other LinkedIn/research-sourced
    recommendations should be tested only through bounded AIH runs.
 
+9. Track hardware environment as a future project variable. The immediate AIH
+   goal is to learn what runs in the current Brilliance test environment, but
+   later runs should record and compare higher-core, higher-RAM, GPU,
+   external-GPU, Thunderbolt/advanced-I/O, storage, and power/thermal profiles
+   when hardware upgrades become available.
+
 ## Current Test Ladder
 
 ```text
@@ -53,6 +59,8 @@ AIH should be able to compare the same test with different stack options:
 - Ollama vs vLLM vs Hugging Face serving paths;
 - different model versions, including Qwen variants;
 - Codex, Claude/Anthropic, and other cloud-agent runs as comparison baselines;
+- future hardware environment changes, once available, recorded as explicit
+  test variables rather than hidden improvements;
 - different agentic-AI top layers using the same test prompt and scoring
   contract.
 

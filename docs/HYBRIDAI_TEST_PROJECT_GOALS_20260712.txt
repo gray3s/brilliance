@@ -33,6 +33,12 @@ bounded, externally scored conditions.
    top layer, middle layer, retrieval/cache/memory layer, serving layer, and
    model version while still running the same AIH test contract.
 
+9. Plan for future hardware environment upgrades as a separate comparison
+   dimension. More CPU cores, more RAM, local GPU, external GPU modules,
+   Thunderbolt/advanced-I/O paths, and faster storage may become necessary for
+   larger RAG, cache, vLLM, or Hugging Face runs, but they should be recorded as
+   environment changes rather than mixed into software-tuning claims.
+
 ## Minimum Useful HybridAI Run
 
 ```text
@@ -60,6 +66,10 @@ HybridAI stack implementations should be described by explicit dimensions:
 5. Model: model family, version, quantization, context length, parameters,
    and runtime notes.
 
+6. Hardware environment: current laptop/workstation profile first, with later
+   upgraded systems recorded by CPU cores, RAM, GPU/external GPU, high-speed
+   I/O path, storage, operating system, and power/thermal limits.
+
 ## Optimization Candidates
 
 HybridAI should eventually test options such as:
@@ -77,6 +87,8 @@ HybridAI should eventually test options such as:
 - Hugging Face serving/cache behavior;
 - Ollama model/version differences;
 - Codex, Claude/Anthropic, and other cloud-agent comparison runs;
+- future hardware-upgrade runs where larger local stacks require more CPU,
+  RAM, GPU, external GPU, high-speed I/O, or storage bandwidth;
 - classical ML baselines such as XGBoost or LightGBM where the task is
   structured prediction or grading rather than natural-language generation.
 
