@@ -113,6 +113,11 @@ Research inputs may include:
 - local experiment results;
 - comparison runs against Codex, Claude/Anthropic, and other cloud products.
 
+Initial LinkedIn research-intake example:
+
+- XGBoost / LightGBM technical discussion:
+  https://www.linkedin.com/posts/lanchuhuong_xgboost-and-lightgbm-remains-my-go-to-ml-activity-7475169821475823618-pv-V/
+
 Candidate topics include:
 
 - RAG design;
