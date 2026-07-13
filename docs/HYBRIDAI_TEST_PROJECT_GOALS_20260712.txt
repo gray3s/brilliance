@@ -1,0 +1,44 @@
+# HybridAI Test Project Goals
+
+Created: 2026-07-12
+
+## Purpose
+
+Use AIH tests to evaluate HybridAI versions as agent implementations under
+bounded, externally scored conditions.
+
+## Goals
+
+1. Treat HybridAI as a system under test, not as the judge of its own output.
+
+2. Make each HybridAI version able to accept a bounded test, produce parseable
+   output, and preserve enough evidence for external scoring.
+
+3. Compare HybridAI against itself, a selected reference agent, and peer
+   candidate AI stacks where practical.
+
+4. Start with modest AIchess runs such as one-move probes and short smoke games
+   before repeated statistical runs.
+
+5. Record timing, model identity, prompt, tool access, reference access,
+   parsing behavior, scoring, errors, and statistics.
+
+6. Use results to guide the next HybridAI implementation.
+
+7. Publish only the curated rebuildable current state of each subproject
+   version: source, stable scripts, selected configuration, dependency notes,
+   test definitions, reviewed result summaries, and relevant planning links.
+
+## Minimum Useful HybridAI Run
+
+```text
+test definition -> agent response -> external referee/grader -> structured result
+```
+
+## Non-Goals
+
+- Do not use public repositories as full local work histories.
+- Do not publish build debris, scratch logs, raw transcripts, or failed
+  preliminary attempts by default.
+- Do not claim broad superiority over Codex, cloud agents, or local stacks
+  without comparable bounded results.

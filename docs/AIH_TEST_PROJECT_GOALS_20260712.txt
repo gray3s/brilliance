@@ -1,0 +1,41 @@
+# AIH Test Project Goals
+
+Created: 2026-07-12
+
+## Purpose
+
+Define practical AIH tests for evaluating agentic AI hallucination,
+state-fidelity, evidence handling, timing, uncertainty, and task suitability.
+
+## Goals
+
+1. Define bounded AIH tests that can be run and scored.
+
+2. Keep each test narrow enough to preserve evidence and compare agents under
+   the same conditions.
+
+3. Start with AIchess as the lowest-level formal state test.
+
+4. Develop an intermediate certificate-style AIH test after the basic harness
+   pattern is proven.
+
+5. Treat k-phd as the broad knowledge-ladder extension, not the first
+   implementation target.
+
+6. Record raw responses, parsed responses, timing, errors, human assistance,
+   and statistics where repeated runs support them.
+
+7. Use public repositories as curated project archives containing reviewed
+   current state and rebuildable test definitions.
+
+## Current Test Ladder
+
+```text
+AIchess -> intermediate AIH certificate-style test -> k-phd
+```
+
+## Non-Goals
+
+- Do not claim that one AI stack is generally better from one bounded result.
+- Do not publish raw logs, failed attempts, caches, raw audio, or scratch runs.
+- Do not expand the test suite faster than tests can actually be executed.
