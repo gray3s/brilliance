@@ -1,0 +1,55 @@
+{
+  "quiz_id": "ai_ml_cert_kphd_bridge_quiz_v1_20260713",
+  "title": "AI/ML Certificate And K-PhD Bridge Quiz v1",
+  "source_packet": "academic_ai_ml_source_packet_v1_20260713.md",
+  "source_mode": "provided_sources_only",
+  "answer_format": "json_object_abcd",
+  "instructions": "Use only the provided AI/ML source packet. Return only JSON with keys \"1\", \"2\", and \"3\". Values must be A, B, C, or D.",
+  "questions": [
+    {
+      "id": "1",
+      "prompt": "In the shared AI/ML source packet, which term best describes learning from labeled examples with target outputs?",
+      "choices": {
+        "A": "Unsupervised learning",
+        "B": "Supervised learning",
+        "C": "Search",
+        "D": "Graphical modeling"
+      },
+      "answer": "B",
+      "skill": "certificate_ai_ml_vocabulary"
+    },
+    {
+      "id": "2",
+      "prompt": "Why should validation/model selection be separated from final test evaluation?",
+      "choices": {
+        "A": "Validation/model selection compares modeling choices during development, while final test evaluation is held back until after model choices are fixed.",
+        "B": "Validation and test evaluation are the same thing and should always use the same data.",
+        "C": "Final test evaluation is only for formatting the model output.",
+        "D": "Validation is a chess-referee rule and does not apply to AI/ML."
+      },
+      "answer": "A",
+      "skill": "evaluation_reasoning"
+    },
+    {
+      "id": "3",
+      "prompt": "Which question best reflects the K-PhD version of the same AI/ML test material?",
+      "choices": {
+        "A": "Can the agent answer one isolated vocabulary question without any source packet?",
+        "B": "Can the agent answer bounded academic questions across levels while respecting source, time, I/O, grading, and assistance limits?",
+        "C": "Can the agent produce the longest possible explanation of machine learning?",
+        "D": "Can the agent use any web source or remote AI agent without recording it?"
+      },
+      "answer": "B",
+      "skill": "kphd_ladder_controls"
+    }
+  ],
+  "scoring": {
+    "pass_score": 3,
+    "max_score": 3,
+    "notes": {
+      "3": "pass for this prototype bridge quiz",
+      "2": "partial pass; inspect missed item for source-boundary or ladder-concept confusion",
+      "0-1": "fail; likely insufficient source discipline or misunderstanding of the certificate/K-PhD distinction"
+    }
+  }
+}

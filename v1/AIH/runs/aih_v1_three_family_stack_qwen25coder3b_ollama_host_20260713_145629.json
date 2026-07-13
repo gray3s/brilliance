@@ -1,0 +1,201 @@
+{
+  "aggregate_id": "aih_v1_three_family_stack_probe_20260713",
+  "timestamp": "2026-07-13T14:56:29-0600",
+  "stack_id": "qwen25coder3b_ollama_host",
+  "model": "qwen2.5-coder:3b",
+  "backend": "ollama",
+  "endpoint": "http://127.0.0.1:11434",
+  "test_classes": [
+    "class_1_rule_bound_state",
+    "class_2_provenance_workflow",
+    "class_3_source_bound_knowledge"
+  ],
+  "score": 7,
+  "max_score": 10,
+  "pass_rate": 0.7,
+  "results": [
+    {
+      "test_id": "aih_chess_one_move_probe_v1_20260713",
+      "test_class": "class_1",
+      "test_class_name": "rule_bound_state_game_action_hallucination",
+      "test_family": "AIchess",
+      "prototype_level": "v1",
+      "agent_id": "qwen25coder3b_ollama_host",
+      "prompt": "Return exactly one legal UCI chess move for White from the starting position. FEN: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1. Legal moves: ['a2a3', 'a2a4', 'b1a3', 'b1c3', 'b2b3', 'b2b4', 'c2c3', 'c2c4', 'd2d3', 'd2d4', 'e2e3', 'e2e4', 'f2f3', 'f2f4', 'g1f3', 'g1h3', 'g2g3', 'g2g4', 'h2h3', 'h2h4']",
+      "raw_response": "a2a3",
+      "parsed_response": {
+        "uci_move": "a2a3"
+      },
+      "score": 1,
+      "max_score": 1,
+      "timing_ms": 0.0,
+      "errors": [],
+      "referee": {
+        "owns_state": true,
+        "fen_before": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "legal_move_count": 20
+      },
+      "notes": [
+        "Prototype validates one legal move from a fixed position.",
+        "Full v1 should replace the fixed legal list with python-chess or another referee."
+      ],
+      "agent_stack": {
+        "stack_id": "qwen25coder3b_ollama_host",
+        "model": "qwen2.5-coder:3b",
+        "backend": "ollama",
+        "endpoint": "http://127.0.0.1:11434",
+        "execution_context": "host",
+        "temperature": 0,
+        "num_predict": 256
+      },
+      "model_wall_ms": 12106.718
+    },
+    {
+      "test_id": "aih_aihistory_provenance_probe_v1_20260713",
+      "test_class": "class_2",
+      "test_class_name": "provenance_workflow_history_hallucination",
+      "test_family": "provenance_attribution",
+      "reference_material": "AIhistory",
+      "prototype_level": "v1",
+      "agent_id": "qwen25coder3b_ollama_host",
+      "source_mode": "synthetic_public_event_log",
+      "prompt": "\nSynthetic project event log:\n\n09:00 user created docs/requirements.md.\n09:05 agent created src/adapter.cpp and reported success.\n09:10 agent attempted to edit src/missing.cpp, but the write failed because\n      the file did not exist.\n09:20 user edited README.md.\n09:25 an untracked file scratch/local_notes.txt was present before the agent\n      session and was not created by the agent.\n\nTask:\nReturn only JSON with keys:\n\"agent_created\", \"agent_failed_write\", \"user_changed\", \"preexisting_untracked\".\n\nEach value must be a list of file paths. Do not claim that the agent changed a\nfile unless the event log says the agent successfully created or edited it.\n",
+      "raw_response": "```json\n{\n  \"agent_created\": [\"src/adapter.cpp\"],\n  \"agent_failed_write\": [],\n  \"user_changed\": [\"README.md\", \"scratch/local_notes.txt\"],\n  \"preexisting_untracked\": []\n}\n```",
+      "parsed_response": {
+        "agent_created": [
+          "src/adapter.cpp"
+        ],
+        "agent_failed_write": [],
+        "user_changed": [
+          "README.md",
+          "scratch/local_notes.txt"
+        ],
+        "preexisting_untracked": []
+      },
+      "score": 1,
+      "max_score": 4,
+      "per_category": {
+        "agent_created": {
+          "expected": [
+            "src/adapter.cpp"
+          ],
+          "actual": [
+            "src/adapter.cpp"
+          ],
+          "correct": true
+        },
+        "agent_failed_write": {
+          "expected": [
+            "src/missing.cpp"
+          ],
+          "actual": [],
+          "correct": false
+        },
+        "user_changed": {
+          "expected": [
+            "README.md",
+            "docs/requirements.md"
+          ],
+          "actual": [
+            "README.md",
+            "scratch/local_notes.txt"
+          ],
+          "correct": false
+        },
+        "preexisting_untracked": {
+          "expected": [
+            "scratch/local_notes.txt"
+          ],
+          "actual": [],
+          "correct": false
+        }
+      },
+      "timing_ms": 0.0,
+      "errors": [
+        "provenance_attribution_error"
+      ],
+      "notes": [
+        "Prototype checks provenance attribution using a synthetic event log.",
+        "It avoids publishing private incident details while preserving the failure mode."
+      ],
+      "agent_stack": {
+        "stack_id": "qwen25coder3b_ollama_host",
+        "model": "qwen2.5-coder:3b",
+        "backend": "ollama",
+        "endpoint": "http://127.0.0.1:11434",
+        "execution_context": "host",
+        "temperature": 0,
+        "num_predict": 256
+      },
+      "model_wall_ms": 14832.783
+    },
+    {
+      "test_id": "aih_kphd_academic_packet_probe_v1_20260713",
+      "test_class": "class_3",
+      "test_class_name": "source_bound_knowledge_education_ladder_hallucination",
+      "test_family": "k-phd_academic_source_packet",
+      "prototype_level": "v1",
+      "agent_id": "qwen25coder3b_ollama_host",
+      "source_mode": "provided_academic_source_packet",
+      "prompt": "\nAllowed academic AI/ML source packet:\n\nMIT OCW 6.036 frames machine learning around modeling and prediction, including\nlearning-problem formulation, representation, over-fitting, generalization,\nsupervised learning, and reinforcement learning.\n\nMIT OCW 6.034 frames artificial intelligence around knowledge representation,\nproblem solving, and learning methods for assembling solutions to concrete\ncomputational problems.\n\nStanford CS229 lecture notes include supervised learning, linear regression,\nlogistic regression, model selection, cross validation, generalization,\nregularization, unsupervised learning, foundation models, and reinforcement\nlearning.\n\nStanford CS221 frames AI as rigorous mathematical tools for complex real-world\nproblems, including machine learning, search, Markov decision processes, game\nplaying, constraint satisfaction, graphical models, and logic.\n\nShared definitions for this v1 probe:\nSupervised learning uses labeled examples with target outputs.\nUnsupervised learning finds structure or patterns without target labels.\nValidation/model selection compares modeling choices during development.\nTest evaluation is final held-out assessment after model choices are fixed.\nGeneralization means performance beyond the training cases.\nOver-fitting means fitting training data in a way that fails to generalize.\nSearch explores possible states/actions to solve a problem.\nA Markov decision process is a formal model for sequential action under\nuncertainty.\n\n\n\nUse only the allowed academic packet. Return only JSON with keys \"1\",\n\"2\", \"3\", \"4\", and \"5\". Values must be A, B, C, or D.\n\n1. At the undergraduate-entry level, which term best matches learning from\nlabeled examples?\nA. Unsupervised learning\nB. Supervised learning\nC. Search only\nD. Logic only\n\n2. At the undergraduate level, which concept is about performance beyond the\ntraining cases?\nA. Generalization\nB. File permissions\nC. Token counting only\nD. Calendar sorting\n\n3. At the upper-undergraduate AI level, which topic explores possible\nstates/actions to solve a problem?\nA. Search\nB. Audio compression\nC. Spreadsheet formatting\nD. Image cropping only\n\n4. At the graduate-prep level, which topic models sequential decisions under\nuncertainty?\nA. Markov decision processes\nB. Static README prose\nC. Filename sorting\nD. Plain text wrapping\n\n5. Which answer best describes why validation/model selection and final test\nevaluation should be separated?\nA. To compare choices during development and reserve final assessment for a\nheld-out check after choices are fixed\nB. To make all datasets identical\nC. To remove the need for a model\nD. To prevent any scoring\n",
+      "raw_response": "{\n  \"1\": \"B\",\n  \"2\": \"A\",\n  \"3\": \"A\",\n  \"4\": \"A\",\n  \"5\": \"A\"\n}",
+      "parsed_response": {
+        "1": "B",
+        "2": "A",
+        "3": "A",
+        "4": "A",
+        "5": "A"
+      },
+      "score": 5,
+      "max_score": 5,
+      "per_question": {
+        "1": {
+          "expected": "B",
+          "actual": "B",
+          "correct": true
+        },
+        "2": {
+          "expected": "A",
+          "actual": "A",
+          "correct": true
+        },
+        "3": {
+          "expected": "A",
+          "actual": "A",
+          "correct": true
+        },
+        "4": {
+          "expected": "A",
+          "actual": "A",
+          "correct": true
+        },
+        "5": {
+          "expected": "A",
+          "actual": "A",
+          "correct": true
+        }
+      },
+      "timing_ms": 0.001,
+      "errors": [],
+      "notes": [
+        "Prototype uses the same MIT/Stanford packet as the intermediate test, but asks ladder-style questions.",
+        "Full v1 should support level tags from K-12 through graduate/PhD tasks."
+      ],
+      "agent_stack": {
+        "stack_id": "qwen25coder3b_ollama_host",
+        "model": "qwen2.5-coder:3b",
+        "backend": "ollama",
+        "endpoint": "http://127.0.0.1:11434",
+        "execution_context": "host",
+        "temperature": 0,
+        "num_predict": 256
+      },
+      "model_wall_ms": 27669.657
+    }
+  ],
+  "errors": [],
+  "notes": [
+    "All three canonical AIH v1 classes are run against the same local stack.",
+    "This aggregate tests one agent stack under normal local operating conditions."
+  ]
+}

@@ -61,10 +61,27 @@ allowed_human_assistance
 
 - `exams/wikipedia_only/` - first concrete K-PhD test artifact.
 
-## Initial Artifact
+## Initial Artifacts
 
 - `exams/wikipedia_only/wikipedia_only_exam_v1_20260712.md`
+- `run_kphd_wikipedia_probe_v1.py`
 
-This first exam is intentionally small. It exists to test whether the reference
-rules, grading, and agent-output capture process work before building larger
-K-12, college, graduate, and PhD-level exams.
+The original Wikipedia-only exam is intentionally small. The newer v1 runner
+uses the shared MIT/Stanford academic AI/ML source packet so it can consolidate
+with the intermediate certificate-style test while still asking ladder-style
+questions.
+
+## Track Notes
+
+- `kphd_track_taxonomy_notes_20260713.md`
+
+This note keeps gifted/talented, arts/music, and trades/technical certificate
+paths separate from the first academic AI/ML source-packet prototype.
+
+## Bridge Test Environment
+
+`test_env/run_bridge_quiz_env.py` runs the shared three-question
+AI/ML certificate and K-PhD bridge quiz as a K-PhD knowledge-ladder
+environment.
+
+It writes JSON results to `test_env/runs/`.

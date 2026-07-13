@@ -1,4 +1,4 @@
-# Personal-History Agentic-AI Failure AIH Test Family
+# AIhistory Reference Material
 
 Created: 2026-07-12
 
@@ -17,23 +17,24 @@ v1/AIH/AIhistory/v2/
 v1/AIH/AIhistory/vn/
 ```
 
-New personal-history/provenance tests can be added as the project identifies
-them.
+New personal-history/provenance reference notes and derived probes can be added
+as the project identifies them.
 
 ## Purpose
 
-This is one of the three distinct AIH test families.
+AIhistory is reference/evidence material that justifies the broader
+hallucination examination effort. It collects observed failures from work with
+agentic AI systems so they can be converted into public-safe, bounded tests.
 
-The personal-history test family uses real observed failures from the user's
-history with agentic AI agents. The goal is to test whether an agent can avoid
-or correctly recover from the same classes of failures in future work.
+AIhistory is not itself one of the three ordered hallucination-test classes.
+It primarily supports Class 2: provenance/workflow-history hallucination.
 
 ## Position In AIH v1
 
 ```text
-AIH test family 1: personal-history agentic-AI failure tests
-AIH test family 2: K-PhD knowledge-ladder tests
-AIH test family 3: AI Chess Match state-fidelity tests
+AIH class 1: rule-bound state/game-action hallucination
+AIH class 2: provenance/workflow-history hallucination
+AIH class 3: source-bound knowledge/education-ladder hallucination
 ```
 
 ## Core Failure Classes

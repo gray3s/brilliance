@@ -1,6 +1,8 @@
 .hf-cache/
 .venv-chess/
 .venv-transcribe/
+__pycache__/
+*.pyc
 misc/audio_sources_20260712/
 misc/transcriptions/
 misc/transcribe_three_wavs_20260712.py

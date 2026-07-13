@@ -1,0 +1,40 @@
+{
+  "test_id": "aih_intermediate_cert_bridge_quiz_env_v1_20260713",
+  "test_family": "intermediate_certificate_style",
+  "environment": "intermediate_cert/v1/test_env",
+  "quiz_id": "ai_ml_cert_kphd_bridge_quiz_v1_20260713",
+  "source_mode": "provided_sources_only",
+  "agent_id": "fixture_agent",
+  "prompt": "# Academic AI/ML Source Packet v1\n\nCreated: 2026-07-13\n\n## Purpose\n\nThis is the shared rough-draft class-material and source-reference packet for\nthe intermediate certificate-style AIH test and the k-phd knowledge-ladder AIH\ntest.\n\nThe packet is based on public academic course pages and notes from MIT and\nStanford. It is intentionally short. It should be treated as the source packet\ngiven to the tested agent, not as a replacement for the full courses.\n\n## Source Anchors\n\n1. MIT OCW 6.036, Introduction to Machine Learning, Fall 2020.\n\n   Course scope: machine-learning principles, algorithms, and applications from\n   the point of view of modeling and prediction. It includes learning-problem\n   formulation, representation, over-fitting, generalization, supervised\n   learning, reinforcement learning, image applications, and temporal sequence\n   applications.\n\n   URL: https://ocw.mit.edu/courses/6-036-introduction-to-machine-learning-fall-2020/\n\n2. MIT OCW 6.034, Artificial Intelligence, Fall 2010.\n\n   Course scope: basic knowledge representation, problem solving, and learning\n   methods of artificial intelligence. The course frames intelligent-system\n   engineering as assembling solutions to concrete computational problems.\n\n   URL: https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/\n\n3. Stanford CS229 Lecture Notes.\n\n   Course-note scope: supervised learning, linear regression, logistic\n   regression, generalized linear models, generative learning algorithms, kernel\n   methods, support vector machines, deep learning, generalization and\n   regularization, unsupervised learning, self-supervised learning/foundation\n   models, and reinforcement learning.\n\n   URL: https://cs229.stanford.edu/main_notes.pdf\n\n4. Stanford CS221, Artificial Intelligence: Principles and Techniques.\n\n   Course scope: applying rigorous mathematical tools to complex real-world\n   problems. Topics include machine learning, search, Markov decision processes,\n   game playing, constraint satisfaction, graphical models, and logic.\n\n   URL: https://stanford-cs221.github.io/autumn2023/\n\n## Consolidated Class-Material Vocabulary\n\nUse this vocabulary for early v1 tests:\n\n- supervised learning: learning from labeled examples with target outputs;\n- unsupervised learning: finding structure or patterns without target labels;\n- model/prediction framing: learning a function or model that predicts outputs\n  from inputs;\n- representation: how inputs are encoded as features or state;\n- generalization: performance on examples beyond the training cases;\n- over-fitting: fitting training data in a way that fails to generalize;\n- validation/model selection: comparing modeling choices during development;\n- test evaluation: final held-out assessment after model choices are fixed;\n- search: exploring possible states/actions to solve a problem;\n- Markov decision process: a formal decision model for sequential action under\n  uncertainty;\n- game playing: adversarial or competitive decision-making in formal games;\n- graphical model: probabilistic structure over related variables;\n- logic/knowledge representation: symbolic statements and rules for reasoning.\n\n## Source-Reference Rule\n\nAn AIH test may either:\n\n1. provide this packet inside the prompt, or\n2. provide the full source URLs and require the agent to cite retrieved material.\n\nFor early local-agent tests, prefer option 1. It keeps the test bounded and\navoids giving the agent uncontrolled web access.\n\n## Consolidation Rule\n\nThe intermediate certificate-style test and the k-phd test should share this\nsource-reference packet where possible.\n\nThey should differ primarily in:\n\n- difficulty,\n- question form,\n- allowed reasoning depth,\n- expected evidence/citation behavior,\n- grading rubric,\n- time and output limits.\n\nUse only the provided AI/ML source packet. Return only JSON with keys \"1\", \"2\", and \"3\". Values must be A, B, C, or D.\n\n1. In the shared AI/ML source packet, which term best describes learning from labeled examples with target outputs?\nA. Unsupervised learning\nB. Supervised learning\nC. Search\nD. Graphical modeling\n\n2. Why should validation/model selection be separated from final test evaluation?\nA. Validation/model selection compares modeling choices during development, while final test evaluation is held back until after model choices are fixed.\nB. Validation and test evaluation are the same thing and should always use the same data.\nC. Final test evaluation is only for formatting the model output.\nD. Validation is a chess-referee rule and does not apply to AI/ML.\n\n3. Which question best reflects the K-PhD version of the same AI/ML test material?\nA. Can the agent answer one isolated vocabulary question without any source packet?\nB. Can the agent answer bounded academic questions across levels while respecting source, time, I/O, grading, and assistance limits?\nC. Can the agent produce the longest possible explanation of machine learning?\nD. Can the agent use any web source or remote AI agent without recording it?",
+  "raw_response": "{\"1\":\"B\",\"2\":\"A\",\"3\":\"B\"}",
+  "parsed_response": {
+    "1": "B",
+    "2": "A",
+    "3": "B"
+  },
+  "score": 3,
+  "max_score": 3,
+  "passed": true,
+  "per_question": {
+    "1": {
+      "expected": "B",
+      "actual": "B",
+      "correct": true,
+      "skill": "certificate_ai_ml_vocabulary"
+    },
+    "2": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true,
+      "skill": "evaluation_reasoning"
+    },
+    "3": {
+      "expected": "B",
+      "actual": "B",
+      "correct": true,
+      "skill": "kphd_ladder_controls"
+    }
+  },
+  "timing_ms": 0.001,
+  "errors": []
+}
