@@ -39,6 +39,11 @@ bounded, externally scored conditions.
    larger RAG, cache, vLLM, or Hugging Face runs, but they should be recorded as
    environment changes rather than mixed into software-tuning claims.
 
+10. Create a local AI/ML optimization research subproject inside HybridAI. This
+    subproject should collect, summarize, and test local inference, retrieval,
+    cache, memory, serving, and classical-ML optimization options before they
+    are promoted into production HybridAI stack implementations.
+
 ## Minimum Useful HybridAI Run
 
 ```text
@@ -91,6 +96,59 @@ HybridAI should eventually test options such as:
   RAM, GPU, external GPU, high-speed I/O, or storage bandwidth;
 - classical ML baselines such as XGBoost or LightGBM where the task is
   structured prediction or grading rather than natural-language generation.
+
+## Local AI/ML Optimization Research Subproject
+
+Purpose:
+
+Learn which local AI/ML optimization methods are relevant to HybridAI before
+treating them as implementation defaults.
+
+Research inputs may include:
+
+- official project documentation;
+- academic papers;
+- benchmark reports;
+- LinkedIn posts and technical discussions;
+- local experiment results;
+- comparison runs against Codex, Claude/Anthropic, and other cloud products.
+
+Candidate topics include:
+
+- RAG design;
+- chunking and source-packet construction;
+- embedding models;
+- vector stores;
+- sparse/dense hybrid retrieval;
+- reranking;
+- semantic cache;
+- KV/v-cache behavior;
+- memory cache;
+- Ollama tuning;
+- vLLM serving behavior;
+- Hugging Face/Transformers/TGI serving behavior;
+- quantization;
+- context-length tradeoffs;
+- software/runtime switches on fixed hardware;
+- structured-output constraints;
+- XGBoost/LightGBM and other classical ML baselines for scoring, grading, or
+  structured-prediction tasks.
+
+Research rule:
+
+An optimization recommendation should become a test candidate first, not a
+default implementation. Each candidate should be compared against a default
+baseline under at least one bounded AIH test before it is treated as an
+improvement.
+
+Controlled-switch rule:
+
+When possible, test software/runtime switches while holding hardware fixed.
+Change one setting at a time, record the default setting, the modified setting,
+the model/version, the serving path, and the AIH result. Examples may include
+context length, quantization, batch/concurrency settings, cache settings,
+retrieval settings, reranker settings, decoding parameters, timeout limits, and
+tool-access settings.
 
 The default baseline matters. Before modifying repository software, enabling
 cache/RAG layers, changing serving paths, or tuning model parameters, HybridAI

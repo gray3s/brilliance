@@ -33,6 +33,10 @@ state-fidelity, evidence handling, timing, uncertainty, and task suitability.
    reranking, vector-store choice, and other LinkedIn/research-sourced
    recommendations should be tested only through bounded AIH runs.
 
+   The local AI/ML optimization research subproject inside HybridAI should
+   supply candidate tuning methods, but AIH should decide whether they help by
+   running bounded tests with external scoring.
+
 9. Track hardware environment as a future project variable. The immediate AIH
    goal is to learn what runs in the current Brilliance test environment, but
    later runs should record and compare higher-core, higher-RAM, GPU,
@@ -56,6 +60,7 @@ AIH should be able to compare the same test with different stack options:
 - reranking on/off;
 - semantic cache on/off;
 - KV/v-cache and memory-cache options on/off where supported;
+- software/runtime switches changed one at a time on fixed hardware;
 - Ollama vs vLLM vs Hugging Face serving paths;
 - different model versions, including Qwen variants;
 - Codex, Claude/Anthropic, and other cloud-agent runs as comparison baselines;

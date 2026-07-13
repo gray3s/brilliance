@@ -78,6 +78,14 @@ other public discussion should be converted into bounded AIH test variables.
 They should not be treated as established improvements until the same AIH test
 has been run, parsed, scored, and compared.
 
+Local AI/ML optimization research should be a HybridAI subproject. Its role is
+to study RAG, retrieval, cache, memory, serving, quantization, and classical-ML
+optimization options, then feed candidate variables into AIH tests.
+
+One important research pattern is fixed-hardware software-switch testing. The
+project should hold hardware constant where possible, change one runtime or
+configuration switch at a time, and record whether the AIH result changes.
+
 The default baseline comes first. Before modifying repository software or
 enabling RAG, cache, memory, serving, or model-tuning options, the project
 should record an unmodified baseline run for the same AIH test.
