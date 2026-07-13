@@ -33,6 +33,16 @@ AIH should not hide those compromises. Each run should record the practical
 implementation boundaries that shape the result, so later reports do not
 overstate what was actually tested.
 
+The major analysis issue is expected nonlinearity. Implementation compromises
+will not necessarily add up in a simple way. Small changes in hardware load,
+context sharing, prompt shape, validator strictness, retry policy, or human
+review behavior may interact and produce threshold effects. A metric that looks
+stable under one configuration may shift sharply when two ordinary compromises
+appear together.
+
+Therefore AIH reports should avoid assuming that one factor's measured effect
+can be linearly extrapolated across stack, workload, or review-process changes.
+
 ## Current Class Order
 
 Classes are ordered from most severe to least severe:
