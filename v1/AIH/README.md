@@ -19,6 +19,9 @@ feed Class 2 prototypes. It is not the name of Class 2.
 See [NAMING_CONVENTION.md](NAMING_CONVENTION.md) for class, runner, test ID,
 result-file, and stack-ID rules.
 
+Project goals and boundary choices are tracked in
+[PROJECT_GOALS.md](PROJECT_GOALS.md).
+
 ## CHRR Direction
 
 AIH is working toward a CHRR-style metric that measures resistance to common
