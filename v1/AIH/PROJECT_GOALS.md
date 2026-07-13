@@ -96,6 +96,17 @@ track -> level/license -> field/category -> difficulty band -> question
 This allows multiple subcategories within each academic or professional path
 without making public summaries overly specific.
 
+The preliminary Class 3 candidate inventory should be migrated into this
+structure before baseline retesting. The first retest goal is to find egregious
+misclassifications across tracks, levels, categories, and difficulty bands, not
+to claim broad education or professional-license evaluation coverage.
+
+This is somewhat circular by design: the class structure defines the tests, and
+the test results challenge the class structure. AIH does not need a perfect
+classification ontology at this stage. It needs a defensible one that can be
+revised when evidence shows that a category, level, or difficulty band is
+misleading.
+
 ## CHRR Direction
 
 AIH is working toward a CHRR-style metric for resistance to common sources of

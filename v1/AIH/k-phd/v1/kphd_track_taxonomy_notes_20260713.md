@@ -159,6 +159,12 @@ path while preserving concise public labels such as `Class 3 AIH test`.
 For v1, keep the runnable k-phd prototype focused on bounded academic AI/ML
 source packets.
 
+Preliminary academic and professional candidate programs are listed in:
+
+```text
+class3_candidate_program_inventory_20260713.md
+```
+
 For later versions, add tracks explicitly:
 
 ```text
