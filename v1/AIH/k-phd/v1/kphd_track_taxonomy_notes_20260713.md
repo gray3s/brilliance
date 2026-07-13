@@ -34,6 +34,22 @@ The purpose is not to claim that one general quiz measures all education. The
 purpose is to make the level, field, source packet, and grading expectation
 explicit enough that hallucination can be observed and compared.
 
+Each academic band can then be subdivided by category within the subject:
+
+```text
+level -> field/major -> category -> difficulty band -> question
+```
+
+Example academic categories:
+
+- vocabulary and definitions,
+- core concepts,
+- procedural methods,
+- quantitative methods,
+- source interpretation,
+- case/problem application,
+- boundary/refusal judgment.
+
 ## Gifted And Talented Path
 
 Gifted and talented education should not be forced into the ordinary K-12 track
@@ -89,6 +105,55 @@ Possible low-risk early probes:
 - sequence-order checks;
 - refusal when the prompt lacks safety-critical context.
 
+## Professional License And Certification Background Tests
+
+Professional-license background tests should be treated as another Class 3
+source-bound knowledge ladder path.
+
+These tests should be subdivided by the individual categories required for a
+license or certification rather than treated as one general exam.
+
+Examples of category boundaries:
+
+- law or ethics background category,
+- safety/regulatory category,
+- domain vocabulary category,
+- procedural judgment category,
+- calculations or quantitative methods category,
+- case/situation analysis category,
+- documentation/reporting category.
+
+Question design can target a normal curve within each category:
+
+```text
+easy recognition -> routine application -> mixed-context application ->
+edge-case reasoning -> expert-level discrimination
+```
+
+The goal is not to produce a licensing exam. The goal is to test whether an AI
+agent can stay inside the source, level, and category boundaries while moving
+across a controlled distribution of question difficulty.
+
+Each category should record:
+
+- source packet,
+- license/certification context,
+- category label,
+- intended difficulty band,
+- expected answer form,
+- grading rule,
+- allowed references,
+- disallowed assistance.
+
+The common structure across academic and professional Class 3 tests is:
+
+```text
+track -> level/license -> field/category -> difficulty band -> question
+```
+
+This creates multiple subcategories for each academic and professional test
+path while preserving concise public labels such as `Class 3 AIH test`.
+
 ## Current Recommendation
 
 For v1, keep the runnable k-phd prototype focused on bounded academic AI/ML
@@ -104,6 +169,7 @@ k-phd/academic/9_12
 k-phd/academic/undergraduate/<major>/<year>
 k-phd/academic/masters/<field>
 k-phd/academic/phd/<field>
+k-phd/professional_license/<license_or_cert>/<category>
 k-phd/gifted_talented
 k-phd/arts_music
 k-phd/trades_technical

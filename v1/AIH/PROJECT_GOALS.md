@@ -55,8 +55,25 @@ Class 3 = source-bound knowledge/education-ladder hallucination
 
 Class 3 can be subdivided into education bands such as K-3, 3-6, 6-9, 9-12,
 undergraduate years by major, master's tracks by field, and PhD tracks by
-field. Public summaries can still say `Class 3 AIH test`; the repository should
-carry the detailed level, field, source, and grading rules.
+field. It can also include professional-license and certification background
+tests divided by required category. Public summaries can still say `Class 3 AIH
+test`; the repository should carry the detailed level, field, source, category,
+difficulty-distribution, and grading rules.
+
+For professional-license/certification paths, individual questions can be
+targeted to a normal curve within the overall category: easy recognition,
+routine application, mixed-context application, edge-case reasoning, and
+expert-level discrimination. The goal is controlled hallucination testing, not
+claiming to reproduce or replace an actual licensing exam.
+
+The general Class 3 structure is:
+
+```text
+track -> level/license -> field/category -> difficulty band -> question
+```
+
+This allows multiple subcategories within each academic or professional path
+without making public summaries overly specific.
 
 ## CHRR Direction
 
