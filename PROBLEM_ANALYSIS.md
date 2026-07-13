@@ -47,6 +47,43 @@ It claims that, given a well-bounded problem, AI can generate useful source
 material, expose weak reasoning, and help structure inquiry, even when it does
 not solve the underlying problem.
 
+## Architecture Options Under Test
+
+The Brilliance project should treat implementation choices as test variables,
+not as assumed improvements.
+
+Candidate variables include:
+
+- default unmodified repository/software behavior before tuning;
+- agentic-AI top layers such as LangGraph, CrewAI, AutoGen, OpenHands,
+  LlamaIndex/Agno, or HybridAI-native implementations;
+- middle layers such as direct Ollama API, Ollama OpenAI-compatible `/v1`,
+  LiteLLM, TinyProxy, custom AIH transport shims, and logging paths;
+- retrieval/cache/memory layers such as source-packet only, RAG, tuned RAG,
+  reranking, vector stores, semantic cache, KV/v-cache behavior, and memory
+  cache;
+- bottom/supporting layers such as Ollama, vLLM, and Hugging Face serving
+  paths;
+- model families and versions, including Qwen variants;
+- Codex, Claude/Anthropic, and other cloud-agent comparison baselines,
+  recorded by date and observed product surface;
+- course/source-packet designs for BS-level and MS/MA-level knowledge-track
+  tests.
+
+Recommendations found in research papers, documentation, LinkedIn posts, or
+other public discussion should be converted into bounded AIH test variables.
+They should not be treated as established improvements until the same AIH test
+has been run, parsed, scored, and compared.
+
+The default baseline comes first. Before modifying repository software or
+enabling RAG, cache, memory, serving, or model-tuning options, the project
+should record an unmodified baseline run for the same AIH test.
+
+Codex, Claude/Anthropic, and other cloud agentic-AI stacks should be comparison
+baselines, not fixed reference points. Because they can change over time, the
+project should record date, product surface, model identity where available,
+tool access, and prompt envelope for each cloud run.
+
 ## Supporting Documents
 
 - Project goals: https://github.com/gray3s/brilliance/blob/main/PROJECT_GOALS.md

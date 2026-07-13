@@ -28,11 +28,47 @@ state-fidelity, evidence handling, timing, uncertainty, and task suitability.
 7. Use public repositories as curated project archives containing reviewed
    current state and rebuildable test definitions.
 
+8. Treat optimization claims as test variables, not conclusions. RAG,
+   retrieval tuning, semantic cache, KV/v-cache behavior, memory cache,
+   reranking, vector-store choice, and other LinkedIn/research-sourced
+   recommendations should be tested only through bounded AIH runs.
+
 ## Current Test Ladder
 
 ```text
 AIchess -> intermediate AIH certificate-style test -> k-phd
 ```
+
+## Optimization Variables To Test
+
+AIH should be able to compare the same test with different stack options:
+
+- default unmodified repository/software behavior before any tuning;
+- no retrieval vs provided-source-packet retrieval;
+- basic RAG vs tuned RAG;
+- vector search vs hybrid sparse/dense retrieval;
+- reranking on/off;
+- semantic cache on/off;
+- KV/v-cache and memory-cache options on/off where supported;
+- Ollama vs vLLM vs Hugging Face serving paths;
+- different model versions, including Qwen variants;
+- Codex, Claude/Anthropic, and other cloud-agent runs as comparison baselines;
+- different agentic-AI top layers using the same test prompt and scoring
+  contract.
+
+The goal is not to assume any tuning method is better. The goal is to observe
+whether a tuning option improves parseability, correctness, timing, source
+discipline, and reproducibility under a fixed AIH test.
+
+Every optimization test should begin with a default baseline run in the current
+Brilliance test environment before any repository-software modification, tuning
+flag, cache layer, retrieval layer, or serving-layer change is introduced.
+
+Codex should be tracked as a moving comparison baseline. Claude/Anthropic and
+other advanced cloud agentic-AI products should be added where available. Each
+cloud-agent run should record the date, product surface, model identity where
+available, tool access, prompt envelope, and result so later runs can show
+whether the cloud stack changed over time.
 
 ## Non-Goals
 
