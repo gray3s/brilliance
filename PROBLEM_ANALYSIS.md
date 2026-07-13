@@ -101,6 +101,13 @@ Brilliance test environment. If later tests move to a higher-core, higher-RAM,
 GPU, external-GPU, or advanced-I/O system, that hardware change should be
 recorded as part of the test condition.
 
+## Future Projects To Be Named
+
+Some local audio and transcript material may become future Brilliance
+subprojects after review. That material should remain local until the source
+audio, generated transcripts, transcription accuracy, publication boundary, and
+research framing have been checked.
+
 ## Supporting Documents
 
 - Project goals: https://github.com/gray3s/brilliance/blob/main/PROJECT_GOALS.md
