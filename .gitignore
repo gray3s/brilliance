@@ -9,3 +9,10 @@ misc/transcribe_three_wavs_20260712.py
 v1/experiments/*/runs/
 v1/experiments/chess_harness/
 v1/experiments/wikipedia_exam/run_wikipedia_exam_hybridai_v1.py
+
+# AIChess generated outputs
+v1/AIH/AIchess/v1/runs/
+v1/AIH/AIchess/v1/qwen_ollama_chess_qt/.qmake.stash
+v1/AIH/AIchess/v1/qwen_ollama_chess_qt/Makefile
+v1/AIH/AIchess/v1/qwen_ollama_chess_qt/*.o
+v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt
