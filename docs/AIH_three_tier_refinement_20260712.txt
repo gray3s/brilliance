@@ -1,0 +1,94 @@
+# AIH Three-Tier Refinement
+
+Created: 2026-07-12
+
+## Purpose
+
+This note records a refinement to the AIH test structure without changing the
+canonical tree yet.
+
+## Refined Test Ladder
+
+The current AIH work can be viewed as a three-tier ladder:
+
+1. AIchess:
+   lowest-level formal state test.
+
+   The agent must operate inside a strict rule system where legal moves,
+   board state, timing, faults, and game endings are externally verifiable.
+
+2. Intermediate AIH test:
+   a bounded but more open-ended test between AIchess and k-phd.
+
+   This should be more cognitively demanding than chess-state management, but
+   still constrained enough to grade reliably. A certificate-style AI/ML test
+   is a strong candidate because it can combine factual knowledge, applied
+   reasoning, source discipline, and controlled grading without becoming as
+   broad as the full k-phd path.
+
+3. k-phd:
+   broadest knowledge-ladder test family.
+
+   This should be treated as a later, more robust extension rather than the
+   first implementation target. It can eventually cover K-12, gifted and
+   talented, undergraduate, graduate, and PhD-level paths, but v1 should not
+   attempt that whole scope.
+
+## AIchess Matchup Rule
+
+Each candidate AI stack should eventually be tested in three matchup modes:
+
+1. self-play:
+   the stack plays against itself.
+
+2. reference-agent play:
+   the stack plays against Codex or another selected reference agent.
+
+3. peer play:
+   the stack plays against other candidate AI stacks.
+
+This provides a better comparison surface than a single isolated run.
+
+## Practical Hardware Constraint
+
+The current local machine constraint matters. An 8GB i3 system may not be able
+to run large local models, multiple agents, repeated games, or broad exam
+harnesses comfortably.
+
+Therefore, early AIchess work should prefer:
+
+- one-move probes,
+- short smoke games,
+- strict logging,
+- small local models,
+- optional cloud/reference-agent comparison,
+- delayed repeated-run statistics until the harness is stable.
+
+## Devil's-Advocate Position
+
+The three-tier ladder is promising, but it should not be expanded too quickly.
+
+AIchess should prove the basic harness pattern first:
+
+```text
+bounded prompt -> agent response -> external referee/grader -> structured result
+```
+
+The intermediate test should only be designed after AIchess has produced at
+least one useful end-to-end result.
+
+k-phd should remain a later extension unless a small source-bounded exam is
+needed as a proof of concept.
+
+## Open Naming Question
+
+The intermediate test still needs a name.
+
+Possible working labels:
+
+- AIcert
+- AIml-cert
+- AIapplied
+- AIreasoning
+
+No name is final yet.

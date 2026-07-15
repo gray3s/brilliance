@@ -1,0 +1,51 @@
+{
+  "test_id": "aih_intermediate_cert_probe_v1_20260713",
+  "test_family": "intermediate_certificate_style",
+  "prototype_level": "v1",
+  "agent_id": "fixture_agent",
+  "source_mode": "provided_sources_only",
+  "prompt": "\nAllowed academic AI/ML source packet:\n\nMIT OCW 6.036 frames machine learning around modeling and prediction, including\nlearning-problem formulation, representation, over-fitting, generalization,\nsupervised learning, and reinforcement learning.\n\nMIT OCW 6.034 frames artificial intelligence around knowledge representation,\nproblem solving, and learning methods for assembling solutions to concrete\ncomputational problems.\n\nStanford CS229 lecture notes include supervised learning, linear regression,\nlogistic regression, model selection, cross validation, generalization,\nregularization, unsupervised learning, foundation models, and reinforcement\nlearning.\n\nStanford CS221 frames AI as rigorous mathematical tools for complex real-world\nproblems, including machine learning, search, Markov decision processes, game\nplaying, constraint satisfaction, graphical models, and logic.\n\nShared definitions for this v1 probe:\nSupervised learning uses labeled examples with target outputs.\nUnsupervised learning finds structure or patterns without target labels.\nValidation/model selection compares modeling choices during development.\nTest evaluation is final held-out assessment after model choices are fixed.\nGeneralization means performance beyond the training cases.\nOver-fitting means fitting training data in a way that fails to generalize.\nData leakage means using information unavailable at real prediction time during\ntraining or evaluation.\n\n\n\nUse only the allowed source packet. Return only JSON with keys \"1\", \"2\", \"3\",\n\"4\", and \"5\". Values must be A, B, C, or D.\n\n1. Which learning setup uses labeled examples?\nA. Unsupervised learning\nB. Supervised learning\nC. Random guessing\nD. Test-only evaluation\n\n2. What should be held back for final evaluation after model choices are fixed?\nA. Training set\nB. Prompt text\nC. Test set\nD. System clock\n\n3. Which Stanford CS221 topic is closest to choosing actions in sequential\ndecision problems under uncertainty?\nA. Markov decision processes\nB. Static file formatting\nC. Audio transcription\nD. Calendar arithmetic\n\n4. Which MIT 6.034 topic area is most directly about symbolic facts and rules?\nA. Knowledge representation\nB. Image compression only\nC. Spreadsheet styling\nD. GPU cooling\n\n5. What is data leakage?\nA. Using future/unavailable information during training or evaluation\nB. Saving a JSON result file\nC. Splitting data into train and test sets\nD. Reporting uncertainty\n",
+  "raw_response": "{\"1\":\"B\",\"2\":\"C\",\"3\":\"A\",\"4\":\"A\",\"5\":\"A\"}",
+  "parsed_response": {
+    "1": "B",
+    "2": "C",
+    "3": "A",
+    "4": "A",
+    "5": "A"
+  },
+  "score": 5,
+  "max_score": 5,
+  "per_question": {
+    "1": {
+      "expected": "B",
+      "actual": "B",
+      "correct": true
+    },
+    "2": {
+      "expected": "C",
+      "actual": "C",
+      "correct": true
+    },
+    "3": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true
+    },
+    "4": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true
+    },
+    "5": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true
+    }
+  },
+  "timing_ms": 0.001,
+  "errors": [],
+  "notes": [
+    "Prototype checks applied AI/ML factual discipline under a consolidated MIT/Stanford source packet.",
+    "Full v1 should add uncertainty/refusal questions and evidence citation checks."
+  ]
+}

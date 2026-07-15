@@ -1,0 +1,51 @@
+{
+  "test_id": "aih_kphd_academic_packet_probe_v1_20260713",
+  "test_family": "k-phd_academic_source_packet",
+  "prototype_level": "v1",
+  "agent_id": "fixture_agent",
+  "source_mode": "provided_academic_source_packet",
+  "prompt": "\nAllowed academic AI/ML source packet:\n\nMIT OCW 6.036 frames machine learning around modeling and prediction, including\nlearning-problem formulation, representation, over-fitting, generalization,\nsupervised learning, and reinforcement learning.\n\nMIT OCW 6.034 frames artificial intelligence around knowledge representation,\nproblem solving, and learning methods for assembling solutions to concrete\ncomputational problems.\n\nStanford CS229 lecture notes include supervised learning, linear regression,\nlogistic regression, model selection, cross validation, generalization,\nregularization, unsupervised learning, foundation models, and reinforcement\nlearning.\n\nStanford CS221 frames AI as rigorous mathematical tools for complex real-world\nproblems, including machine learning, search, Markov decision processes, game\nplaying, constraint satisfaction, graphical models, and logic.\n\nShared definitions for this v1 probe:\nSupervised learning uses labeled examples with target outputs.\nUnsupervised learning finds structure or patterns without target labels.\nValidation/model selection compares modeling choices during development.\nTest evaluation is final held-out assessment after model choices are fixed.\nGeneralization means performance beyond the training cases.\nOver-fitting means fitting training data in a way that fails to generalize.\nSearch explores possible states/actions to solve a problem.\nA Markov decision process is a formal model for sequential action under\nuncertainty.\n\n\n\nUse only the allowed academic packet. Return only JSON with keys \"1\",\n\"2\", \"3\", \"4\", and \"5\". Values must be A, B, C, or D.\n\n1. At the undergraduate-entry level, which term best matches learning from\nlabeled examples?\nA. Unsupervised learning\nB. Supervised learning\nC. Search only\nD. Logic only\n\n2. At the undergraduate level, which concept is about performance beyond the\ntraining cases?\nA. Generalization\nB. File permissions\nC. Token counting only\nD. Calendar sorting\n\n3. At the upper-undergraduate AI level, which topic explores possible\nstates/actions to solve a problem?\nA. Search\nB. Audio compression\nC. Spreadsheet formatting\nD. Image cropping only\n\n4. At the graduate-prep level, which topic models sequential decisions under\nuncertainty?\nA. Markov decision processes\nB. Static README prose\nC. Filename sorting\nD. Plain text wrapping\n\n5. Which answer best describes why validation/model selection and final test\nevaluation should be separated?\nA. To compare choices during development and reserve final assessment for a\nheld-out check after choices are fixed\nB. To make all datasets identical\nC. To remove the need for a model\nD. To prevent any scoring\n",
+  "raw_response": "{\"1\":\"B\",\"2\":\"A\",\"3\":\"A\",\"4\":\"A\",\"5\":\"A\"}",
+  "parsed_response": {
+    "1": "B",
+    "2": "A",
+    "3": "A",
+    "4": "A",
+    "5": "A"
+  },
+  "score": 5,
+  "max_score": 5,
+  "per_question": {
+    "1": {
+      "expected": "B",
+      "actual": "B",
+      "correct": true
+    },
+    "2": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true
+    },
+    "3": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true
+    },
+    "4": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true
+    },
+    "5": {
+      "expected": "A",
+      "actual": "A",
+      "correct": true
+    }
+  },
+  "timing_ms": 0.001,
+  "errors": [],
+  "notes": [
+    "Prototype uses the same MIT/Stanford packet as the intermediate test, but asks ladder-style questions.",
+    "Full v1 should support level tags from K-12 through graduate/PhD tasks."
+  ]
+}

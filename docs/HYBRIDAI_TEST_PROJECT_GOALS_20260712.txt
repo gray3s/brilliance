@@ -4,18 +4,28 @@ Created: 2026-07-12
 
 ## Purpose
 
-Use AIH tests to evaluate HybridAI versions as agent implementations under
-bounded, externally scored conditions.
+Use AIH tests to define, implement, and evaluate practical hallucination tests
+under bounded, externally scored conditions.
+
+The primary value is the test methodology: formal task design, deterministic
+referees, evidence preservation, invalid-output classification, and measured
+state-fidelity failure.
+
+Testing many stack configurations is secondary. Broad stack benchmarking can be
+left to the larger industry unless a configuration comparison directly improves
+or validates the hallucination test itself.
 
 ## Goals
 
-1. Treat HybridAI as a system under test, not as the judge of its own output.
+1. Treat HybridAI as a hallucination-test development environment first, and as
+   one possible system under test second.
 
 2. Make each HybridAI version able to accept a bounded test, produce parseable
    output, and preserve enough evidence for external scoring.
 
 3. Compare HybridAI against itself, a selected reference agent, and peer
-   candidate AI stacks where practical.
+   candidate AI stacks only where the comparison clarifies the hallucination
+   test or validates the test contract.
 
 4. Start with modest AIchess runs such as one-move probes and short smoke games
    before repeated statistical runs.
@@ -29,7 +39,9 @@ bounded, externally scored conditions.
    version: source, stable scripts, selected configuration, dependency notes,
    test definitions, reviewed result summaries, and relevant planning links.
 
-8. Build HybridAI so specific agentic-AI stack implementations can vary by
+8. Keep stack-configuration dimensions explicit so later comparisons are
+   possible, but do not make broad stack sweeps the main project objective.
+   Build HybridAI so specific agentic-AI stack implementations can vary by
    top layer, middle layer, retrieval/cache/memory layer, serving layer, and
    model version while still running the same AIH test contract.
 
@@ -44,11 +56,35 @@ bounded, externally scored conditions.
     cache, memory, serving, and classical-ML optimization options before they
     are promoted into production HybridAI stack implementations.
 
+11. Add realistic professional time deadlines and projected project progress to
+    active work plans. For each time box, record the target deadline, expected
+    deliverables, likely evidence artifacts, and explicit non-promises. This
+    keeps the project closer to professional research/engineering practice than
+    open-ended exploratory prompting.
+
 ## Minimum Useful HybridAI Run
 
 ```text
 test definition -> agent response -> external referee/grader -> structured result
 ```
+
+## Time-Box Planning Rule
+
+HybridAI work should use explicit time-boxes when moving from exploration into
+execution.
+
+Each time-box should state:
+
+- deadline;
+- intended scope;
+- expected deliverables;
+- expected evidence artifacts;
+- stopping conditions;
+- what is explicitly out of scope for that deadline.
+
+The point is not to force false certainty. The point is to make projected
+progress auditable and to distinguish realistic professional delivery from
+unbounded AI-assisted exploration.
 
 ## Stack Dimensions
 

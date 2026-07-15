@@ -1,0 +1,365 @@
+# Brilliance / AIH Program Development Plan - Devil's Advocate
+
+Created: 2026-07-12
+Role: critical design review / devil's-advocate plan
+
+## Purpose
+
+This note records the skeptical case against the current Brilliance / AIH
+program direction, so the project can keep the useful ideas while avoiding
+scope explosion, weak measurements, premature publication, and false claims.
+
+The goal is not to stop the work. The goal is to make the work harder to fool.
+
+## Current Working Assumption
+
+The project currently links three ideas:
+
+1. Brilliance/problem-analysis:
+   AI may become useful not by claiming final answers, but by exposing where
+   routine analytics end and human or machine brilliance may be required.
+
+2. AIH tests:
+   Agentic AI systems can be evaluated through bounded hallucination,
+   reliability, state-fidelity, and task-suitability tests.
+
+3. HybridAI:
+   HybridAI versions can be treated as agent implementations under test, then
+   improved using observed AIH results and statistics.
+
+The devil's-advocate position is that this chain is promising but easy to
+overstate.
+
+## Current Refinement
+
+The AIH work may be better treated as a three-tier ladder:
+
+1. AIchess:
+   the lowest-level formal state-fidelity test.
+
+2. Intermediate AIH test:
+   a bounded certificate-style test between AIchess and k-phd, possibly based
+   on AI/ML knowledge and applied reasoning.
+
+3. k-phd:
+   the broadest education/knowledge-ladder test family and therefore a later
+   expansion target.
+
+This refinement should be recorded now, but the canonical AIH tree should not
+be reorganized until the naming and scope of the intermediate test are settled.
+
+## What Makes Sense
+
+The overall approach makes sense where it stays bounded.
+
+- AIhistory is valuable because it starts from real observed agent failures
+  rather than an abstract benchmark fantasy.
+
+- k-phd is valuable because it asks whether an agent can work across increasing
+  difficulty levels under explicit source, time, I/O, and grading limits.
+
+- AIchess is valuable because chess is a formal state machine with objective
+  legal moves, explicit timing, visible state, and clear failure modes.
+
+- HybridAI comparison is valuable because the project no longer needs to claim
+  that a local stack is globally "better than Codex"; it only needs to compare
+  systems under the same test conditions.
+
+- The publication boundary is sensible: publish goals, analysis, and test
+  definitions first; publish implementations and results later after review.
+
+## What Does Not Yet Make Sense
+
+The project becomes weak if it tries to become everything at once.
+
+- "AI hallucination test" can expand indefinitely. A test suite that grows
+  faster than it can be executed will become a taxonomy instead of evidence.
+
+- "K-PhD" can become a full education benchmark. That is too large for v1.
+  v1 should prove the exam machinery and grading rules, not cover all subjects.
+
+- "Brilliance" is not yet a measurable property. It should remain a candidate
+  behavior or interpretation, not a pass/fail metric.
+
+- Chess skill is not the same as intelligence. AIchess should be framed as
+  state fidelity, rule compliance, timing, and reliability, not as a general
+  intelligence test.
+
+- Wikipedia-only tests may measure reading compliance more than hallucination.
+  They need adversarial source-boundary questions, missing-evidence cases, and
+  "I do not know from the allowed source" answers.
+
+- AIhistory risks overfitting to one user's workflow. It is valuable source
+  material, but v1 should convert personal incidents into generalizable test
+  cases.
+
+- Legal, forensic, personality, and mental-health style tests are high-risk.
+  They may be useful academically, but must be kept separate from professional
+  diagnosis, legal advice, or real-world determinations.
+
+- Public links can imply maturity that the implementation does not yet have.
+  Published documents should avoid promising results that have not been run.
+
+## Main Risk Areas
+
+### 1. Scope Explosion
+
+Risk:
+The project could spend a year designing possible AIH tests without producing
+repeatable evidence.
+
+DA recommendation:
+Freeze AIH v1 to three families and one minimum viable test in each family.
+
+Minimum viable AIH v1:
+
+- AIhistory:
+  one provenance/continuity test based on real workspace evidence.
+
+- k-phd:
+  one Wikipedia-only multiple-choice exam with explicit reference rules.
+
+- AIchess:
+  one referee-controlled chess smoke test with logged move legality, timing,
+  and termination reason.
+
+### 2. Measurement Ambiguity
+
+Risk:
+The project may record interesting narratives but not comparable data.
+
+DA recommendation:
+Every test should produce a structured result record before prose analysis.
+
+Minimum result fields:
+
+test_id
+agent_name
+agent_version_or_model
+runtime_surface
+local_or_cloud
+allowed_tools
+allowed_references
+time_limit
+input_limit
+output_limit
+raw_response
+parsed_response
+score_or_result
+errors_observed
+human_assistance
+statistics
+notes
+
+### 3. Overclaiming
+
+Risk:
+The work could accidentally imply that an AI system is brilliant, truthful, or
+generally superior because it performs well on one bounded task.
+
+DA recommendation:
+All result summaries should use bounded language.
+
+Acceptable:
+
+- "Agent X had a lower illegal-move rate than Agent Y under this chess harness."
+- "Agent X respected the Wikipedia-only source boundary on this exam."
+- "Agent X avoided unsupported provenance claims in this workspace test."
+
+Not acceptable:
+
+- "Agent X is more brilliant."
+- "Agent X is generally better."
+- "Agent X solved hallucination."
+
+### 4. Chess Test Misinterpretation
+
+Risk:
+AIchess may mostly measure prompt compliance, legal-move parsing, latency, or
+whether a model has internal chess priors. Those are useful, but they are not
+the same thing as brilliance.
+
+DA recommendation:
+Describe AIchess as a bounded state-fidelity and reliability test.
+
+Primary measurements:
+
+- legal move rate
+- illegal move type
+- move time
+- time fault rate
+- game length
+- game termination type
+- board-state consistency
+- repeated-position behavior
+- recovery after correction
+
+Secondary interpretation:
+
+- strategic quality
+- non-obvious strong moves
+- style distribution
+
+Matchup requirement:
+Each AI stack should eventually be tested in self-play, against a selected
+reference agent, and against peer candidate stacks. A single isolated game is
+only a smoke test.
+
+Hardware constraint:
+An 8GB i3 local machine may require one-move probes, short smoke games, small
+models, and selective cloud/reference-agent comparisons before repeated
+statistics are realistic.
+
+### 5. HybridAI Bottleneck
+
+Risk:
+The AIH plan may create more harness requirements than HybridAI can execute.
+
+DA recommendation:
+Do not add more AIH families until HybridAI can run one test end-to-end and
+produce a result record that can be compared against another agent.
+
+HybridAI v1 should prove:
+
+- it can accept a formal test prompt,
+- it can return parseable output,
+- the harness can score that output,
+- failures are captured without manual cleanup,
+- results are stored in a repeatable format.
+
+Intermediate-test warning:
+The certificate-style intermediate test is a good candidate, but it should not
+be built out before AIchess demonstrates the harness pattern:
+
+```text
+bounded prompt -> agent response -> external referee/grader -> structured result
+```
+
+### 6. Publication Boundary
+
+Risk:
+Publishing raw notes, transcripts, or unreviewed local results may create noise
+or expose material before it has been cleaned up.
+
+DA recommendation:
+Publish only reviewed source-material documents, test definitions, goals, and
+summary results. Keep raw audio, raw transcripts, ad hoc run logs, caches, and
+private implementation experiments local until explicitly reviewed.
+
+Repository rule:
+GitHub repositories should store the reviewed current state of the project, not
+everything related to producing that state. Do not publish log piles,
+preliminary build attempts, cache directories, raw audio, raw transcripts,
+temporary harness output, failed experiment debris, or other working files just
+because they exist locally.
+
+Archive rule:
+Treat the online repositories as curated project archives. Each published
+subproject version should contain enough information to download, understand,
+rebuild, and rerun that version later. It should not contain the full local
+project history or every intermediate artifact used to reach that version.
+
+### 7. Human Assistance Boundary
+
+Risk:
+If a human assists an agent during a test, the result may stop being a pure
+agent result.
+
+DA recommendation:
+Human assistance is allowed, but it must be recorded as part of the result.
+
+Useful categories:
+
+- no assistance
+- prompt clarification
+- missing evidence supplied
+- invalid move correction
+- grading dispute
+- source-boundary reminder
+- implementation repair
+
+The assisted result can still be useful, but it should not be compared as if it
+were unassisted.
+
+### 8. Statistical Weakness
+
+Risk:
+One or two runs can be interesting, but they are not enough to support a strong
+claim.
+
+DA recommendation:
+Treat early runs as smoke tests. Use statistics only after repeated runs under
+stable conditions.
+
+Minimum reporting language:
+
+- "single-run observation"
+- "smoke-test result"
+- "preliminary repeated-run result"
+- "statistical result"
+
+Do not collapse these categories.
+
+## Suggested Decision Gates
+
+Gate 1: Test Definition
+The test has a prompt, source rules, timing rules, scoring rules, and expected
+result schema.
+
+Gate 2: Harness Execution
+At least one agent can run the test without manual intervention beyond the
+defined rules.
+
+Gate 3: Result Capture
+The result is recorded with raw output, parsed output, score, errors, timing,
+statistics when applicable, and human assistance.
+
+Gate 4: Cross-Agent Comparison
+The same test can run against at least two agent implementations or two
+versions of the same implementation.
+
+Gate 5: Publication Review
+Only reviewed definitions, summaries, and result tables are published.
+
+## Recommended v1 Discipline
+
+For v1, do less.
+
+1. Keep the three AIH families:
+   AIhistory, k-phd, AIchess.
+
+2. Define one runnable test per family.
+
+3. Run each test against one local stack and one comparison stack where
+   practical.
+
+4. Record statistics only where repeated runs exist.
+
+5. Use results to update HybridAI, not to declare victory.
+
+6. Publish only the reviewed project analysis, project goals, test definitions,
+   and concise results.
+
+7. Treat repository contents as curated project state. Keep local working
+   material local unless it has been reviewed and intentionally promoted.
+
+8. For each published subproject version, include the minimum rebuild set:
+   source, stable scripts, selected configuration, dependency notes, test
+   definitions, concise result summaries, and links to related planning docs.
+   Exclude raw working history unless it is required to reproduce the version.
+
+## Bottom Line
+
+The strongest version of this project is not a grand claim about solving
+hallucination or measuring brilliance.
+
+The strongest version is a chain of bounded tests that show:
+
+- where an agent follows rules,
+- where it loses state,
+- where it invents certainty,
+- where it needs human assistance,
+- where repeated statistics support a comparison,
+- and where the next HybridAI version should improve.
+
+That is enough for v1.

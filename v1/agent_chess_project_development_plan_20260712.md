@@ -269,6 +269,56 @@ Reason:
 The test is about agentic decision behavior, not whether this project can
 reimplement chess rules correctly.
 
+## Project-Development Plan Layer
+
+This work is also a project-development-plan project.
+
+The chess harness is not only a test of model behavior. It is also a practical
+case study in how a human/AI development process should decide when an agent is
+ready to run bounded research work with less supervision.
+
+That means the project must track two layers:
+
+1. Test implementation:
+   referee, prompts, move parsing, legality checks, timing, records, and
+   metrics.
+
+2. Research-management implementation:
+   scope control, time boxes, stopping rules, progress reports, evidence
+   preservation, escalation to human input, and limits on autonomous test
+   execution.
+
+The second layer is not optional. Without it, the agent may be able to run
+commands while still being unsuitable for managing a research process.
+
+## Autonomous Research Readiness Path
+
+Before an AI agent is allowed to run AIH chess research autonomously, the
+project should pass through staged readiness levels:
+
+1. Human-directed single run.
+2. Human-approved small batch.
+3. Agent-managed batch under fixed written constraints.
+4. Agent-managed batch with automatic result summaries and artifact links.
+5. Agent-proposed next experiment, requiring human approval before execution.
+
+Each stage must define:
+
+- allowed models and runtimes;
+- maximum runtime per run and per batch;
+- maximum invalid attempts;
+- maximum invalid-attempt duration;
+- stop conditions;
+- required progress-update cadence;
+- required result artifacts;
+- what the agent may not change without approval;
+- when the agent must ask for user input.
+
+The agent is not ready for autonomous research management until it can stop
+when the test is no longer producing useful evidence, preserve the evidence it
+already has, and ask for human input before proceeding down an unclear,
+unsafe, or hostile path.
+
 ## Shared-File Referee Architecture
 
 The Python layer should be treated as the referee, not as an agent.

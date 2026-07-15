@@ -49,6 +49,22 @@ state-fidelity, evidence handling, timing, uncertainty, and task suitability.
 AIchess -> intermediate AIH certificate-style test -> k-phd
 ```
 
+## Hallucination Mode Taxonomy
+
+The AIH project should use the shared hallucination-mode taxonomy in:
+
+```text
+docs/AIH_HALLUCINATION_MODE_TAXONOMY_20260713.md
+```
+
+The taxonomy treats hallucination as a workflow disturbance where an agent or
+human acts from an unsupported, false, stale, or evidence-resistant model of
+the current state.
+
+This means human oversight is part of the reliability problem, not a perfect
+external safety layer. A hallucination mode that applies to an AI agent can
+also apply to human review, project summaries, and human-agent workflow pairs.
+
 ## Optimization Variables To Test
 
 AIH should be able to compare the same test with different stack options:

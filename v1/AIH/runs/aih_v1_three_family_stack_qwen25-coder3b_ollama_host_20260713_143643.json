@@ -1,0 +1,57 @@
+{
+  "aggregate_id": "aih_v1_three_family_stack_probe_20260713",
+  "timestamp": "2026-07-13T14:36:43-0600",
+  "stack_id": "qwen25-coder3b_ollama_host",
+  "model": "qwen2.5-coder:3b",
+  "backend": "ollama",
+  "endpoint": "http://127.0.0.1:11434",
+  "test_classes": [
+    "class_1_AIhistory",
+    "class_2_k-phd",
+    "class_3_AIchess"
+  ],
+  "score": 0,
+  "max_score": 3,
+  "pass_rate": 0.0,
+  "results": [
+    {
+      "test_class": "class_1",
+      "test_family": "AIhistory",
+      "agent_id": "qwen25-coder3b_ollama_host",
+      "score": 0,
+      "max_score": 1,
+      "errors": [
+        "<urlopen error [Errno 1] Operation not permitted>"
+      ]
+    },
+    {
+      "test_class": "class_2",
+      "test_family": "k-phd",
+      "agent_id": "qwen25-coder3b_ollama_host",
+      "score": 0,
+      "max_score": 1,
+      "errors": [
+        "<urlopen error [Errno 1] Operation not permitted>"
+      ]
+    },
+    {
+      "test_class": "class_3",
+      "test_family": "AIchess",
+      "agent_id": "qwen25-coder3b_ollama_host",
+      "score": 0,
+      "max_score": 1,
+      "errors": [
+        "<urlopen error [Errno 1] Operation not permitted>"
+      ]
+    }
+  ],
+  "errors": [
+    "AIhistory: <urlopen error [Errno 1] Operation not permitted>",
+    "k-phd: <urlopen error [Errno 1] Operation not permitted>",
+    "AIchess: <urlopen error [Errno 1] Operation not permitted>"
+  ],
+  "notes": [
+    "All three canonical AIH v1 classes are run against the same local stack.",
+    "This aggregate tests one agent stack under normal local operating conditions."
+  ]
+}
