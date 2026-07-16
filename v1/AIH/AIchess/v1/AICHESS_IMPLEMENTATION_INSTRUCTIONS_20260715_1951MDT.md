@@ -135,6 +135,155 @@ The `/help` and `/?` forms are included for users who are used to
 DOS/Windows-style command flags. Help flags print usage information and do not
 run a test.
 
+## Real Qwen Agent Hallucination Runs
+
+Use these commands for actual AIChess hallucination testing. These runs call
+real local Ollama-compatible agents for player moves and, when configured, AI
+agents for referee votes. Stockfish may be used as a rules engine for scoring
+or as a non-agent baseline referee, but it must be identified as such in the
+result data.
+
+List available local agent aliases:
+
+```bash
+qwen_ollama_chess_qt/qwen_ollama_chess_qt --list-models
+```
+
+The current machine sorts installed Ollama-compatible agents by model size and
+assigns aliases:
+
+```text
+agent1=qwen2.5-coder:3b
+agent2=qwen:4b
+agent3=qwen2.5:latest
+agent4=robit/qwen3.5-9b-r7-research:q4km
+qwen1=qwen2.5-coder:3b
+qwen2=qwen:4b
+qwen3=qwen2.5:latest
+qwen4=robit/qwen3.5-9b-r7-research:q4km
+```
+
+Assign agents by role. Testing the same agent against itself is valid:
+
+```bash
+class1_basic_cpp/run_class1_basic_aichess_hallucination.sh \
+  --white qwen1 \
+  --black qwen1 \
+  --referee qwen1 \
+  --max-plies 200 \
+  --move-timeout 60 \
+  --game-timeout 3600
+```
+
+Testing two different player agents and a third AI referee is also valid:
+
+```bash
+class1_basic_cpp/run_class1_basic_aichess_hallucination.sh \
+  --white qwen1 \
+  --black qwen2 \
+  --referee qwen3 \
+  --max-plies 200 \
+  --move-timeout 60 \
+  --game-timeout 3600
+```
+
+Run the 2-board Class 2 hallucination test:
+
+```bash
+class2_cpp/run_class2_aichess_hallucination.sh \
+  --white qwen1:qwen2 \
+  --black qwen1:qwen2 \
+  --referee qwen1:qwen2 \
+  --max-plies 200 \
+  --move-timeout 60 \
+  --game-timeout 3600
+```
+
+Run the 4-board Class 3 hallucination test:
+
+```bash
+class3_cpp/run_class3_aichess_hallucination.sh \
+  --white qwen1:qwen4 \
+  --black qwen1:qwen4 \
+  --referee qwen1:qwen4 \
+  --max-plies 200 \
+  --move-timeout 60 \
+  --game-timeout 3600
+```
+
+For these real-agent runs:
+
+```text
+--white assigns player agents to White roles
+--black assigns player agents to Black roles
+--referee assigns referee agents or the stockfish baseline referee
+--boards is set by the class wrapper: 1, 2, or 4
+--max-plies is the maximum number of half-moves before a draw by limit
+--move-timeout is the per-agent move timeout in seconds
+--game-timeout is the per-board game timeout in seconds
+--max-illegal 1 means the first illegal or unparseable move causes forfeit
+```
+
+Use `qwen1:qwen4` to assign a sorted range of Qwen agents. Use
+`agent1:agent4` to assign all installed Ollama-compatible local agents by size.
+An invalid numbered alias, such as `qwen7` when only four Qwen models are
+installed, returns an error.
+
+Every result records the resolved agent configuration by board, including each
+requested alias and the actual model name assigned to White, Black, and referee
+roles. If `stockfish` is used as the referee, the data labels it as a
+`stockfish_baseline_two_player_agents` run rather than an agentic-referee run.
+
+A ply is one half-move. White's first move is ply 1. Black's first reply is
+ply 2.
+
+Each board runs independently until checkmate, stalemate, draw by ply limit,
+timeout, or forfeit. Illegal moves, unparseable moves, invented moves, and
+timeouts are recorded as hallucination-relevant failures.
+
+## Codex AI Hallucination Example: Diagnostic Fixture Confused For Benchmark
+
+During development, Codex produced deterministic AIChess commands that could
+force scripted terminal outcomes such as a Black win, White win, draw, or
+forfeit. Those commands verified that the harness could write result JSON with
+fields such as `game_result`, `termination`, `final_ply`, and
+`terminal_state_reached`.
+
+That was not sufficient for an AI hallucination benchmark.
+
+The error was treating "the harness can emit a terminal result" as if it meant
+"the agent was tested for hallucination." A scripted outcome only checks the
+plumbing. It does not test whether an agent invents a chess rule, chooses an
+illegal move, fabricates a source claim, ignores the supplied legal move set,
+misreports board state, or disagrees with the referee in a way that indicates
+rule-bound hallucination.
+
+This should be recorded as a Codex AI hallucination example because the
+development assistant substituted an easier diagnostic self-check for the
+actual test objective. The correct distinction is:
+
+```text
+diagnostic fixture = tests whether the harness can run and serialize results
+hallucination benchmark = tests whether real agent behavior stays inside the rule/source boundary
+```
+
+For AIChess, benchmark runs must use real player-agent and referee-agent
+behavior, or a clearly identified deterministic referee such as Stockfish, and
+must score failures such as:
+
+```text
+illegal move
+unparseable move
+invented chess rule
+impossible board-state claim
+unsupported source/citation claim
+referee contradiction
+timeout or forfeit after invalid responses
+```
+
+Scripted terminal scenarios may remain in the repository only as harness
+diagnostics. They must not be described as sufficient hallucination tests.
+
 ## Escape And Stop Commands
 
 The current C++ fixtures are short-running commands, so they should normally

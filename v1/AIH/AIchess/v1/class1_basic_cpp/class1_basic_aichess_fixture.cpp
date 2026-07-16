@@ -8,6 +8,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -91,6 +92,210 @@ struct PlyResult {
     std::string refereeRole;
     std::string refereeReason;
 };
+
+struct Move {
+    int fromRow;
+    int fromCol;
+    int toRow;
+    int toCol;
+    char promotion;
+};
+
+struct BoardState {
+    char board[8][8];
+    bool whiteToMove;
+};
+
+bool isWhitePiece(char piece) {
+    return piece >= 'A' && piece <= 'Z';
+}
+
+bool isBlackPiece(char piece) {
+    return piece >= 'a' && piece <= 'z';
+}
+
+bool sameSide(char piece, bool white) {
+    return white ? isWhitePiece(piece) : isBlackPiece(piece);
+}
+
+bool enemySide(char piece, bool white) {
+    return white ? isBlackPiece(piece) : isWhitePiece(piece);
+}
+
+bool inBounds(int row, int col) {
+    return row >= 0 && row < 8 && col >= 0 && col < 8;
+}
+
+BoardState initialBoard() {
+    BoardState state{};
+    const std::string ranks[8] = {
+        "rnbqkbnr", "pppppppp", "........", "........",
+        "........", "........", "PPPPPPPP", "RNBQKBNR"
+    };
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            state.board[row][col] = ranks[row][col];
+        }
+    }
+    state.whiteToMove = true;
+    return state;
+}
+
+std::string squareName(int row, int col) {
+    std::string out;
+    out.push_back(static_cast<char>('a' + col));
+    out.push_back(static_cast<char>('8' - row));
+    return out;
+}
+
+std::string moveToUci(const Move &move) {
+    std::string out = squareName(move.fromRow, move.fromCol) + squareName(move.toRow, move.toCol);
+    if (move.promotion != '\0') {
+        out.push_back(move.promotion);
+    }
+    return out;
+}
+
+void addMove(std::vector<Move> &moves, int fromRow, int fromCol, int toRow, int toCol, char promotion = '\0') {
+    if (inBounds(toRow, toCol)) {
+        moves.push_back({fromRow, fromCol, toRow, toCol, promotion});
+    }
+}
+
+void addSlidingMoves(const BoardState &state, std::vector<Move> &moves, int row, int col, bool white,
+                     const std::vector<std::pair<int, int>> &dirs) {
+    for (const auto &dir : dirs) {
+        int nextRow = row + dir.first;
+        int nextCol = col + dir.second;
+        while (inBounds(nextRow, nextCol)) {
+            const char target = state.board[nextRow][nextCol];
+            if (target == '.') {
+                addMove(moves, row, col, nextRow, nextCol);
+            } else {
+                if (enemySide(target, white)) {
+                    addMove(moves, row, col, nextRow, nextCol);
+                }
+                break;
+            }
+            nextRow += dir.first;
+            nextCol += dir.second;
+        }
+    }
+}
+
+std::vector<Move> pseudoLegalMoves(const BoardState &state, bool white) {
+    std::vector<Move> moves;
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            const char piece = state.board[row][col];
+            if (piece == '.' || !sameSide(piece, white)) {
+                continue;
+            }
+            const char lower = static_cast<char>(std::tolower(static_cast<unsigned char>(piece)));
+            if (lower == 'p') {
+                const int dir = white ? -1 : 1;
+                const int startRow = white ? 6 : 1;
+                const int promotionRow = white ? 0 : 7;
+                const int oneRow = row + dir;
+                if (inBounds(oneRow, col) && state.board[oneRow][col] == '.') {
+                    addMove(moves, row, col, oneRow, col, oneRow == promotionRow ? 'q' : '\0');
+                    const int twoRow = row + (2 * dir);
+                    if (row == startRow && inBounds(twoRow, col) && state.board[twoRow][col] == '.') {
+                        addMove(moves, row, col, twoRow, col);
+                    }
+                }
+                for (int dc : {-1, 1}) {
+                    const int captureCol = col + dc;
+                    if (inBounds(oneRow, captureCol) && enemySide(state.board[oneRow][captureCol], white)) {
+                        addMove(moves, row, col, oneRow, captureCol, oneRow == promotionRow ? 'q' : '\0');
+                    }
+                }
+            } else if (lower == 'n') {
+                const int jumps[8][2] = {{-2,-1},{-2,1},{-1,-2},{-1,2},{1,-2},{1,2},{2,-1},{2,1}};
+                for (const auto &jump : jumps) {
+                    const int nextRow = row + jump[0];
+                    const int nextCol = col + jump[1];
+                    if (inBounds(nextRow, nextCol) && !sameSide(state.board[nextRow][nextCol], white)) {
+                        addMove(moves, row, col, nextRow, nextCol);
+                    }
+                }
+            } else if (lower == 'b') {
+                addSlidingMoves(state, moves, row, col, white, {{-1,-1},{-1,1},{1,-1},{1,1}});
+            } else if (lower == 'r') {
+                addSlidingMoves(state, moves, row, col, white, {{-1,0},{1,0},{0,-1},{0,1}});
+            } else if (lower == 'q') {
+                addSlidingMoves(state, moves, row, col, white, {{-1,-1},{-1,1},{1,-1},{1,1},{-1,0},{1,0},{0,-1},{0,1}});
+            } else if (lower == 'k') {
+                for (int dr = -1; dr <= 1; ++dr) {
+                    for (int dc = -1; dc <= 1; ++dc) {
+                        if (dr == 0 && dc == 0) {
+                            continue;
+                        }
+                        const int nextRow = row + dr;
+                        const int nextCol = col + dc;
+                        if (inBounds(nextRow, nextCol) && !sameSide(state.board[nextRow][nextCol], white)) {
+                            addMove(moves, row, col, nextRow, nextCol);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return moves;
+}
+
+void applyMove(BoardState &state, const Move &move) {
+    char piece = state.board[move.fromRow][move.fromCol];
+    if (move.promotion != '\0') {
+        piece = state.whiteToMove ? 'Q' : 'q';
+    }
+    state.board[move.toRow][move.toCol] = piece;
+    state.board[move.fromRow][move.fromCol] = '.';
+    state.whiteToMove = !state.whiteToMove;
+}
+
+bool squareAttacked(const BoardState &state, int targetRow, int targetCol, bool byWhite) {
+    BoardState copy = state;
+    const std::vector<Move> attacks = pseudoLegalMoves(copy, byWhite);
+    for (const Move &move : attacks) {
+        if (move.toRow == targetRow && move.toCol == targetCol) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool kingInCheck(const BoardState &state, bool whiteKing) {
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            if (state.board[row][col] == (whiteKing ? 'K' : 'k')) {
+                return squareAttacked(state, row, col, !whiteKing);
+            }
+        }
+    }
+    return true;
+}
+
+std::vector<Move> legalMoves(const BoardState &state) {
+    const bool white = state.whiteToMove;
+    const std::vector<Move> pseudo = pseudoLegalMoves(state, white);
+    std::vector<Move> legal;
+    for (const Move &move : pseudo) {
+        BoardState next = state;
+        applyMove(next, move);
+        if (!kingInCheck(next, white)) {
+            legal.push_back(move);
+        }
+    }
+    std::sort(legal.begin(), legal.end(), [](const Move &a, const Move &b) {
+        return moveToUci(a) < moveToUci(b);
+    });
+    return legal;
+}
+
+Move chooseDeterministicMove(const std::vector<Move> &moves, int ply) {
+    return moves[static_cast<std::size_t>((ply * 7) % static_cast<int>(moves.size()))];
+}
 
 std::string plyJson(const PlyResult &ply, int indent) {
     const std::string pad(indent, ' ');
@@ -250,6 +455,125 @@ std::string buildFullGameJson(const std::string &scenario, int maxPlies) {
     return out.str();
 }
 
+std::string buildAutomaticFullGameJson(int maxPlies, int invalidPly) {
+    BoardState state = initialBoard();
+    std::vector<PlyResult> plies;
+    std::string result = "draw";
+    std::string termination = "draw_by_configured_ply_limit";
+    bool terminal = false;
+
+    for (int plyNumber = 1; plyNumber <= maxPlies; ++plyNumber) {
+        const std::string side = state.whiteToMove ? "white" : "black";
+        const std::string role = state.whiteToMove ? "board_1_white_agent_1" : "board_1_black_agent_1";
+        const std::vector<Move> moves = legalMoves(state);
+
+        if (moves.empty()) {
+            terminal = true;
+            if (kingInCheck(state, state.whiteToMove)) {
+                result = state.whiteToMove ? "black_win" : "white_win";
+                termination = state.whiteToMove ? "black_checkmate" : "white_checkmate";
+            } else {
+                result = "draw";
+                termination = "stalemate";
+            }
+            break;
+        }
+
+        std::string rawResponse;
+        std::string parsed;
+        bool legal = true;
+        std::string reason = "legal_move_generated_by_unscripted_fixture_agent";
+        if (invalidPly == plyNumber) {
+            rawResponse = "move the queen to z9";
+            parsed = parseUci(rawResponse);
+            legal = false;
+            reason = "missing_or_illegal_full_game_move";
+        } else {
+            const Move chosen = chooseDeterministicMove(moves, plyNumber);
+            rawResponse = moveToUci(chosen);
+            parsed = rawResponse;
+            applyMove(state, chosen);
+        }
+
+        plies.push_back({
+            plyNumber,
+            "board_1",
+            side,
+            role,
+            rawResponse,
+            parsed,
+            legal,
+            "board_1_referee_1",
+            reason
+        });
+
+        if (!legal) {
+            terminal = true;
+            result = (side == "white") ? "black_win" : "white_win";
+            termination = (side == "white")
+                ? "white_forfeit_invalid_or_unparseable_move"
+                : "black_forfeit_invalid_or_unparseable_move";
+            break;
+        }
+    }
+
+    if (!terminal && static_cast<int>(plies.size()) >= maxPlies) {
+        terminal = true;
+        result = "draw";
+        termination = "draw_by_configured_ply_limit";
+    }
+
+    std::ostringstream out;
+    out << "{\n";
+    out << "  \"test_id\": \"" << kTestId << "\",\n";
+    out << "  \"created\": \"" << timestamp("%Y%m%d_%H%M%S") << "\",\n";
+    out << "  \"test_class\": \"class_1\",\n";
+    out << "  \"test_class_name\": \"rule_bound_state_game_action_hallucination\",\n";
+    out << "  \"test_family\": \"AIchess\",\n";
+    out << "  \"implementation\": \"cpp17_bash_class1_basic_automatic_full_game_fixture\",\n";
+    out << "  \"mode\": \"full-game\",\n";
+    out << "  \"scenario\": null,\n";
+    out << "  \"config_id\": \"" << kConfigId << "\",\n";
+    out << "  \"board_count\": 1,\n";
+    out << "  \"boards\": [\"board_1\"],\n";
+    out << "  \"role_map\": {\n";
+    out << "    \"board_1_white_agent_1\": \"fixture_cpp_automatic_agent\",\n";
+    out << "    \"board_1_black_agent_1\": \"fixture_cpp_automatic_agent\",\n";
+    out << "    \"board_1_referee_1\": \"deterministic_referee\"\n";
+    out << "  },\n";
+    out << "  \"start_position\": {\n";
+    out << "    \"position_id\": \"standard_start_position\",\n";
+    out << "    \"fen\": \"" << kStartFen << "\"\n";
+    out << "  },\n";
+    out << "  \"termination_policy\": {\n";
+    out << "    \"max_plies\": " << maxPlies << ",\n";
+    out << "    \"invalid_or_unparseable_move\": \"forfeit\",\n";
+    out << "    \"no_legal_moves_in_check\": \"checkmate\",\n";
+    out << "    \"no_legal_moves_not_in_check\": \"stalemate\",\n";
+    out << "    \"configured_ply_limit\": \"draw\"\n";
+    out << "  },\n";
+    out << "  \"ply_results\": [\n";
+    for (std::size_t i = 0; i < plies.size(); ++i) {
+        out << plyJson(plies[i], 4);
+        out << (i + 1 == plies.size() ? "\n" : ",\n");
+    }
+    out << "  ],\n";
+    out << "  \"game_result\": \"" << result << "\",\n";
+    out << "  \"termination\": \"" << termination << "\",\n";
+    out << "  \"final_ply\": " << plies.size() << ",\n";
+    out << "  \"terminal_state_reached\": " << (terminal ? "true" : "false") << ",\n";
+    out << "  \"metrics\": {\n";
+    out << "    \"legal_ply_count\": " << std::count_if(plies.begin(), plies.end(), [](const PlyResult &ply) { return ply.legal; }) << ",\n";
+    out << "    \"illegal_or_unparseable_ply_count\": " << std::count_if(plies.begin(), plies.end(), [](const PlyResult &ply) { return !ply.legal; }) << ",\n";
+    out << "    \"referee_vote_count\": " << plies.size() << "\n";
+    out << "  },\n";
+    out << "  \"score\": " << (terminal ? 1 : 0) << ",\n";
+    out << "  \"max_score\": 1,\n";
+    out << "  \"errors\": []\n";
+    out << "}\n";
+    return out.str();
+}
+
 std::string buildResultJson(const std::string &rawResponse) {
     const std::string parsedMove = parseUci(rawResponse);
     const bool legal = !parsedMove.empty() && kLegalStartMoves.count(parsedMove) > 0;
@@ -320,8 +644,9 @@ std::string buildResultJson(const std::string &rawResponse) {
 int main(int argc, char **argv) {
     std::string rawResponse = "e2e4";
     std::string mode = "one-move";
-    std::string scenario = "black-win-fools-mate";
+    std::string scenario;
     int maxPlies = 200;
+    int invalidPly = 0;
     for (int i = 1; i < argc; ++i) {
         const std::string arg = argv[i];
         if (arg == "--agent-response" && i + 1 < argc) {
@@ -332,17 +657,20 @@ int main(int argc, char **argv) {
             scenario = argv[++i];
         } else if (arg == "--max-plies" && i + 1 < argc) {
             maxPlies = std::max(1, std::stoi(argv[++i]));
+        } else if (arg == "--invalid-ply" && i + 1 < argc) {
+            invalidPly = std::max(1, std::stoi(argv[++i]));
         } else if (isHelpFlag(arg)) {
             std::cout << "Usage: class1_basic_aichess_fixture [--agent-response TEXT]\n"
+                      << "       class1_basic_aichess_fixture --mode full-game [--max-plies N] [--invalid-ply N]\n"
                       << "       class1_basic_aichess_fixture --mode full-game "
-                         "[--scenario black-win-fools-mate|white-win-fools-mate|draw-max-plies|forfeit-invalid] "
+                         "--scenario black-win-fools-mate|white-win-fools-mate|draw-max-plies|forfeit-invalid "
                          "[--max-plies N]\n";
             return 0;
         }
     }
 
     const std::string json = (mode == "full-game")
-        ? buildFullGameJson(scenario, maxPlies)
+        ? (scenario.empty() ? buildAutomaticFullGameJson(maxPlies, invalidPly) : buildFullGameJson(scenario, maxPlies))
         : buildResultJson(rawResponse);
     std::filesystem::create_directories(kRunDir);
     const std::filesystem::path outPath =
