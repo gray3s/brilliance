@@ -15,7 +15,7 @@ namespace {
 const std::string kTestId = "aih_chess_class1_cpp_fixture_v1_20260715";
 const std::string kStartFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 const std::filesystem::path kRunDir =
-    "/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/runs";
+    "/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/runs";
 
 const std::set<std::string> kLegalStartMoves = {
     "a2a3", "a2a4", "b2b3", "b2b4", "c2c3", "c2c4", "d2d3", "d2d4",
@@ -209,7 +209,7 @@ int main(int argc, char **argv) {
         if (arg == "--agent-response" && i + 1 < argc) {
             rawResponse = argv[++i];
         } else if (isHelpFlag(arg)) {
-            std::cout << "Usage: class1_aichess_fixture [--agent-response TEXT]\n";
+            std::cout << "Usage: class1_aichess_fixture_test [--agent-response TEXT]\n";
             return 0;
         }
     }

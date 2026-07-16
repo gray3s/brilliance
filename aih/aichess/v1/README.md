@@ -40,22 +40,25 @@ Local-hardware vs cloud-software benchmark package:
 local_vs_cloud_benchmark_package_20260715_1943MDT.md
 ```
 
-Concrete fixture package artifacts:
+Concrete runner and fixture package artifacts:
 
 ```text
-class1_basic_cpp/class1_basic_aichess_fixture.cpp
-class1_basic_cpp/build_class1_basic_fixture.sh
-class1_basic_cpp/run_class1_basic_fixture.sh
+./aichess.sh
 class1_cpp/class1_aichess_fixture.cpp
 class1_cpp/build_class1_fixture.sh
 class1_cpp/run_class1_fixture.sh
+./aichess.sh -nb 2
 class2_cpp/class2_aichess_fixture.cpp
 class2_cpp/build_class2_fixture.sh
 class2_cpp/run_class2_fixture.sh
+./aichess.sh -nb 4
 class3_cpp/class3_aichess_fixture.cpp
 class3_cpp/build_class3_fixture.sh
 class3_cpp/run_class3_fixture.sh
-configs/aichess_class1_basic_one_board_one_agent_sides_one_referee_v1_20260715_2110MDT.json
+class1_cpp_test/class1_aichess_fixture_test.cpp
+class1_cpp_test/build_class1_fixture.sh
+class1_cpp_test/run_class1_fixture.sh
+configs/aichess_class1_one_board_one_agent_sides_one_referee_v1_20260715_2110MDT.json
 configs/aichess_class1_one_board_one_agent_sides_three_referees_v1_20260715_2016MDT.json
 configs/aichess_class2_two_boards_one_agent_sides_one_referee_each_v1_20260715_2016MDT.json
 configs/aichess_class3_four_boards_one_agent_sides_four_referees_v1_20260715_2016MDT.json

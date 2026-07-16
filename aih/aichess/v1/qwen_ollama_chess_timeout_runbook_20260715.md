@@ -51,13 +51,13 @@ Use the explicit model list in the commands below.
 Project:
 
 ```text
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/
 ```
 
 Binary:
 
 ```text
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt
 ```
 
 The runner uses:
@@ -70,7 +70,7 @@ The runner uses:
 Output directory:
 
 ```text
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/runs/qwen_ollama_chess_timeout_probe_qt_20260715/
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/runs/qwen_ollama_chess_timeout_probe_qt_20260715/
 ```
 
 The runner writes:
@@ -121,7 +121,7 @@ Save or screenshot the output if you want to compare token cost after the test s
 ## Step 2: Build The C++/Qt Runner
 
 ```bash
-cd /home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt
 qmake6 qwen_ollama_chess_qt.pro
 make
 ```
@@ -147,7 +147,7 @@ Leave that terminal open while tests run.
 This confirms the planned run without invoking any model:
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --dry-run \
   --mode both \
   --models qwen2.5:latest,qwen2.5-coder:3b,qwen:4b,robit/qwen3.5-9b-r7-research:q4km \
@@ -161,7 +161,7 @@ This confirms the planned run without invoking any model:
 Use this first. It tests whether each model can return one legal move quickly.
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --mode one-move \
   --models qwen2.5:latest,qwen2.5-coder:3b,qwen:4b,robit/qwen3.5-9b-r7-research:q4km \
   --move-timeout 30
@@ -178,7 +178,7 @@ Interpretation:
 This asks each model to play both sides under a tight total budget.
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --mode game \
   --models qwen2.5:latest,qwen2.5-coder:3b,qwen:4b,robit/qwen3.5-9b-r7-research:q4km \
   --move-timeout 20 \
@@ -194,7 +194,7 @@ Use this to see which models fail quickly due to timeouts or illegal move loops.
 Run this only after the short probe identifies models worth testing.
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --mode game \
   --models qwen2.5:latest,qwen2.5-coder:3b,qwen:4b,robit/qwen3.5-9b-r7-research:q4km \
   --move-timeout 60 \
@@ -210,7 +210,7 @@ This is the better test for whether any model can actually complete a game.
 If the all-model run is too slow, run one model explicitly:
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --mode game \
   --models qwen2.5:latest \
   --move-timeout 60 \
@@ -233,13 +233,13 @@ robit/qwen3.5-9b-r7-research:q4km
 List summaries:
 
 ```bash
-ls -lt /home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/runs/qwen_ollama_chess_timeout_probe_qt_20260715/*_summary.md
+ls -lt /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/runs/qwen_ollama_chess_timeout_probe_qt_20260715/*_summary.md
 ```
 
 Open the newest summary:
 
 ```bash
-gedit "$(ls -t /home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/runs/qwen_ollama_chess_timeout_probe_qt_20260715/*_summary.md | head -n 1)"
+gedit "$(ls -t /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/runs/qwen_ollama_chess_timeout_probe_qt_20260715/*_summary.md | head -n 1)"
 ```
 
 Look for:
@@ -270,7 +270,7 @@ The local Ollama model execution itself should not consume OpenAI tokens. The Co
 Run these in order:
 
 ```bash
-cd /home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt
 qmake6 qwen_ollama_chess_qt.pro
 make
 ```
@@ -280,7 +280,7 @@ ollama list
 ```
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --dry-run \
   --mode both \
   --models qwen2.5:latest,qwen2.5-coder:3b,qwen:4b,robit/qwen3.5-9b-r7-research:q4km \
@@ -290,14 +290,14 @@ ollama list
 ```
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --mode one-move \
   --models qwen2.5:latest,qwen2.5-coder:3b,qwen:4b,robit/qwen3.5-9b-r7-research:q4km \
   --move-timeout 30
 ```
 
 ```bash
-/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
+/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/qwen_ollama_chess_qt/qwen_ollama_chess_qt \
   --mode game \
   --models qwen2.5:latest,qwen2.5-coder:3b,qwen:4b,robit/qwen3.5-9b-r7-research:q4km \
   --move-timeout 20 \

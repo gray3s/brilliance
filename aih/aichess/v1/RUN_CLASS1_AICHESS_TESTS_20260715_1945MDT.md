@@ -7,25 +7,37 @@ Created: 20260715_1945MDT
 Run from:
 
 ```bash
-cd /home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1
 ```
 
-## Current Class 1 Tests
+## Current Class 1 Runner
 
-### C++/Bash Class 1 Fixture
+### C++/Bash Class 1 Qwen/Ollama Runner
 
-This is the primary Class 1 fixture path. It uses a C++17 binary and Bash
-wrapper, with no venv, npm, or Homebrew dependency chain.
+This is the normal one-board Class 1 AIchess run path. It matches the Class 2
+and Class 3 live-runner pattern, but uses one board.
 
 ```bash
-class1_cpp/run_class1_fixture.sh
+./aichess.sh qwen1
 ```
 
-Optional invalid/alternative response check:
+The single agent plays both sides. Stockfish is the referee.
+
+Use two player agents with Stockfish as referee:
 
 ```bash
-class1_cpp/run_class1_fixture.sh --agent-response "move the queen to z9"
-class1_cpp/run_class1_fixture.sh --agent-response "g1f3"
+./aichess.sh qwen1 qwen2
+```
+
+The two agents are assigned to White/Black at random. Stockfish is the referee.
+If a third agent is provided, that third agent is used as the referee. The
+output JSON records which agent was assigned to each role.
+
+Show flag help:
+
+```bash
+./aichess.sh --help
+./aichess.sh /?
 ```
 
 Outputs are written to:
@@ -34,7 +46,23 @@ Outputs are written to:
 runs/
 ```
 
-Verified example output from this run:
+## Developer Fixture Check
+
+The deterministic fixture path is separate from the user-facing Class 1 runner.
+Use it only to validate parsing, legality checks, and JSON output shape.
+
+```bash
+class1_cpp_test/run_class1_fixture.sh
+```
+
+Optional invalid/alternative response check:
+
+```bash
+class1_cpp_test/run_class1_fixture.sh --agent-response "move the queen to z9"
+class1_cpp_test/run_class1_fixture.sh --agent-response "g1f3"
+```
+
+Verified historical fixture output:
 
 ```text
 runs/aih_chess_class1_cpp_fixture_v1_20260715_20260715_202837_787.json
@@ -43,7 +71,7 @@ runs/aih_chess_class1_cpp_fixture_v1_20260715_20260715_202837_787.json
 Build manually if needed:
 
 ```bash
-class1_cpp/build_class1_fixture.sh
+class1_cpp_test/build_class1_fixture.sh
 ```
 
 ## What These Tests Measure

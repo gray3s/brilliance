@@ -13,11 +13,11 @@
 
 namespace {
 
-const std::string kTestId = "aih_chess_class1_basic_cpp_fixture_v1_20260715";
-const std::string kConfigId = "aichess_class1_basic_one_board_one_agent_sides_one_referee_v1_20260715_2110";
+const std::string kTestId = "aih_chess_class1_cpp_fixture_v1_20260715";
+const std::string kConfigId = "aichess_class1_one_board_one_agent_sides_one_referee_v1_20260715_2110";
 const std::string kStartFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 const std::filesystem::path kRunDir =
-    "/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/runs";
+    "/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/runs";
 
 const std::set<std::string> kLegalStartMoves = {
     "a2a3", "a2a4", "b2b3", "b2b4", "c2c3", "c2c4", "d2d3", "d2d4",
@@ -412,7 +412,7 @@ std::string buildFullGameJson(const std::string &scenario, int maxPlies) {
     out << "  \"test_class\": \"class_1\",\n";
     out << "  \"test_class_name\": \"rule_bound_state_game_action_hallucination\",\n";
     out << "  \"test_family\": \"AIchess\",\n";
-    out << "  \"implementation\": \"cpp17_bash_class1_basic_full_game_fixture\",\n";
+    out << "  \"implementation\": \"cpp17_bash_class1_full_game_fixture\",\n";
     out << "  \"mode\": \"full-game\",\n";
     out << "  \"scenario\": \"" << scenario << "\",\n";
     out << "  \"config_id\": \"" << kConfigId << "\",\n";
@@ -530,7 +530,7 @@ std::string buildAutomaticFullGameJson(int maxPlies, int invalidPly) {
     out << "  \"test_class\": \"class_1\",\n";
     out << "  \"test_class_name\": \"rule_bound_state_game_action_hallucination\",\n";
     out << "  \"test_family\": \"AIchess\",\n";
-    out << "  \"implementation\": \"cpp17_bash_class1_basic_automatic_full_game_fixture\",\n";
+    out << "  \"implementation\": \"cpp17_bash_class1_automatic_full_game_fixture\",\n";
     out << "  \"mode\": \"full-game\",\n";
     out << "  \"scenario\": null,\n";
     out << "  \"config_id\": \"" << kConfigId << "\",\n";
@@ -585,7 +585,7 @@ std::string buildResultJson(const std::string &rawResponse) {
     out << "  \"test_class\": \"class_1\",\n";
     out << "  \"test_class_name\": \"rule_bound_state_game_action_hallucination\",\n";
     out << "  \"test_family\": \"AIchess\",\n";
-    out << "  \"implementation\": \"cpp17_bash_class1_basic_fixture\",\n";
+    out << "  \"implementation\": \"cpp17_bash_class1_fixture\",\n";
     out << "  \"config_id\": \"" << kConfigId << "\",\n";
     out << "  \"board_count\": 1,\n";
     out << "  \"boards\": [\"board_1\"],\n";
@@ -660,9 +660,9 @@ int main(int argc, char **argv) {
         } else if (arg == "--invalid-ply" && i + 1 < argc) {
             invalidPly = std::max(1, std::stoi(argv[++i]));
         } else if (isHelpFlag(arg)) {
-            std::cout << "Usage: class1_basic_aichess_fixture [--agent-response TEXT]\n"
-                      << "       class1_basic_aichess_fixture --mode full-game [--max-plies N] [--invalid-ply N]\n"
-                      << "       class1_basic_aichess_fixture --mode full-game "
+            std::cout << "Usage: class1_aichess_fixture [--agent-response TEXT]\n"
+                      << "       class1_aichess_fixture --mode full-game [--max-plies N] [--invalid-ply N]\n"
+                      << "       class1_aichess_fixture --mode full-game "
                          "--scenario black-win-fools-mate|white-win-fools-mate|draw-max-plies|forfeit-invalid "
                          "[--max-plies N]\n";
             return 0;

@@ -1,9 +1,9 @@
 {
-  "config_id": "aichess_class1_basic_one_board_one_agent_sides_one_referee_v1_20260715_2110",
+  "config_id": "aichess_class1_one_board_one_agent_sides_one_referee_v1_20260715_2110",
   "created": "20260715_2110MDT",
   "test_class": "class_1_rule_bound_state_game_action_hallucination",
   "test_family": "AIchess",
-  "purpose": "Basic symmetric Class 1 AIchess test using one board, one player agent for each side, and one referee.",
+  "purpose": "Symmetric Class 1 AIchess test using one board, one player agent for each side, and one referee.",
   "board_count": 1,
   "boards": [
     {

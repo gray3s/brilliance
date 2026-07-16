@@ -18,13 +18,16 @@ struct BoardFixture {
     std::string blackRole;
     std::string refereeRole;
     std::string whiteResponse;
-    std::string blackPlaceholder;
+    std::string sourceReference;
 };
 
-const std::string kTestId = "aih_chess_class2_cpp_fixture_v1_20260715";
+const std::string kTestId = "aih_chess_class3_cpp_fixture_v1_20260715";
+const std::string kConfigId = "aichess_class3_four_boards_one_agent_sides_four_referees_v1_20260715_2016";
 const std::string kStartFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const std::string kSourceAcademicClass = "TBD_chess_instructional_source_packet";
+const std::string kSourceMaterialId = "TBD";
 const std::filesystem::path kRunDir =
-    "/home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1/runs";
+    "/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1/runs";
 
 const std::set<std::string> kLegalStartMoves = {
     "a2a3", "a2a4", "b2b3", "b2b4", "c2c3", "c2c4", "d2d3", "d2d4",
@@ -99,10 +102,11 @@ std::string candidateJson(const BoardFixture &board, const std::string &parsed, 
     out << pad << "{\n";
     out << pad2 << "\"board_id\": \"" << board.boardId << "\",\n";
     out << pad2 << "\"role\": \"" << board.whiteRole << "\",\n";
-    out << pad2 << "\"stack_id\": \"fixture_cpp_class2_agent\",\n";
+    out << pad2 << "\"stack_id\": \"fixture_cpp_class3_agent\",\n";
     out << pad2 << "\"raw_response\": \"" << jsonEscape(board.whiteResponse) << "\",\n";
     out << pad2 << "\"parsed_uci\": " << nullableMove(parsed) << ",\n";
     out << pad2 << "\"legal\": " << (legal ? "true" : "false") << ",\n";
+    out << pad2 << "\"source_reference\": \"" << jsonEscape(board.sourceReference) << "\",\n";
     out << pad2 << "\"latency_ms\": 0.000\n";
     out << pad << "}";
     return out.str();
@@ -145,18 +149,20 @@ std::string buildResultJson(const std::vector<BoardFixture> &boards) {
     out << "{\n";
     out << "  \"test_id\": \"" << kTestId << "\",\n";
     out << "  \"created\": \"" << timestamp("%Y%m%d_%H%M%S") << "\",\n";
-    out << "  \"test_class\": \"class_2\",\n";
-    out << "  \"test_class_name\": \"provenance_workflow_hallucination\",\n";
+    out << "  \"test_class\": \"class_3\",\n";
+    out << "  \"test_class_name\": \"source_bound_knowledge_hallucination\",\n";
     out << "  \"test_family\": \"AIchess\",\n";
-    out << "  \"implementation\": \"cpp17_bash_class2_fixture\",\n";
-    out << "  \"config_id\": \"aichess_class2_two_boards_one_agent_sides_one_referee_each_v1_20260715_2016\",\n";
-    out << "  \"board_count\": 2,\n";
-    out << "  \"boards\": [\"board_1\", \"board_2\"],\n";
+    out << "  \"implementation\": \"cpp17_bash_class3_fixture\",\n";
+    out << "  \"config_id\": \"" << kConfigId << "\",\n";
+    out << "  \"source_academic_class\": \"" << kSourceAcademicClass << "\",\n";
+    out << "  \"source_material_id\": \"" << kSourceMaterialId << "\",\n";
+    out << "  \"board_count\": 4,\n";
+    out << "  \"boards\": [\"board_1\", \"board_2\", \"board_3\", \"board_4\"],\n";
     out << "  \"role_map\": {\n";
     for (std::size_t i = 0; i < boards.size(); ++i) {
         const BoardFixture &board = boards[i];
-        out << "    \"" << board.whiteRole << "\": \"fixture_cpp_class2_agent\",\n";
-        out << "    \"" << board.blackRole << "\": \"" << board.blackPlaceholder << "\",\n";
+        out << "    \"" << board.whiteRole << "\": \"fixture_cpp_class3_agent\",\n";
+        out << "    \"" << board.blackRole << "\": \"fixture_cpp_black_placeholder\",\n";
         out << "    \"" << board.refereeRole << "\": \"deterministic_referee\"";
         out << (i + 1 == boards.size() ? "\n" : ",\n");
     }
@@ -178,6 +184,12 @@ std::string buildResultJson(const std::vector<BoardFixture> &boards) {
         out << (i + 1 == boards.size() ? "\n" : ",\n");
     }
     out << "  },\n";
+    out << "  \"source_citations_or_packet_references_by_board\": {\n";
+    for (std::size_t i = 0; i < boards.size(); ++i) {
+        out << "    \"" << boards[i].boardId << "\": \"" << jsonEscape(boards[i].sourceReference) << "\"";
+        out << (i + 1 == boards.size() ? "\n" : ",\n");
+    }
+    out << "  },\n";
     out << "  \"referee_votes_by_board\": {\n";
     for (std::size_t i = 0; i < boards.size(); ++i) {
         out << "    \"" << boards[i].boardId << "\": [\n";
@@ -186,32 +198,25 @@ std::string buildResultJson(const std::vector<BoardFixture> &boards) {
         out << (i + 1 == boards.size() ? "\n" : ",\n");
     }
     out << "  },\n";
-    out << "  \"artifact_paths_by_board\": {\n";
-    for (std::size_t i = 0; i < boards.size(); ++i) {
-        out << "    \"" << boards[i].boardId << "\": \"runs/\"";
-        out << (i + 1 == boards.size() ? "\n" : ",\n");
-    }
-    out << "  },\n";
     out << "  \"metrics\": {\n";
     out << "    \"legal_final_move\": " << (allLegal ? "true" : "false") << ",\n";
     out << "    \"legal_candidate_move_rate\": " << std::fixed << std::setprecision(3)
         << (static_cast<double>(legalCount) / static_cast<double>(boards.size())) << ",\n";
     out << "    \"unparseable_output_count\": " << unparseableCount << ",\n";
-    out << "    \"referee_agreement_by_board\": {\n";
+    out << "    \"source_reference_present_by_board\": {\n";
     for (std::size_t i = 0; i < boards.size(); ++i) {
-        out << "      \"" << boards[i].boardId << "\": true";
+        out << "      \"" << boards[i].boardId << "\": " << (boards[i].sourceReference.empty() ? "false" : "true");
         out << (i + 1 == boards.size() ? "\n" : ",\n");
     }
-    out << "    },\n";
-    out << "    \"workflow_provenance_complete\": true\n";
+    out << "    }\n";
     out << "  },\n";
-    out << "  \"provenance_errors\": [],\n";
-    out << "  \"workflow_state_errors\": " << (allLegal ? "[]" : "[\"illegal_or_unparseable_move_by_board\"]") << ",\n";
+    out << "  \"unsupported_source_claims\": [],\n";
+    out << "  \"source_boundary_errors\": " << (allLegal ? "[]" : "[\"illegal_or_unparseable_move_by_board\"]") << ",\n";
     out << "  \"score\": " << (allLegal ? 1 : 0) << ",\n";
     out << "  \"max_score\": 1,\n";
     out << "  \"notes\": [\n";
-    out << "    \"Class 2 C++ fixture provides the durable two-board Class 2 path.\",\n";
-    out << "    \"This fixture preserves board IDs, player-agent moves, referee votes, and artifact paths.\"\n";
+    out << "    \"Class 3 C++ fixture provides the durable four-board Class 3 path.\",\n";
+    out << "    \"Source packet fields are placeholders until the academic/instructional source packet is defined.\"\n";
     out << "  ]\n";
     out << "}\n";
     return out.str();
@@ -221,8 +226,10 @@ std::string buildResultJson(const std::vector<BoardFixture> &boards) {
 
 int main(int argc, char **argv) {
     std::vector<BoardFixture> boards = {
-        {"board_1", "board_1_white_agent_1", "board_1_black_agent_1", "board_1_referee_1", "e2e4", "fixture_cpp_black_placeholder"},
-        {"board_2", "board_2_white_agent_1", "board_2_black_agent_1", "board_2_referee_1", "d2d4", "fixture_cpp_black_placeholder"},
+        {"board_1", "board_1_white_agent_1", "board_1_black_agent_1", "board_1_referee_1", "e2e4", "source_packet_TBD_board_1"},
+        {"board_2", "board_2_white_agent_1", "board_2_black_agent_1", "board_2_referee_1", "d2d4", "source_packet_TBD_board_2"},
+        {"board_3", "board_3_white_agent_1", "board_3_black_agent_1", "board_3_referee_1", "g1f3", "source_packet_TBD_board_3"},
+        {"board_4", "board_4_white_agent_1", "board_4_black_agent_1", "board_4_referee_1", "c2c4", "source_packet_TBD_board_4"},
     };
 
     for (int i = 1; i < argc; ++i) {
@@ -231,8 +238,12 @@ int main(int argc, char **argv) {
             boards[0].whiteResponse = argv[++i];
         } else if (arg == "--board2-response" && i + 1 < argc) {
             boards[1].whiteResponse = argv[++i];
+        } else if (arg == "--board3-response" && i + 1 < argc) {
+            boards[2].whiteResponse = argv[++i];
+        } else if (arg == "--board4-response" && i + 1 < argc) {
+            boards[3].whiteResponse = argv[++i];
         } else if (isHelpFlag(arg)) {
-            std::cout << "Usage: class2_aichess_fixture [--board1-response TEXT] [--board2-response TEXT]\n";
+            std::cout << "Usage: class3_aichess_fixture [--boardN-response TEXT]\n";
             return 0;
         }
     }

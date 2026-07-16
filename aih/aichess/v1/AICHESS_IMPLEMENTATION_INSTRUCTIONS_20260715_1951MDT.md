@@ -29,7 +29,7 @@ control as the harness grows.
 Run commands from:
 
 ```bash
-cd /home/sag/RPA2/myLLC/AI/brilliance/v1/AIH/AIchess/v1
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v1
 ```
 
 All commands below assume that working directory.
@@ -163,69 +163,52 @@ qwen3=qwen2.5:latest
 qwen4=robit/qwen3.5-9b-r7-research:q4km
 ```
 
-Assign agents by role. Testing the same agent against itself is valid:
+List the agents to run. Testing the same agent against itself is valid:
 
 ```bash
-class1_basic_cpp/run_class1_basic_aichess_hallucination.sh \
-  --white qwen1 \
-  --black qwen1 \
-  --referee qwen1 \
-  --max-plies 200 \
-  --move-timeout 60 \
-  --game-timeout 3600
+./aichess.sh qwen1
 ```
 
 Testing two different player agents and a third AI referee is also valid:
 
 ```bash
-class1_basic_cpp/run_class1_basic_aichess_hallucination.sh \
-  --white qwen1 \
-  --black qwen2 \
-  --referee qwen3 \
-  --max-plies 200 \
-  --move-timeout 60 \
-  --game-timeout 3600
+./aichess.sh qwen1 qwen2 qwen3
+```
+
+Testing two player agents without an AI referee uses Stockfish as referee:
+
+```bash
+./aichess.sh qwen1 qwen2
 ```
 
 Run the 2-board Class 2 hallucination test:
 
 ```bash
-class2_cpp/run_class2_aichess_hallucination.sh \
-  --white qwen1:qwen2 \
-  --black qwen1:qwen2 \
-  --referee qwen1:qwen2 \
-  --max-plies 200 \
-  --move-timeout 60 \
-  --game-timeout 3600
+./aichess.sh -nb 2 qwen1 qwen2
 ```
 
 Run the 4-board Class 3 hallucination test:
 
 ```bash
-class3_cpp/run_class3_aichess_hallucination.sh \
-  --white qwen1:qwen4 \
-  --black qwen1:qwen4 \
-  --referee qwen1:qwen4 \
-  --max-plies 200 \
-  --move-timeout 60 \
-  --game-timeout 3600
+./aichess.sh -nb 4 qwen1 qwen2
 ```
 
 For these real-agent runs:
 
 ```text
---white assigns player agents to White roles
---black assigns player agents to Black roles
---referee assigns referee agents or the stockfish baseline referee
---boards is set by the class wrapper: 1, 2, or 4
---max-plies is the maximum number of half-moves before a draw by limit
---move-timeout is the per-agent move timeout in seconds
---game-timeout is the per-board game timeout in seconds
+-nb selects the number of boards. It defaults to 1 when omitted.
+With positional agents, one agent plays both sides with Stockfish as referee.
+Two agents are player agents assigned to White/Black at random with Stockfish
+as referee. Three agents use the first two as randomized players and the third
+as referee. The output JSON records the resolved role assignment by board.
+-mp is the maximum number of half-moves before a draw by limit
+-mt is the per-agent move timeout in seconds
+-gt is the per-board game timeout in seconds
 --max-illegal 1 means the first illegal or unparseable move causes forfeit
 ```
 
-Use `qwen1:qwen4` to assign a sorted range of Qwen agents. Use
-`agent1:agent4` to assign all installed Ollama-compatible local agents by size.
+Use `qwen1:qwen4` when you intentionally want a sorted range of Qwen agents. Use
+`agent1:agent4` to select installed Ollama-compatible local agents by size.
 An invalid numbered alias, such as `qwen7` when only four Qwen models are
 installed, returns an error.
 
@@ -301,7 +284,7 @@ If you want the shell to enforce a maximum wall-clock runtime, wrap the run
 command with `timeout`:
 
 ```bash
-timeout 60s class1_basic_cpp/run_class1_basic_fixture.sh --mode full-game --scenario black-win-fools-mate
+timeout 60s class1_cpp/run_class1_fixture.sh --mode full-game --scenario black-win-fools-mate
 ```
 
 That example allows the fixture 60 seconds to finish. If it is still running
@@ -346,13 +329,13 @@ the current one-move fixture.
 Config:
 
 ```text
-configs/aichess_class1_basic_one_board_one_agent_sides_one_referee_v1_20260715_2110MDT.json
+configs/aichess_class1_one_board_one_agent_sides_one_referee_v1_20260715_2110MDT.json
 ```
 
 Simple run:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh
+class1_cpp/run_class1_fixture.sh
 ```
 
 Expected result: the fixture returns `e2e4`, parses it as a UCI move, verifies
@@ -362,7 +345,7 @@ writes a passing result with `score: 1`.
 Override the active White agent response with an invalid response:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh --agent-response "move the queen to z9"
+class1_cpp/run_class1_fixture.sh --agent-response "move the queen to z9"
 ```
 
 `z9` is not a real chess square, and the response does not contain any legal
@@ -372,7 +355,7 @@ UCI move. The expected result is `score: 0`, `parsed_uci: null`, and an
 Override the active White agent response with a different legal response:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh --agent-response "g1f3"
+class1_cpp/run_class1_fixture.sh --agent-response "g1f3"
 ```
 
 The `g1f3` response should pass because it is a legal knight move from the
@@ -381,32 +364,32 @@ starting position. The expected result is `score: 1`.
 Run the fixture to a terminal Black win:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh --mode full-game --scenario black-win-fools-mate
+class1_cpp/run_class1_fixture.sh --mode full-game --scenario black-win-fools-mate
 ```
 
 Run the fixture to a terminal White win:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh --mode full-game --scenario white-win-fools-mate
+class1_cpp/run_class1_fixture.sh --mode full-game --scenario white-win-fools-mate
 ```
 
 Run the fixture to a draw by configured ply limit:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh --mode full-game --scenario draw-max-plies --max-plies 4
+class1_cpp/run_class1_fixture.sh --mode full-game --scenario draw-max-plies --max-plies 4
 ```
 
 Run the fixture to a forfeit caused by an invalid or unparseable agent
 response:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh --mode full-game --scenario forfeit-invalid
+class1_cpp/run_class1_fixture.sh --mode full-game --scenario forfeit-invalid
 ```
 
 Show command help:
 
 ```bash
-class1_basic_cpp/run_class1_basic_fixture.sh --help
+class1_cpp/run_class1_fixture.sh --help
 ```
 
 Valid command-line options:
@@ -443,7 +426,7 @@ fields.
 Build the C++ fixture manually if needed:
 
 ```bash
-class1_basic_cpp/build_class1_basic_fixture.sh
+class1_cpp/build_class1_fixture.sh
 ```
 
 ## Implementation 1B: Class 1 Three-Referee Option
@@ -480,7 +463,7 @@ referee majority = 2 of 3
 Simple run:
 
 ```bash
-class1_cpp/run_class1_fixture.sh
+class1_cpp_test/run_class1_fixture.sh
 ```
 
 Expected result: the fixture returns `e2e4`, records three referee votes for
@@ -490,7 +473,7 @@ legal.
 Override the active White agent response with an invalid response:
 
 ```bash
-class1_cpp/run_class1_fixture.sh --agent-response "move the queen to z9"
+class1_cpp_test/run_class1_fixture.sh --agent-response "move the queen to z9"
 ```
 
 The expected result is `score: 0`, a null parsed move, and three referee votes
@@ -499,7 +482,7 @@ marking the move invalid.
 Override the active White agent response with a different legal response:
 
 ```bash
-class1_cpp/run_class1_fixture.sh --agent-response "g1f3"
+class1_cpp_test/run_class1_fixture.sh --agent-response "g1f3"
 ```
 
 The expected result is `score: 1`, selected move `g1f3`, and three legal
@@ -508,7 +491,7 @@ referee votes.
 Show command help:
 
 ```bash
-class1_cpp/run_class1_fixture.sh --help
+class1_cpp_test/run_class1_fixture.sh --help
 ```
 
 Valid command-line options:
@@ -524,7 +507,7 @@ Valid command-line options:
 Build the C++ fixture manually if needed:
 
 ```bash
-class1_cpp/build_class1_fixture.sh
+class1_cpp_test/build_class1_fixture.sh
 ```
 
 Current status: the C++/Bash Class 1 fixture is runnable and writes result JSON
