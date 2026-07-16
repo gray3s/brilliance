@@ -23,9 +23,11 @@ Meanings:
 - `class_1_rule_bound_state`: state-fidelity and legal-action tests under an
   objective rule system.
 - `class_2_provenance_workflow`: provenance, continuity, attribution, and
-  project-flow failures.
+  project-flow failures. Class 2 records should carry a subject-matter or
+  subject-field tag.
 - `class_3_source_bound_knowledge`: bounded academic knowledge-ladder tests
-  with explicit source, time, I/O, grading, and assistance controls.
+  with explicit source, time, I/O, grading, and assistance controls. Class 3
+  records should identify the academic class that supplied the source material.
 
 Current prototype examples:
 
@@ -40,6 +42,20 @@ not itself the class name.
 The optional `intermediate_cert` tree is a bridge/prototype test family. It is
 useful for AI/ML certificate-style tests, but it is not one of the three
 canonical AIH v1 classes.
+
+Detailed breakdown rule:
+
+```text
+v1/AIH/class_taxonomy_breakdown_20260715_1931MDT.md
+```
+
+Short form:
+
+```text
+Class 2 -> subject matter / subject field
+Class 3 -> source academic class
+K-PhD -> K-12 academic year; bachelor's/master's 1xx/2xx/3xx/4xx; Ph.D. grad_year_3/grad_year_4
+```
 
 Reports should keep this order unless a specific report states otherwise:
 
@@ -86,6 +102,15 @@ Example:
 
 ```text
 aih_class2_provenance_probe_v1_20260713
+```
+
+When a test ID needs the detailed taxonomy, use compact metadata-friendly
+tokens rather than long prose:
+
+```text
+aih_class2_<subject_field>_<failure_mode>_probe_v1_<yyyymmdd>
+aih_class3_<source_class>_<course_level>_<field>_probe_v1_<yyyymmdd>
+aih_kphd_<academic_year>_<source_class>_<field>_probe_v1_<yyyymmdd>
 ```
 
 ## Result Files

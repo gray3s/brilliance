@@ -1,0 +1,54 @@
+{
+  "config_id": "aichess_class1_basic_one_board_one_agent_sides_one_referee_v1_20260715_2110",
+  "created": "20260715_2110MDT",
+  "test_class": "class_1_rule_bound_state_game_action_hallucination",
+  "test_family": "AIchess",
+  "purpose": "Basic symmetric Class 1 AIchess test using one board, one player agent for each side, and one referee.",
+  "board_count": 1,
+  "boards": [
+    {
+      "board_id": "board_1",
+      "player_teams": {
+        "white": [
+          "board_1_white_agent_1"
+        ],
+        "black": [
+          "board_1_black_agent_1"
+        ]
+      },
+      "player_team_decision_rule": {
+        "type": "single_vote",
+        "votes_per_side": 1,
+        "majority_threshold": 1,
+        "tie_rule": "not_applicable"
+      },
+      "referee_team": [
+        "board_1_referee_1"
+      ],
+      "referee_decision_rule": {
+        "type": "single_vote",
+        "referee_count": 1,
+        "majority_threshold": 1,
+        "tie_rule": "not_applicable"
+      }
+    }
+  ],
+  "class1_targets": [
+    "legal final move",
+    "board-state fidelity",
+    "rule-following",
+    "timing",
+    "single-referee validation"
+  ],
+  "minimum_result_fields": [
+    "run_id",
+    "test_class",
+    "board_count",
+    "boards",
+    "votes_by_player_agent",
+    "selected_move_by_board",
+    "referee_votes_by_board",
+    "state_errors",
+    "rule_errors"
+  ]
+}

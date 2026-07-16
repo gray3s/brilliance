@@ -40,6 +40,23 @@ A referee owns the official board state. Agents observe the board and propose
 moves. The referee validates moves, applies legal moves, records time, and
 classifies game endings.
 
+AIChess should also support 2-, 3-, 4-, and 5-agent Class 1 tests. These can
+include separate planning agents, spare agents that make alternative move
+recommendations, multiple referees, and mixed-agent stacks inside the same
+Class 1 test.
+
+Starter plan:
+
+```text
+v1/multi_agent_chess_test_plan_20260715_1942MDT.md
+```
+
+Local-hardware vs cloud-software benchmark package:
+
+```text
+v1/local_vs_cloud_benchmark_package_20260715_1943MDT.md
+```
+
 ## Measurements
 
 - legal move rate,
@@ -51,6 +68,11 @@ classifies game endings.
 - plies to game end,
 - game-ending type,
 - local-vs-cloud stack comparison,
+- local-hardware vs cloud-software benchmark comparison,
+- single-agent vs multi-agent comparison,
+- mixed-agent role comparison,
+- referee agreement/disagreement,
+- spare-agent recommendation quality,
 - suitability of each agent stack for bounded stateful tasks.
 
 ## Current Source Material

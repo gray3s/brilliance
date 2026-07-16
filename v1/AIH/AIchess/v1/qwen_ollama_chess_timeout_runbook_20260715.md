@@ -2,7 +2,8 @@
 
 Created: 2026-07-15
 
-Language policy for this run: Bash plus C++/Qt. No Python runner is used.
+Language policy for this run: Bash plus C++/Qt. No Python runner, Python
+module, Python cache, or Python-generated active fixture is used.
 
 Purpose: run bounded AI chess tests against locally installed Qwen-family Ollama models, measure how long each model runs before completing or needing termination, and see whether any model can complete a chess game under referee control.
 

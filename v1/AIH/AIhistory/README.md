@@ -28,6 +28,15 @@ agentic AI systems so they can be converted into public-safe, bounded tests.
 
 AIhistory is not itself one of the three ordered hallucination-test classes.
 It primarily supports Class 2: provenance/workflow-history hallucination.
+Class 2 tests derived from AIhistory material should be broken down by subject
+matter or subject field, such as legal/evidence workflow, software/project
+workflow, academic/research workflow, repository/version-control workflow, or
+personal-history/provenance workflow. A starter information-technology tools
+and support workflow candidate list is recorded in:
+
+```text
+v1/class2_it_tools_procedures_candidate_tests_20260715_1939MDT.md
+```
 
 ## Position In AIH v1
 

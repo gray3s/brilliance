@@ -1,0 +1,115 @@
+{
+  "config_id": "aichess_option_four_boards_one_agent_sides_three_referees_each_v1_20260715_2110",
+  "created": "20260715_2110MDT",
+  "test_family": "AIchess",
+  "option_type": "three_referee_per_board",
+  "purpose": "Optional stronger referee configuration using four boards, one player agent for each side on each board, and three referees per board.",
+  "referee_dependent_statistics_required": true,
+  "board_count": 4,
+  "boards": [
+    {
+      "board_id": "board_1",
+      "player_teams": {
+        "white": [
+          "board_1_white_agent_1"
+        ],
+        "black": [
+          "board_1_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_1_referee_1",
+        "board_1_referee_2",
+        "board_1_referee_3"
+      ],
+      "referee_decision_rule": {
+        "type": "majority_rule",
+        "referee_count": 3,
+        "majority_threshold": 2
+      }
+    },
+    {
+      "board_id": "board_2",
+      "player_teams": {
+        "white": [
+          "board_2_white_agent_1"
+        ],
+        "black": [
+          "board_2_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_2_referee_1",
+        "board_2_referee_2",
+        "board_2_referee_3"
+      ],
+      "referee_decision_rule": {
+        "type": "majority_rule",
+        "referee_count": 3,
+        "majority_threshold": 2
+      }
+    },
+    {
+      "board_id": "board_3",
+      "player_teams": {
+        "white": [
+          "board_3_white_agent_1"
+        ],
+        "black": [
+          "board_3_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_3_referee_1",
+        "board_3_referee_2",
+        "board_3_referee_3"
+      ],
+      "referee_decision_rule": {
+        "type": "majority_rule",
+        "referee_count": 3,
+        "majority_threshold": 2
+      }
+    },
+    {
+      "board_id": "board_4",
+      "player_teams": {
+        "white": [
+          "board_4_white_agent_1"
+        ],
+        "black": [
+          "board_4_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_4_referee_1",
+        "board_4_referee_2",
+        "board_4_referee_3"
+      ],
+      "referee_decision_rule": {
+        "type": "majority_rule",
+        "referee_count": 3,
+        "majority_threshold": 2
+      }
+    }
+  ],
+  "required_referee_dependent_statistics": [
+    "referee_vote_by_board_and_referee",
+    "referee_agreement_by_board",
+    "referee_majority_result_by_board",
+    "referee_disagreement_count_by_board",
+    "referee_legal_vote_rate_by_board",
+    "referee_legal_vote_rate_by_referee",
+    "referee_latency_by_referee_if_available",
+    "referee_error_count_by_referee"
+  ],
+  "minimum_result_fields": [
+    "run_id",
+    "board_count",
+    "selected_move_by_board",
+    "source_citations_or_packet_references_by_board",
+    "referee_votes_by_board",
+    "referee_dependent_statistics",
+    "referee_majority_result_by_board",
+    "referee_disagreement_events"
+  ]
+}

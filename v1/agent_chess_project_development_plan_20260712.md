@@ -95,6 +95,56 @@ Therefore, AIH development needs a disciplined selection process:
 AI Chess Match is valuable partly because it is a first concrete test rather
 than an endless taxonomy exercise.
 
+Multi-agent extension:
+
+AI Chess Match should include a planned path for 2-, 3-, 4-, and 5-agent
+Class 1 tests. The useful extension is not just more players. It is role
+separation:
+
+```text
+primary player
+planner
+spare recommender
+referee
+observer/logger
+arbiter
+```
+
+Two agents can establish the player/referee baseline. Three and four agents can
+test planning plus alternative move recommendations from spare agents. Five
+agents can add multiple referees or an arbiter. This should be directly useful
+because local resource use should scale with agent size and role: smaller local
+agents may be enough for spare recommendations or logging, while stronger
+agents can be reserved for planning or final move selection.
+
+The same Class 1 test may also mix different agents or stacks in different
+roles. Mixed-agent tests should record the model/stack used for each role and
+preserve referee disagreement, alternative recommendations, final move choice,
+and legality outcomes.
+
+Detailed starter plan:
+
+```text
+v1/AIH/AIchess/v1/multi_agent_chess_test_plan_20260715_1942MDT.md
+```
+
+Benchmark package direction:
+
+AI Chess Match should also support a local-hardware vs cloud-software benchmark
+package. The useful comparison is not broad model superiority. It is bounded
+Class 1 behavior under identical prompts, positions, time controls, output
+schemas, and referee rules.
+
+The package should preserve local hardware manifests, cloud software manifests,
+run logs, result JSON, scoring summaries, cost/resource notes, and role maps for
+single-agent and multi-agent configurations.
+
+Detailed benchmark package note:
+
+```text
+v1/AIH/AIchess/v1/local_vs_cloud_benchmark_package_20260715_1943MDT.md
+```
+
 Related AIH suite draft:
 
 ```text

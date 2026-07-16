@@ -10,6 +10,14 @@ public-safe tests.
 
 AIhistory is not itself Class 2. The current synthetic provenance probe is a
 Class 2 prototype derived from AIhistory-style reference material.
+Class 2 test records should carry a subject-matter or subject-field tag so
+provenance/workflow failures can be compared across domains.
+
+Starter candidate tests for common IT tools and procedures are recorded in:
+
+```text
+class2_it_tools_procedures_candidate_tests_20260715_1939MDT.md
+```
 
 ## Position In AIH v1
 

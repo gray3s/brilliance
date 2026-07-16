@@ -1,0 +1,58 @@
+{
+  "config_id": "aichess_class1_one_board_one_agent_sides_three_referees_v1_20260715_2016",
+  "created": "20260715_2016MDT",
+  "test_class": "class_1_rule_bound_state_game_action_hallucination",
+  "test_family": "AIchess",
+  "purpose": "Class 1 AIchess test using one board, one player agent for each side, and three referees for stronger legality/state validation.",
+  "board_count": 1,
+  "boards": [
+    {
+      "board_id": "board_1",
+      "player_teams": {
+        "white": [
+          "board_1_white_agent_1"
+        ],
+        "black": [
+          "board_1_black_agent_1"
+        ]
+      },
+      "player_team_decision_rule": {
+        "type": "single_vote",
+        "votes_per_side": 1,
+        "majority_threshold": 1,
+        "tie_rule": "not_applicable"
+      },
+      "referee_team": [
+        "board_1_referee_1",
+        "board_1_referee_2",
+        "board_1_referee_3"
+      ],
+      "referee_decision_rule": {
+        "type": "majority_rule",
+        "referee_count": 3,
+        "majority_threshold": 2,
+        "tie_rule": "not_applicable_with_three_votes_unless_all_votes_differ",
+        "all_votes_differ_rule": "repeat_once_then_mark_no_majority"
+      }
+    }
+  ],
+  "class1_targets": [
+    "legal final move",
+    "board-state fidelity",
+    "rule-following",
+    "timing",
+    "three-referee validation"
+  ],
+  "minimum_result_fields": [
+    "run_id",
+    "test_class",
+    "board_count",
+    "boards",
+    "votes_by_player_agent",
+    "selected_move_by_board",
+    "referee_votes_by_board",
+    "referee_majority_by_board",
+    "state_errors",
+    "rule_errors"
+  ]
+}

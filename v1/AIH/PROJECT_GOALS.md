@@ -74,11 +74,26 @@ Class 2 = provenance/workflow-history hallucination
 Class 3 = source-bound knowledge/education-ladder hallucination
 ```
 
-Class 3 can be subdivided into education bands such as K-3, 3-6, 6-9, 9-12,
-undergraduate years by major, master's tracks by field, and PhD tracks by
-field. It can also include professional-license and certification background
-tests divided by required category. Public summaries can still say `Class 3 AIH
-test`; the repository should carry the detailed level, field, source, category,
+Class 1 AIChess should include a planned path for 2-, 3-, 4-, and 5-agent
+tests with player, planner, spare-recommender, referee, observer/logger, and
+arbiter roles. These tests may mix different agents or stacks inside the same
+Class 1 run.
+
+Class 2 should be subdivided by subject matter or subject field. Class 3 should
+be subdivided by the academic class that supplied the source material. K-PhD
+tests should be subdivided by academic year for K-12 material, by 1xx/2xx/3xx/4xx
+course-year level for bachelor's and master's-level material, and by generalized
+third- and fourth-year graduate work for Ph.D. material.
+
+The current detailed breakdown rule is recorded here:
+
+```text
+v1/AIH/class_taxonomy_breakdown_20260715_1931MDT.md
+```
+
+Public summaries can still say `Class 2 AIH test`, `Class 3 AIH test`, or
+`K-PhD test`; the repository should carry the detailed subject field, source
+academic class, academic year/course-year level, source packet, category,
 difficulty-distribution, and grading rules.
 
 For professional-license/certification paths, individual questions can be
@@ -90,7 +105,7 @@ claiming to reproduce or replace an actual licensing exam.
 The general Class 3 structure is:
 
 ```text
-track -> level/license -> field/category -> difficulty band -> question
+source academic class -> academic year/course-year level -> field/category -> difficulty band -> question
 ```
 
 This allows multiple subcategories within each academic or professional path

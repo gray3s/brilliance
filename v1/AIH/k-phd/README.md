@@ -27,6 +27,23 @@ The K-PhD test evaluates whether an agentic AI system can answer bounded
 academic questions across educational levels while respecting time, I/O,
 grading, and reference-source limits.
 
+K-PhD tests should be broken down by academic year for K-12 material and by
+college course-year level for bachelor's and master's-level material. Ph.D.
+work is generalized to third- and fourth-year graduate work.
+
+```text
+K-12: K, grade_01, grade_02, ..., grade_12
+bachelor's/master's: 1xx, 2xx, 3xx, 4xx
+Ph.D.: grad_year_3, grad_year_4
+```
+
+The source academic class or course packet should still be recorded for each
+test. The detailed taxonomy rule is:
+
+```text
+v1/AIH/class_taxonomy_breakdown_20260715_1931MDT.md
+```
+
 ## Position In AIH v1
 
 ```text

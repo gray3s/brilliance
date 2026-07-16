@@ -1,0 +1,101 @@
+{
+  "config_id": "aichess_class3_four_boards_one_agent_sides_four_referees_v1_20260715_2016",
+  "created": "20260715_2016MDT",
+  "test_class": "class_3_source_bound_knowledge",
+  "test_family": "AIchess_derived",
+  "purpose": "Class 3 AIchess-derived source-bound chess knowledge test using four boards, one player agent for each side on each board, and four referees total.",
+  "classification_note": "Use this as Class 3 when the target failure is source-bound chess knowledge or instructional/academic chess material across a four-board test set.",
+  "source_academic_class": "TBD_chess_instructional_source_packet",
+  "source_material_id": "TBD",
+  "board_count": 4,
+  "boards": [
+    {
+      "board_id": "board_1",
+      "player_teams": {
+        "white": [
+          "board_1_white_agent_1"
+        ],
+        "black": [
+          "board_1_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_1_referee_1"
+      ]
+    },
+    {
+      "board_id": "board_2",
+      "player_teams": {
+        "white": [
+          "board_2_white_agent_1"
+        ],
+        "black": [
+          "board_2_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_2_referee_1"
+      ]
+    },
+    {
+      "board_id": "board_3",
+      "player_teams": {
+        "white": [
+          "board_3_white_agent_1"
+        ],
+        "black": [
+          "board_3_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_3_referee_1"
+      ]
+    },
+    {
+      "board_id": "board_4",
+      "player_teams": {
+        "white": [
+          "board_4_white_agent_1"
+        ],
+        "black": [
+          "board_4_black_agent_1"
+        ]
+      },
+      "referee_team": [
+        "board_4_referee_1"
+      ]
+    }
+  ],
+  "player_team_decision_rule_by_board": {
+    "type": "single_vote",
+    "votes_per_side": 1,
+    "majority_threshold": 1,
+    "tie_rule": "not_applicable"
+  },
+  "referee_decision_rule_by_board": {
+    "type": "single_vote",
+    "referee_count_per_board": 1,
+    "majority_threshold": 1,
+    "tie_rule": "not_applicable"
+  },
+  "source_bound_targets": [
+    "whether agents stay within the provided chess source packet on each board",
+    "whether agents distinguish source-supported claims from chess intuition",
+    "whether per-board reasoning is attributed to the correct source material",
+    "whether unsupported opening/endgame claims are flagged across the board set"
+  ],
+  "minimum_result_fields": [
+    "run_id",
+    "test_class",
+    "source_academic_class",
+    "source_material_id",
+    "board_count",
+    "boards",
+    "votes_by_player_agent",
+    "selected_move_by_board",
+    "source_citations_or_packet_references_by_board",
+    "unsupported_source_claims",
+    "referee_votes_by_board",
+    "source_boundary_errors"
+  ]
+}

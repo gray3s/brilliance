@@ -1,0 +1,82 @@
+{
+  "config_id": "aichess_class2_two_boards_one_agent_sides_one_referee_each_v1_20260715_2016",
+  "created": "20260715_2016MDT",
+  "test_class": "class_2_provenance_workflow",
+  "test_family": "AIchess_derived",
+  "purpose": "Class 2 AIchess-derived workflow/provenance test using two boards, one player agent for each side on each board, and one referee per board.",
+  "classification_note": "Use this as Class 2 when the target failure is workflow/provenance tracking across multiple boards, run artifacts, agent claims, and per-board referee verification.",
+  "board_count": 2,
+  "boards": [
+    {
+      "board_id": "board_1",
+      "player_teams": {
+        "white": [
+          "board_1_white_agent_1"
+        ],
+        "black": [
+          "board_1_black_agent_1"
+        ]
+      },
+      "player_team_decision_rule": {
+        "type": "single_vote",
+        "votes_per_side": 1,
+        "majority_threshold": 1,
+        "tie_rule": "not_applicable"
+      },
+      "referee_team": [
+        "board_1_referee_1"
+      ],
+      "referee_decision_rule": {
+        "type": "single_vote",
+        "referee_count": 1,
+        "majority_threshold": 1,
+        "tie_rule": "not_applicable"
+      }
+    },
+    {
+      "board_id": "board_2",
+      "player_teams": {
+        "white": [
+          "board_2_white_agent_1"
+        ],
+        "black": [
+          "board_2_black_agent_1"
+        ]
+      },
+      "player_team_decision_rule": {
+        "type": "single_vote",
+        "votes_per_side": 1,
+        "majority_threshold": 1,
+        "tie_rule": "not_applicable"
+      },
+      "referee_team": [
+        "board_2_referee_1"
+      ],
+      "referee_decision_rule": {
+        "type": "single_vote",
+        "referee_count": 1,
+        "majority_threshold": 1,
+        "tie_rule": "not_applicable"
+      }
+    }
+  ],
+  "workflow_provenance_targets": [
+    "which board produced each event",
+    "which side-agent proposed each candidate move",
+    "which referee verified legality on each board",
+    "whether board-specific artifacts were preserved",
+    "whether the result claims match the actual per-board event log"
+  ],
+  "minimum_result_fields": [
+    "run_id",
+    "test_class",
+    "board_count",
+    "boards",
+    "votes_by_player_agent",
+    "selected_move_by_board",
+    "referee_votes_by_board",
+    "artifact_paths_by_board",
+    "provenance_errors",
+    "workflow_state_errors"
+  ]
+}

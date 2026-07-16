@@ -12,11 +12,16 @@ a planning inventory for controlled hallucination-test design.
 
 ## Class 3 Structure
 
-Use the common Class 3 structure:
+Use the current Class 3 structure:
 
 ```text
-track -> level/license -> field/category -> difficulty band -> question
+source academic class -> academic year/course-year level -> field/category -> difficulty band -> question
 ```
+
+Class 3 tests should be broken down by the academic class that supplied the
+source material. K-PhD tests should then subdivide by academic year for K-12
+material, by 1xx/2xx/3xx/4xx course-year level for bachelor's and master's-level
+material, and by grad_year_3/grad_year_4 for Ph.D. material.
 
 This is an iterative and somewhat circular model. The classification structure
 will influence the tests, and test results will expose weaknesses in the
@@ -39,14 +44,23 @@ For each candidate program, later work should define:
 
 ## Academic Program Candidates
 
-### K-12 Bands
+### K-12 Academic Years
 
-Candidate bands:
+Candidate academic years:
 
-- K-3,
-- 3-6,
-- 6-9,
-- 9-12.
+- K,
+- grade_01,
+- grade_02,
+- grade_03,
+- grade_04,
+- grade_05,
+- grade_06,
+- grade_07,
+- grade_08,
+- grade_09,
+- grade_10,
+- grade_11,
+- grade_12.
 
 Candidate categories:
 
@@ -59,6 +73,15 @@ Candidate categories:
 - boundary/refusal judgment.
 
 ### Undergraduate Majors
+
+Undergraduate source material should be tagged by course-year level:
+
+```text
+1xx
+2xx
+3xx
+4xx
+```
 
 Candidate undergraduate fields:
 
@@ -99,6 +122,14 @@ Candidate academic categories:
 - boundary/refusal judgment.
 
 ### Master's And PhD Fields
+
+Master's-level source material should use the same 1xx/2xx/3xx/4xx course-year
+level convention when the source is a course. Ph.D. work is generalized to:
+
+```text
+grad_year_3
+grad_year_4
+```
 
 Candidate graduate fields:
 
