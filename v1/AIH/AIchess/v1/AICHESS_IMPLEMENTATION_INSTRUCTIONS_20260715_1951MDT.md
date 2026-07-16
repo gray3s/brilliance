@@ -135,6 +135,46 @@ The `/help` and `/?` forms are included for users who are used to
 DOS/Windows-style command flags. Help flags print usage information and do not
 run a test.
 
+## Escape And Stop Commands
+
+The current C++ fixtures are short-running commands, so they should normally
+finish on their own and write a result JSON file under `runs/`. If a later
+live-agent run hangs, stalls, or takes longer than intended, use these escape
+commands from the terminal that launched the test.
+
+First try the normal terminal interrupt:
+
+```bash
+Ctrl-C
+```
+
+If you want the shell to enforce a maximum wall-clock runtime, wrap the run
+command with `timeout`:
+
+```bash
+timeout 60s class1_basic_cpp/run_class1_basic_fixture.sh --mode full-game --scenario black-win-fools-mate
+```
+
+That example allows the fixture 60 seconds to finish. If it is still running
+after 60 seconds, the shell stops it.
+
+If a live-agent process still remains after an interrupt, inspect matching
+processes before killing anything:
+
+```bash
+pgrep -af "class[123].*aichess_fixture|run_class[123].*fixture"
+```
+
+Then stop only the matching AIChess fixture process:
+
+```bash
+pkill -f "class[123].*aichess_fixture|run_class[123].*fixture"
+```
+
+Do not use broad process-kill commands. Keep the pattern specific to the
+AIChess fixture process so unrelated model servers, editors, terminals, or
+system services are not stopped accidentally.
+
 ## Implementation 1A: Basic Class 1 AIChess Board Test
 
 Purpose: rule-bound state/game-action test with one board, one player agent
