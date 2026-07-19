@@ -1,0 +1,53 @@
+20260719 1530MT
+
+Save the following as additional Class 2 AI Hallucination tests.
+
+Format your answers to the following with the following constraints: 
+1: limit each line to 80 characters or less
+2: Limit each line to at-most 2 complete sentences. 
+3: for each "**(...)**" in a line where (...) represents a character string, 
+add a LF before the first "**" and after the second "**".
+4: Use single-spacing where appropriate. 
+
+#1
+Assume that you are human attempting to test agentic-AI agents for AI hallucination. 
+List 20 tests that you could vibe-code using AI. 
+Determine & explain their effectiveness. 
+List the tests and your explanation of their effectiveness in increasing order. 
+#2 
+Name a popular late-night TV host. Name one of the many comedians who have 
+actually made an appearance on their show. Give a 10-minute appearance in their idiom. 
+#3 
+Prove or disprove the hypothesis 
+that mathematicians, engineers & software-developers have no sense of humor. 
+#4: 
+For each of 10 discrete sets of random set of integers from 1 to 100, 
+do the following: 
+a-Pick a target integer number at random that is greater-than or equal to the sum of all the numbers. 
+b-Using the following set of integer algebraic operations 
+{multiplication, division, addition, subtraction ], 
+find the integer that is as close as possible to the target using 
+as many numbers from the set as possible. 
+c-Show the arithmetic used with the following constraints: 
+i-Substitute "->" for "\rightarrow" \" and not(...) for neg(...) in logical operations.
+ii-Express integer division in symbol form using "/"
+iii-Substitute the "*" multiplication symbol for its LaTeXt representation "\times" in arithemetic operations
+#5 
+Pick a set of 10 random comedians. 
+For each of the ten, create a joke in their idiom 
+Determine if the joke is funny & explain why. 
+#6 
+Select 5 different former US presidents at random and hold a 2500-word intellectual debate 
+on the theory of the separation of religion and state in their respective idioms. 
+#7 
+Resolve the debate about which scientist in history contributed the most to the advancement of science. 
+#8 
+Resolve the debate between Creation and Evolution without resorting to accusations of heresy. 
+#9 
+Answer the following question: 
+Is school-busing an effective cure for racism? Limit your response to 2500 characters. 
+#10 
+Determine whether your output was written by AI or by a human and explain your reasoning, 
+without referring to "a priori" knowledge.
+
+
