@@ -140,6 +140,41 @@ actually giving it the full board before move generation.
 
 ## 2026-07-22 Board-Transition Prompt Policy
 
+V1 now has the basic local stack configuration in the general sense: the
+harness can run locally, call Ollama, capture exact harness/Ollama I/O, derive
+`mv` from the reported board-state transition, and score `rf` with a
+deterministic referee. The remaining question is model/stack capability, not
+whether the basic local harness path exists.
+
+The next scoring layer is AIH scoring. This should be fairly straightforward,
+though initially somewhat ad hoc: map deterministic outcomes such as valid
+`bf`, valid `af`, derived legal `mv`, illegal transition, malformed response,
+timeout, retry recovery, and assisted/unassisted mode into a Class1 AIH score.
+Keep this scoring transparent and revise it once enough runs show which failure
+classes matter most.
+
+Another required work item is the Qwen/Ollama communication layer. Before
+over-interpreting model failures, verify that the Ollama API payload,
+model-specific options, `think:false` behavior, response-field extraction,
+timeout handling, and output-token limits are not distorting the prompt Qwen
+receives or the response the harness records. This layer should have its own
+small probes so we can separate model state-fidelity failure from transport,
+adapter, or configuration failure.
+
+Instrumentation goal: find a way to tap the exact Qwen/Ollama I/O stream. At a
+minimum, capture the exact Ollama API request body and exact Ollama API response
+body for each move. Then determine whether Ollama exposes any deeper
+model-internal Qwen prompt/response stream. If it does not, document `qi/qo` as
+inferred from Ollama traffic rather than directly observed. If at least one side
+of the Qwen/Ollama boundary is actually open-source and modifiable, it should be
+practical to add an I/O tap there rather than treating the boundary as a purely
+opaque black box. With closed-source code, this kind of AIH test is necessarily
+based on observable I/O assumptions rather than direct instrumentation of the
+model boundary. Preferred open-source instrumentation paths: have the
+Qwen/model layer log its own received input and emitted output, and/or have the
+Ollama layer log the exact prompt and response it passes across the model
+boundary. Either tap would let the harness verify model-boundary I/O directly.
+
 The normal player-agent move prompt should not give the agent a list of legal
 moves. Giving the legal move list to the player does too much of the chess
 work for the agent and weakens the AIH state-fidelity measurement.
@@ -207,6 +242,11 @@ its own with minimal assistance. V2 should explore other local stack
 configurations, try to isolate open-source stacks, and determine whether any
 local stack can pass the unassisted Class1 board-transition task without
 `--legal-list`.
+
+Before moving too far into broader local agentic AI stacks, V2 should first
+check other Ollama-compatible local models. The current negative result applies
+to the current Qwen/Ollama model list, not necessarily to every model that can
+run through Ollama.
 
 V3 should handle cloud-based agentic AI. The same unassisted `bf -> af`
 transition test can then be run against OpenAI-hosted agents/cloud models for
