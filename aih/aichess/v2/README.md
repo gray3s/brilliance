@@ -30,17 +30,18 @@ test_table.csv
 `test_table.csv` records run counts, fail percentages, and the compact I/O
 state clock for the specific hard-wired module chain under test.
 
-The first plot artifacts are simple 1280x720 24-bit BMPs:
+The first public plot links use compact CSV plot data so GitHub can display
+them directly without forcing readers through large image artifacts:
 
 ```text
-plots/agent_size_vs_failure_rate_20260722.bmp
-plots/source_family_failure_rate_20260722.bmp
+plots/agent_size_vs_failure_rate_20260722.csv
+plots/source_family_failure_rate_20260722.csv
 ```
 
 Links:
 
-- [Agent size vs failure rate](plots/agent_size_vs_failure_rate_20260722.bmp)
-- [Source/family vs failure rate](plots/source_family_failure_rate_20260722.bmp)
+- [Agent size vs failure rate data](plots/agent_size_vs_failure_rate_20260722.csv)
+- [Source/family vs failure rate data](plots/source_family_failure_rate_20260722.csv)
 
 These plots are preliminary. Each point currently comes from one assisted-mode
 run per installed local Ollama agent. Repeated runs are needed before the error

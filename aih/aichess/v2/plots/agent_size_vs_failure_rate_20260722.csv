@@ -1,0 +1,7 @@
+agent,model,size_gb,source,provider,namespace,Nruns,Nfails,failure_pct,handholding_mode
+agent1,qwen2.5:0.5b,0.397,ltree,ollama,default,1,1,100.0,11
+agent2,qwen2.5-coder:3b,1.9,ltree,ollama,default,1,0,0.0,11
+agent3,granite4:3b,2.1,ltree,ollama,default,1,0,0.0,11
+agent4,qwen:4b,2.3,ltree,ollama,default,1,0,0.0,11
+agent5,qwen2.5:latest,4.7,ltree,ollama,default,1,0,0.0,11
+agent6,robit/qwen3.5-9b-r7-research:q4km,5.6,github,ollama,robit,1,1,100.0,11

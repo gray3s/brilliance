@@ -1,0 +1,4 @@
+source,provider,namespace,family,Nagents,Nruns,Nfails,failure_pct,handholding_mode
+ltree,ollama,default,qwen,4,4,1,25.0,11
+ltree,ollama,default,granite,1,1,0,0.0,11
+github,ollama,robit,qwen,1,1,1,100.0,11

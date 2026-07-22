@@ -3,7 +3,7 @@
 20260722
 
 This v2 checkpoint records the current local Ollama assisted-mode test table
-and links to the first simple 720p 24-bit BMP plot artifacts.
+and links to the first compact plot-data tables.
 
 LinkedIn post:
 
@@ -14,10 +14,10 @@ Tables:
 - [module_description.csv](module_description.csv)
 - [test_table.csv](test_table.csv)
 
-Plots:
+Plot data:
 
-- [Agent size vs failure rate](plots/agent_size_vs_failure_rate_20260722.bmp)
-- [Source/family vs failure rate](plots/source_family_failure_rate_20260722.bmp)
+- [Agent size vs failure rate data](plots/agent_size_vs_failure_rate_20260722.csv)
+- [Source/family vs failure rate data](plots/source_family_failure_rate_20260722.csv)
 
 Current plotted handholding mode:
 
