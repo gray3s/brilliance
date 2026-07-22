@@ -1,0 +1,38 @@
+# Build outputs
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.app/
+
+# Qt/qmake generated files
+qwen_ollama_chess_qt/Makefile
+qwen_ollama_chess_qt/.qmake.stash
+qwen_ollama_chess_qt/main.o
+qwen_ollama_chess_qt/qwen_ollama_chess_qt
+aichessv1
+
+# Fixture binaries
+class1_cpp/class1_aichess_fixture
+class1_cpp_test/class1_aichess_fixture_test
+class2_cpp/class2_aichess_fixture
+class3_cpp/class3_aichess_fixture
+
+# Runtime outputs
+runs/
+*.log
+
+# Local secrets and environment
+.env
+.env.*
+*.key
+*.pem
+
+# Editor/OS noise
+.DS_Store
+Thumbs.db
+*~
+*.swp

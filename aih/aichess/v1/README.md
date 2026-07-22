@@ -23,6 +23,26 @@ A referee owns the official board state. Agents observe the board and propose
 moves. The referee validates moves, applies legal moves, records time, and
 classifies game endings.
 
+The current Class1 v1 player test is a board-transition test. In the default
+mode, the player receives the current full FEN but does not receive the legal
+move list and does not return a move field. The player returns only:
+
+```text
+bf=<the full current board FEN exactly as given>
+af=<the full board FEN after the player move>
+```
+
+The harness derives `mv` from the reported `bf -> af` transition by comparing
+the reported after-state with the deterministic after-state for each hidden
+legal move. The referee result `rf` is legal only when exactly one hidden legal
+move explains the transition. This keeps the legal move list out of the normal
+agent prompt while still using deterministic rules for scoring.
+
+An assisted comparison mode is available with `--legal-list`. That mode gives
+the player both the board state and the legal UCI move list. It is useful for
+A/B testing, but it is not the default AIH measurement path because it lets the
+agent choose from a supplied legal list.
+
 V1 should grow toward board-based player-agent and referee-team chess tests.
 The current scope is intentionally limited to board assignments, one player
 agent per side per board, and board-specific referee coverage before adding any
@@ -43,6 +63,7 @@ local_vs_cloud_benchmark_package_20260715_1943MDT.md
 Concrete runner and fixture package artifacts:
 
 ```text
+./aichessv1
 ./aichess.sh
 class1_cpp/class1_aichess_fixture.cpp
 class1_cpp/build_class1_fixture.sh
@@ -105,6 +126,33 @@ package is stable.
 The active v1 harness uses C++/Qt/Bash only. No Python runner, Python module,
 Python cache, or Python-generated active fixture is part of the supported
 AIChess v1 path.
+
+`aichessv1` is the compiled C++ runner with wrapper-style CLI handling. The
+shell wrapper remains available for compatibility.
+
+Example default Class1 qwen4 run:
+
+```bash
+./aichessv1 --loglvl 2 -nb 1 -nl 1 -mxply 6 -sto 120 -otkns 256 qwen4
+```
+
+Example assisted comparison run:
+
+```bash
+./aichessv1 --loglvl 2 --legal-list -nb 1 -nl 1 -mxply 6 -sto 120 -otkns 256 qwen4
+```
+
+Level-2 transcript format:
+
+```text
+ho: "<full prompt sent by harness to Ollama>"
+hi: "<full response returned from Ollama to harness>"
+mv: "<move derived by the harness from bf/af>"
+rf: "<referee/checker result>"
+```
+
+`ho` and `hi` preserve original line breaks and are not merged across separate
+requests or responses.
 
 ## Measurements
 
