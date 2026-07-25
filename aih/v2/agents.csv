@@ -1,0 +1,19 @@
+agent_key,agent_type,sort_order,source,provider,namespace,model,label,available,timestamp
+11,local,1,ltree,ollama,default,granite4:3b,local granite4:3b,yes,20260725022232
+12,local,2,ltree,ollama,default,qwen2.5-coder:3b,local qwen2.5-coder:3b,yes,20260725022232
+13,local,3,ltree,ollama,default,qwen2.5:0.5b,local qwen2.5:0.5b,yes,20260725022232
+14,local,4,ltree,ollama,default,qwen2.5:latest,local qwen2.5:latest,yes,20260725022232
+15,local,5,ltree,ollama,default,qwen:4b,local qwen:4b,yes,20260725022232
+16,local,6,ltree,ollama,default,robit/qwen3.5-9b-r7-research:q4km,local robit/qwen3.5-9b-r7-research:q4km,yes,20260725022232
+17,local,7,ltree,ollama,default,smollm2:135m,local smollm2:135m,yes,20260725022232
+18,local,8,ltree,ollama,default,gemma3:270m,local gemma3:270m,yes,20260725022232
+19,local,9,ltree,ollama,default,llama3.2:1b,local llama3.2:1b,yes,20260725022232
+1A,local,10,ltree,ollama,default,gemma3:1b,local gemma3:1b,yes,20260725022232
+1B,local,11,ltree,ollama,default,tinyllama:latest,local tinyllama:latest,yes,20260725022232
+1C,local,12,ltree,ollama,default,phi3:mini,local phi3:mini,yes,20260725022232
+1D,local,13,ltree,ollama,default,phi4-mini:latest,local phi4-mini:latest,yes,20260725022232
+1E,local,14,ltree,ollama,default,mistral:latest,local mistral:latest,yes,20260725022232
+01,cloud,1,cloud,openai,openai,openai:gpt-4.1-mini,cloud OpenAI gpt-4.1-mini,yes,20260725022232
+02,cloud,2,cloud,openai,openai,openai:gpt-4o-mini,cloud OpenAI gpt-4o-mini,yes,20260725022232
+03,cloud,3,cloud,openai,openai,openai:gpt-5-mini,cloud OpenAI gpt-5-mini,yes,20260725022232
+04,cloud,4,cloud,openai,openai,openai:gpt-5-nano,cloud OpenAI gpt-5-nano,yes,20260725022232

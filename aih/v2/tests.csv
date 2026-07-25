@@ -1,0 +1,122 @@
+test_id,class_id,class_name,level,area_id,area_name,test_ordinal,prompt,expected,grader,notes
+class1_0_1_1,Class 1:0:1:1,Class1,0,1,language,1,Say the word cat. Return only the word.,cat,normalized_token_or_phrase,pre_grade_floor; echo one common word
+class1_1_1_1,Class 1:1:1:1,Class1,1,1,language,1,"Which word names an animal: apple, chair, dog? Return only the word.",dog,normalized_token_or_phrase,grade_1; basic noun category
+class1_2_1_1,Class 1:2:1:1,Class1,2,1,language,1,Correct the spelling of teh. Return only the corrected word.,the,normalized_token_or_phrase,grade_2; common spelling correction
+class1_3_1_1,Class 1:3:1:1,Class1,3,1,language,1,Read: Ana has a blue pen. What color is the pen? Return only the color.,blue,normalized_token_or_phrase,grade_3; single sentence comprehension
+class1_4_1_1,Class 1:4:1:1,Class1,4,1,language,1,Choose the verb in this sentence: Birds fly south. Return only the verb.,fly,normalized_token_or_phrase,grade_4; basic grammar
+class1_5_1_1,Class 1:5:1:1,Class1,5,1,language,1,What is the plural of child? Return only the word.,children,normalized_token_or_phrase,grade_5; irregular plural
+class1_6_1_1,Class 1:6:1:1,Class1,6,1,language,1,Which sentence is past tense: I walk home. I walked home. Return only the past tense sentence.,i walked home,normalized_token_or_phrase,grade_6; tense recognition
+class1_7_1_1,Class 1:7:1:1,Class1,7,1,language,1,What does the prefix re- mean in rewrite? Return only one word: again or before.,again,normalized_token_or_phrase,grade_7; prefix meaning
+class1_8_1_1,Class 1:8:1:1,Class1,8,1,language,1,"Which word is closest in meaning to rapid: slow, quick, silent? Return only the word.",quick,normalized_token_or_phrase,grade_8; synonym
+class1_9_1_1,Class 1:9:1:1,Class1,9,1,language,1,"Combine without changing meaning: The rain stopped. The game began. Return only: After the rain stopped, the game began.","after the rain stopped, the game began",normalized_token_or_phrase,grade_9; sentence combination
+class1_10_1_1,Class 1:10:1:1,Class1,10,1,language,1,Identify the pronoun in: Maria said she was ready. Return only the pronoun.,she,normalized_token_or_phrase,grade_10; pronoun identification
+class1_11_1_1,Class 1:11:1:1,Class1,11,1,language,1,Which is an example of metaphor: The snow is a blanket. The snow is cold. Return only the metaphor sentence.,the snow is a blanket,normalized_token_or_phrase,grade_11; figurative language
+class1_12_1_1,Class 1:12:1:1,Class1,12,1,language,1,Give the main idea in one word: Bees carry pollen between flowers. Return only: pollination.,pollination,normalized_token_or_phrase,grade_12; main idea
+class1_13_1_1,Class 1:13:1:1,Class1,13,1,language,1,Which sentence uses a semicolon correctly: I packed lunch; then I left. I packed; lunch then I left. Return only the correct sentence.,i packed lunch; then i left,normalized_token_or_phrase,college_year_1; punctuation
+class1_14_1_1,Class 1:14:1:1,Class1,14,1,language,1,Classify the argument type: All mammals breathe. Whales are mammals. Therefore whales breathe. Return only: deductive.,deductive,normalized_token_or_phrase,college_year_2; argument language
+class1_15_1_1,Class 1:15:1:1,Class1,15,1,language,1,Name the rhetorical appeal based on credibility. Return only: ethos.,ethos,normalized_token_or_phrase,college_year_3; rhetorical vocabulary
+class1_16_1_1,Class 1:16:1:1,Class1,16,1,language,1,"In linguistics, what is the smallest meaning-bearing unit? Return only: morpheme.",morpheme,normalized_token_or_phrase,college_year_4; linguistics term
+class1_17_1_1,Class 1:17:1:1,Class1,17,1,language,1,"In discourse analysis, what does anaphora refer back to? Return only: antecedent.",antecedent,normalized_token_or_phrase,masters_year_1; advanced reference term
+class1_18_1_1,Class 1:18:1:1,Class1,18,1,language,1,What is the study of meaning in language called? Return only: semantics.,semantics,normalized_token_or_phrase,advanced_masters; graduate language term
+class1_19_1_1,Class 1:19:1:1,Class1,19,1,language,1,"In pragmatics, what is implied but not directly stated is an implicature. Return only: implicature.",implicature,normalized_token_or_phrase,phd_research; research language term
+class1_0_2_1,Class 1:0:2:1,Class1,0,2,logic,1,"If A is true and B is false, is A AND B true? Return only yes or no.",no,normalized_token_or_phrase,pre_grade_floor; boolean logic
+class1_1_2_1,Class 1:1:2:1,Class1,1,2,logic,1,"What comes next: red, blue, red, blue, red, __? Return only the color.",blue,normalized_token_or_phrase,grade_1; pattern completion
+class1_2_2_1,Class 1:2:2:1,Class1,2,2,logic,1,All cats are mammals. Milo is a cat. Is Milo a mammal? Return only yes or no.,yes,normalized_token_or_phrase,grade_2; syllogism
+class1_3_2_1,Class 1:3:2:1,Class1,3,2,logic,1,"Which number does not belong: 2, 4, 6, 9, 8? Return only the number.",9,normalized_token_or_phrase,grade_3; odd one out
+class1_4_2_1,Class 1:4:2:1,Class1,4,2,logic,1,"If today is Monday, what day is two days later? Return only the day.",wednesday,normalized_token_or_phrase,grade_4; temporal reasoning
+class1_5_2_1,Class 1:5:2:1,Class1,5,2,logic,1,A box is inside a bag. The bag is inside a car. Is the box in the car? Return only yes or no.,yes,normalized_token_or_phrase,grade_5; spatial transitivity
+class1_6_2_1,Class 1:6:2:1,Class1,6,2,logic,1,"If all zogs are blue and no blue things are square, can a zog be square? Return only yes or no.",no,normalized_token_or_phrase,grade_6; abstract syllogism
+class1_7_2_1,Class 1:7:2:1,Class1,7,2,logic,1,Which statement is the contrapositive of if P then Q? Return only: if not Q then not P.,if not q then not p,normalized_token_or_phrase,grade_7; formal logic
+class1_8_2_1,Class 1:8:2:1,Class1,8,2,logic,1,What is the truth value of NOT false? Return only true or false.,true,normalized_token_or_phrase,grade_8; negation
+class1_9_2_1,Class 1:9:2:1,Class1,9,2,logic,1,"If exactly one of A or B is true, what logic operation is this? Return only: xor.",xor,normalized_token_or_phrase,grade_9; exclusive disjunction
+class1_10_2_1,Class 1:10:2:1,Class1,10,2,logic,1,A fair coin is flipped. Is heads logically guaranteed? Return only yes or no.,no,normalized_token_or_phrase,grade_10; certainty distinction
+class1_11_2_1,Class 1:11:2:1,Class1,11,2,logic,1,Which fallacy attacks the person instead of the argument? Return only: ad hominem.,ad hominem,normalized_token_or_phrase,grade_11; fallacy recognition
+class1_12_2_1,Class 1:12:2:1,Class1,12,2,logic,1,"In a proof by contradiction, do you assume the negation first? Return only yes or no.",yes,normalized_token_or_phrase,grade_12; proof method
+class1_13_2_1,Class 1:13:2:1,Class1,13,2,logic,1,"If P implies Q and Q implies R, then P implies what? Return only R.",r,normalized_token_or_phrase,college_year_1; transitive implication
+class1_14_2_1,Class 1:14:2:1,Class1,14,2,logic,1,What is the name for reasoning from specific cases to a general rule? Return only: induction.,induction,normalized_token_or_phrase,college_year_2; inductive reasoning
+class1_15_2_1,Class 1:15:2:1,Class1,15,2,logic,1,"In Bayesian reasoning, posterior is proportional to likelihood times what? Return only: prior.",prior,normalized_token_or_phrase,college_year_3; Bayesian logic
+class1_16_2_1,Class 1:16:2:1,Class1,16,2,logic,1,What does modus ponens infer from P and P implies Q? Return only Q.,q,normalized_token_or_phrase,college_year_4; inference rule
+class1_17_2_1,Class 1:17:2:1,Class1,17,2,logic,1,"In predicate logic, what symbol usually means for all? Return only: forall.",forall,normalized_token_or_phrase,masters_year_1; quantifier
+class1_18_2_1,Class 1:18:2:1,Class1,18,2,logic,1,What property means if a relation has aRb and bRc then aRc? Return only: transitive.,transitive,normalized_token_or_phrase,advanced_masters; relation property
+class1_19_2_1,Class 1:19:2:1,Class1,19,2,logic,1,"In model checking, a counterexample disproves what kind of claim? Return only: universal.",universal,normalized_token_or_phrase,phd_research; research logic
+class1_0_3_1,Class 1:0:3:1,Class1,0,3,geography,1,What planet do humans live on? Return only: earth.,earth,normalized_token_or_phrase,pre_grade_floor; basic place
+class1_1_3_1,Class 1:1:3:1,Class1,1,3,geography,1,What is the capital of France? Return only the city.,paris,normalized_token_or_phrase,grade_1; capital
+class1_2_3_1,Class 1:2:3:1,Class1,2,3,geography,1,On which continent is Kenya? Return only the continent.,africa,normalized_token_or_phrase,grade_2; continent
+class1_3_3_1,Class 1:3:3:1,Class1,3,3,geography,1,Which is larger: a city or a continent? Return only the larger one.,continent,normalized_token_or_phrase,grade_3; scale
+class1_4_3_1,Class 1:4:3:1,Class1,4,3,geography,1,What ocean is west of California? Return only: pacific.,pacific,normalized_token_or_phrase,grade_4; ocean
+class1_5_3_1,Class 1:5:3:1,Class1,5,3,geography,1,What imaginary line divides Earth into Northern and Southern Hemispheres? Return only: equator.,equator,normalized_token_or_phrase,grade_5; equator
+class1_6_3_1,Class 1:6:3:1,Class1,6,3,geography,1,Which country contains the cities Tokyo and Osaka? Return only: japan.,japan,normalized_token_or_phrase,grade_6; country cities
+class1_7_3_1,Class 1:7:3:1,Class1,7,3,geography,1,What is the capital of Brazil? Return only: brasilia.,brasilia,normalized_token_or_phrase,grade_7; capital
+class1_8_3_1,Class 1:8:3:1,Class1,8,3,geography,1,Which US state is directly west of Nevada? Return only: california.,california,normalized_token_or_phrase,grade_8; relative location
+class1_9_3_1,Class 1:9:3:1,Class1,9,3,geography,1,What mountain range separates Europe and Asia in Russia? Return only: ural.,ural,normalized_token_or_phrase,grade_9; physical geography
+class1_10_3_1,Class 1:10:3:1,Class1,10,3,geography,1,Which river is commonly associated with ancient Egypt? Return only: nile.,nile,normalized_token_or_phrase,grade_10; river
+class1_11_3_1,Class 1:11:3:1,Class1,11,3,geography,1,What type of map shows elevation with contour lines? Return only: topographic.,topographic,normalized_token_or_phrase,grade_11; map type
+class1_12_3_1,Class 1:12:3:1,Class1,12,3,geography,1,What is the term for the long-term average weather of a region? Return only: climate.,climate,normalized_token_or_phrase,grade_12; climate
+class1_13_3_1,Class 1:13:3:1,Class1,13,3,geography,1,Which country has provinces named Ontario and Quebec? Return only: canada.,canada,normalized_token_or_phrase,college_year_1; political geography
+class1_14_3_1,Class 1:14:3:1,Class1,14,3,geography,1,What sea lies between Saudi Arabia and Africa? Return only: red sea.,red sea,normalized_token_or_phrase,college_year_2; regional geography
+class1_15_3_1,Class 1:15:3:1,Class1,15,3,geography,1,What projection is famous for enlarging areas near the poles? Return only: mercator.,mercator,normalized_token_or_phrase,college_year_3; cartography
+class1_16_3_1,Class 1:16:3:1,Class1,16,3,geography,1,What is the geographic term for a narrow land bridge connecting two larger land areas? Return only: isthmus.,isthmus,normalized_token_or_phrase,college_year_4; geomorphology
+class1_17_3_1,Class 1:17:3:1,Class1,17,3,geography,1,What process is measured by a country's urbanization rate? Return only: urbanization.,urbanization,normalized_token_or_phrase,masters_year_1; human geography
+class1_18_3_1,Class 1:18:3:1,Class1,18,3,geography,1,"What index often measures human development using health, education, and income? Return only: hdi.",hdi,normalized_token_or_phrase,advanced_masters; development geography
+class1_19_3_1,Class 1:19:3:1,Class1,19,3,geography,1,"In GIS, what does a raster represent data as? Return only: grid.",grid,normalized_token_or_phrase,phd_research; GIS
+class1_0_4_1,Class 1:0:4:1,Class1,0,4,math,1,What is 2 + 2? Return only the number.,4,normalized_token_or_phrase,pre_grade_floor; counting
+class1_1_4_1,Class 1:1:4:1,Class1,1,4,math,1,What is 7 + 5? Return only the number.,12,normalized_token_or_phrase,grade_1; addition
+class1_2_4_1,Class 1:2:4:1,Class1,2,4,math,1,What is 15 - 6? Return only the number.,9,normalized_token_or_phrase,grade_2; subtraction
+class1_3_4_1,Class 1:3:4:1,Class1,3,4,math,1,What is 6 times 4? Return only the number.,24,normalized_token_or_phrase,grade_3; multiplication
+class1_4_4_1,Class 1:4:4:1,Class1,4,4,math,1,What is 30 divided by 5? Return only the number.,6,normalized_token_or_phrase,grade_4; division
+class1_5_4_1,Class 1:5:4:1,Class1,5,4,math,1,"Mia has 12 stickers, gives away 5, then gets 3. How many? Return only the number.",10,normalized_token_or_phrase,grade_5; two step arithmetic
+class1_6_4_1,Class 1:6:4:1,Class1,6,4,math,1,What number makes blank + 7 = 15? Return only the number.,8,normalized_token_or_phrase,grade_6; missing number
+class1_7_4_1,Class 1:7:4:1,Class1,7,4,math,1,A recipe uses 2 cups rice for 3 cups water. How much water for 4 cups rice? Return only the number.,6,normalized_token_or_phrase,grade_7; ratio
+class1_8_4_1,Class 1:8:4:1,Class1,8,4,math,1,A price increases from 50 to 60. What is the percent increase? Return only the number.,20,normalized_token_or_phrase,grade_8; percent
+class1_9_4_1,Class 1:9:4:1,Class1,9,4,math,1,Solve 3x + 5 = 20. Return only x.,5,normalized_token_or_phrase,grade_9; linear equation
+class1_10_4_1,Class 1:10:4:1,Class1,10,4,math,1,A triangle has base 10 and height 6. What is its area? Return only the number.,30,normalized_token_or_phrase,grade_10; geometry area
+class1_11_4_1,Class 1:11:4:1,Class1,11,4,math,1,A bag has 3 red and 2 blue marbles. Probability of blue? Return only the fraction.,2/5,normalized_token_or_phrase,grade_11; probability
+class1_12_4_1,Class 1:12:4:1,Class1,12,4,math,1,"If f(x)=2x squared plus 3, what is f(4)? Return only the number.",35,normalized_token_or_phrase,grade_12; function evaluation
+class1_13_4_1,Class 1:13:4:1,Class1,13,4,math,1,What is the derivative of x squared? Return only: 2x.,2x,normalized_token_or_phrase,college_year_1; calculus
+class1_14_4_1,Class 1:14:4:1,Class1,14,4,math,1,What is the integral of 2x dx? Return only: x^2.,x^2,normalized_token_or_phrase,college_year_2; integral
+class1_15_4_1,Class 1:15:4:1,Class1,15,4,math,1,"What is the determinant of [[1,2],[3,4]]? Return only the number.",-2,normalized_token_or_phrase,college_year_3; linear algebra
+class1_16_4_1,Class 1:16:4:1,Class1,16,4,math,1,"What is the mean of 2, 4, 6, 8? Return only the number.",5,normalized_token_or_phrase,college_year_4; statistics
+class1_17_4_1,Class 1:17:4:1,Class1,17,4,math,1,What is the limit of sin(x)/x as x approaches 0? Return only the number.,1,normalized_token_or_phrase,masters_year_1; limits
+class1_18_4_1,Class 1:18:4:1,Class1,18,4,math,1,"In a normal distribution, what z-score is the mean? Return only the number.",0,normalized_token_or_phrase,advanced_masters; statistics
+class1_19_4_1,Class 1:19:4:1,Class1,19,4,math,1,What theorem says every nonconstant polynomial over complex numbers has a root? Return only: fundamental theorem of algebra.,fundamental theorem of algebra,normalized_token_or_phrase,phd_research; research math
+class1_0_5_1,Class 1:0:5:1,Class1,0,5,physics,1,Which is hotter: ice or fire? Return only the hotter word.,fire,normalized_token_or_phrase,pre_grade_floor; basic physical property
+class1_1_5_1,Class 1:1:5:1,Class1,1,5,physics,1,Does a dropped ball fall down or up near Earth's surface? Return only down or up.,down,normalized_token_or_phrase,grade_1; gravity
+class1_2_5_1,Class 1:2:5:1,Class1,2,5,physics,1,What force pulls objects toward Earth? Return only: gravity.,gravity,normalized_token_or_phrase,grade_2; force
+class1_3_5_1,Class 1:3:5:1,Class1,3,5,physics,1,What simple machine is a seesaw? Return only: lever.,lever,normalized_token_or_phrase,grade_3; simple machine
+class1_4_5_1,Class 1:4:5:1,Class1,4,5,physics,1,What form of energy is associated with motion? Return only: kinetic.,kinetic,normalized_token_or_phrase,grade_4; energy
+class1_5_5_1,Class 1:5:5:1,Class1,5,5,physics,1,What is the unit of electric current? Return only: ampere.,ampere,normalized_token_or_phrase,grade_5; unit
+class1_6_5_1,Class 1:6:5:1,Class1,6,5,physics,1,What is the speed of light in vacuum approximately in m/s? Return only: 300000000.,300000000,normalized_token_or_phrase,grade_6; constant
+class1_7_5_1,Class 1:7:5:1,Class1,7,5,physics,1,Newton's second law is F equals what? Return only: ma.,ma,normalized_token_or_phrase,grade_7; Newton law
+class1_8_5_1,Class 1:8:5:1,Class1,8,5,physics,1,What particle has negative electric charge? Return only: electron.,electron,normalized_token_or_phrase,grade_8; particle
+class1_9_5_1,Class 1:9:5:1,Class1,9,5,physics,1,What law says pressure times volume is constant at fixed temperature? Return only: boyle.,boyle,normalized_token_or_phrase,grade_9; gas law
+class1_10_5_1,Class 1:10:5:1,Class1,10,5,physics,1,What is the SI unit of force? Return only: newton.,newton,normalized_token_or_phrase,grade_10; unit
+class1_11_5_1,Class 1:11:5:1,Class1,11,5,physics,1,What phenomenon causes light to bend when entering water? Return only: refraction.,refraction,normalized_token_or_phrase,grade_11; optics
+class1_12_5_1,Class 1:12:5:1,Class1,12,5,physics,1,What is the acceleration due to gravity near Earth in m/s^2 rounded? Return only: 9.8.,9.8,normalized_token_or_phrase,grade_12; gravity
+class1_13_5_1,Class 1:13:5:1,Class1,13,5,physics,1,"What equation relates energy, mass, and light speed? Return only: e=mc^2.",e=mc^2,normalized_token_or_phrase,college_year_1; relativity
+class1_14_5_1,Class 1:14:5:1,Class1,14,5,physics,1,What branch of physics studies heat and work? Return only: thermodynamics.,thermodynamics,normalized_token_or_phrase,college_year_2; thermodynamics
+class1_15_5_1,Class 1:15:5:1,Class1,15,5,physics,1,What quantum number describes intrinsic angular momentum? Return only: spin.,spin,normalized_token_or_phrase,college_year_3; quantum
+class1_16_5_1,Class 1:16:5:1,Class1,16,5,physics,1,What principle says position and momentum cannot both be known exactly? Return only: uncertainty.,uncertainty,normalized_token_or_phrase,college_year_4; quantum principle
+class1_17_5_1,Class 1:17:5:1,Class1,17,5,physics,1,What equation describes nonrelativistic quantum wave evolution? Return only: schrodinger.,schrodinger,normalized_token_or_phrase,masters_year_1; quantum equation
+class1_18_5_1,Class 1:18:5:1,Class1,18,5,physics,1,What symmetry theorem links continuous symmetries to conservation laws? Return only: noether.,noether,normalized_token_or_phrase,advanced_masters; advanced physics
+class1_19_5_1,Class 1:19:5:1,Class1,19,5,physics,1,What framework unifies quantum mechanics and special relativity for fields? Return only: quantum field theory.,quantum field theory,normalized_token_or_phrase,phd_research; research physics
+class1_0_6_1,Class 1:0:6:1,Class1,0,6,chemistry,1,Is water a liquid at room temperature? Return only yes or no.,yes,normalized_token_or_phrase,pre_grade_floor; basic matter
+class1_1_6_1,Class 1:1:6:1,Class1,1,6,chemistry,1,What is the chemical symbol for water? Return only: h2o.,h2o,normalized_token_or_phrase,grade_1; formula
+class1_2_6_1,Class 1:2:6:1,Class1,2,6,chemistry,1,What gas do humans need to breathe? Return only: oxygen.,oxygen,normalized_token_or_phrase,grade_2; element
+class1_3_6_1,Class 1:3:6:1,Class1,3,6,chemistry,1,What is the chemical symbol for sodium? Return only: na.,na,normalized_token_or_phrase,grade_3; symbol
+class1_4_6_1,Class 1:4:6:1,Class1,4,6,chemistry,1,What pH is neutral water at room temperature? Return only the number.,7,normalized_token_or_phrase,grade_4; pH
+class1_5_6_1,Class 1:5:6:1,Class1,5,6,chemistry,1,What particle has a positive charge in an atom? Return only: proton.,proton,normalized_token_or_phrase,grade_5; atom
+class1_6_6_1,Class 1:6:6:1,Class1,6,6,chemistry,1,What is table salt's formula? Return only: nacl.,nacl,normalized_token_or_phrase,grade_6; ionic compound
+class1_7_6_1,Class 1:7:6:1,Class1,7,6,chemistry,1,Is CO2 carbon dioxide or carbon monoxide? Return only: carbon dioxide.,carbon dioxide,normalized_token_or_phrase,grade_7; compound name
+class1_8_6_1,Class 1:8:6:1,Class1,8,6,chemistry,1,What bond involves sharing electron pairs? Return only: covalent.,covalent,normalized_token_or_phrase,grade_8; bonding
+class1_9_6_1,Class 1:9:6:1,Class1,9,6,chemistry,1,What is Avogadro's number rounded to scientific notation? Return only: 6.02e23.,6.02e23,normalized_token_or_phrase,grade_9; mole
+class1_10_6_1,Class 1:10:6:1,Class1,10,6,chemistry,1,Oxidation is loss of what? Return only: electrons.,electrons,normalized_token_or_phrase,grade_10; redox
+class1_11_6_1,Class 1:11:6:1,Class1,11,6,chemistry,1,What is the shape of methane CH4? Return only: tetrahedral.,tetrahedral,normalized_token_or_phrase,grade_11; molecular geometry
+class1_12_6_1,Class 1:12:6:1,Class1,12,6,chemistry,1,What law says gas volume is proportional to temperature at constant pressure? Return only: charles.,charles,normalized_token_or_phrase,grade_12; gas law
+class1_13_6_1,Class 1:13:6:1,Class1,13,6,chemistry,1,What type of reaction releases heat? Return only: exothermic.,exothermic,normalized_token_or_phrase,college_year_1; thermochemistry
+class1_14_6_1,Class 1:14:6:1,Class1,14,6,chemistry,1,What is the conjugate base of HCl? Return only: cl-.,cl-,normalized_token_or_phrase,college_year_2; acid base
+class1_15_6_1,Class 1:15:6:1,Class1,15,6,chemistry,1,What orbital type has dumbbell shape? Return only: p.,p,normalized_token_or_phrase,college_year_3; orbital
+class1_16_6_1,Class 1:16:6:1,Class1,16,6,chemistry,1,What equation relates pH and pKa for buffers? Return only: henderson-hasselbalch.,henderson-hasselbalch,normalized_token_or_phrase,college_year_4; buffer chemistry
+class1_17_6_1,Class 1:17:6:1,Class1,17,6,chemistry,1,What spectroscopy commonly identifies functional groups using vibrations? Return only: infrared.,infrared,normalized_token_or_phrase,masters_year_1; spectroscopy
+class1_18_6_1,Class 1:18:6:1,Class1,18,6,chemistry,1,What catalyst increases reaction rate without being consumed? Return only: catalyst.,catalyst,normalized_token_or_phrase,advanced_masters; kinetics
+class1_19_6_1,Class 1:19:6:1,Class1,19,6,chemistry,1,What theory models electrons in molecules as delocalized over orbitals? Return only: molecular orbital theory.,molecular orbital theory,normalized_token_or_phrase,phd_research; research chemistry
+class2_chess_1_1_entry_uci,Class 2.chess.1.1:1,Class2,,,chess,1,"AIChess Class2 chess entry. From the standard chess start position, choose one legal UCI move from this list and return only that move: a2a3 b2b3 c2c3 d2d3 e2e3 f2f3 g2g3 h2h3 a2a4 b2b4 c2c4 d2d4 e2e4 f2f4 g2g4 h2h4 b1a3 b1c3 g1f3 g1h3.",legal_uci_startpos,uci_from_legal_set,one-board chess entry with legal move list

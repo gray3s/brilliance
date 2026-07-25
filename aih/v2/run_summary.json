@@ -1,0 +1,14 @@
+{
+  "agent_count_runnable": 18,
+  "agent_count_total": 18,
+  "catalog_only": true,
+  "class1_tests": 120,
+  "class2_tests": 1,
+  "class3_certification_rows": 90,
+  "database_form": "csv_jsonl_tables_plus_sql_schema",
+  "local_only": false,
+  "result_count": 2178,
+  "run_id": "aih_v2_eval_20260725T035542Z",
+  "test_count": 121,
+  "timestamp_utc": "20260725T035542Z"
+}
