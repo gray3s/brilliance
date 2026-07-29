@@ -2,179 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AIH v4 preliminary AIChess results - 2026-07-29</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --ink: #1f2933;
-      --muted: #52606d;
-      --line: #cbd5e1;
-      --head: #eef2f7;
-      --local: #e8f4ea;
-      --cloud: #eef4ff;
-      --accent: #1b4d89;
-    }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--ink);
-      background: #ffffff;
-      line-height: 1.45;
-    }
-    main {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 28px 20px 40px;
-    }
-    h1 {
-      margin: 0 0 12px;
-      font-size: 1.65rem;
-      line-height: 1.2;
-    }
-    h2 {
-      margin: 28px 0 10px;
-      font-size: 1.15rem;
-    }
-    p {
-      max-width: 880px;
-      margin: 0 0 12px;
-    }
-    .note {
-      color: var(--muted);
-    }
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--line);
-    }
-    table {
-      width: 100%;
-      min-width: 980px;
-      border-collapse: collapse;
-      font-size: 0.92rem;
-    }
-    th,
-    td {
-      border: 1px solid var(--line);
-      padding: 8px 10px;
-      vertical-align: top;
-      text-align: left;
-    }
-    th {
-      background: var(--head);
-      font-weight: 700;
-    }
-    td.maxply {
-      text-align: right;
-      white-space: nowrap;
-    }
-    tr.local td {
-      background: var(--local);
-    }
-    tr.cloud td {
-      background: var(--cloud);
-    }
-    code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.92em;
-    }
-    .pairing code {
-      display: block;
-      white-space: nowrap;
-    }
-    .results span {
-      display: inline-block;
-      margin-right: 10px;
-    }
-    .results .divider {
-      color: var(--accent);
-      font-weight: 700;
-    }
-  </style>
+  <style>body{font-family:Arial,sans-serif;margin:2rem;line-height:1.45;color:#1f2933}table{border-collapse:collapse;width:100%;margin-top:1rem}th,td{border:1px solid #cad2dc;padding:.55rem;text-align:left;vertical-align:top}th{background:#eef2f6}.note{color:#52606d}code{background:#eef2f6;padding:.1rem .25rem;border-radius:3px}</style>
 </head>
 <body>
   <main>
     <h1>AIH v4 preliminary AIChess results - 2026-07-29</h1>
-    <p>
-      These are preliminary release-mode data points from the current AIH v4
-      AIChess prototype. They are not final AIH rankings.
-    </p>
-    <p>
-      The local run used a higher maxply limit to exercise retry/concede
-      behavior without cloud cost. The cloud runs kept maxply low and broadened
-      provider reasoning levels before increasing cloud depth.
-    </p>
-
-    <h2>Preliminary local/cloud results - local maxply 8, cloud maxply 2, local/cloud maxply multiplier 4x</h2>
-    <p class="note">
-      In the model-pairing column, the first line is the white player and the
-      second line is the black player. Color-swapped runs should be shown as a
-      separate row with those two lines reversed.
-    </p>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Stack class</th>
-            <th>Provider/stack</th>
-            <th>Model pairing</th>
-            <th>Verbosity</th>
-            <th>Maxply</th>
-            <th>Combined reasoning results</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="local">
-            <td>local</td>
-            <td>Ollama</td>
-            <td class="pairing"><code>granite4:3b</code><code>qwen2.5-coder:3b</code></td>
-            <td><code>md</code></td>
-            <td class="maxply">8</td>
-            <td class="results"><code>md</code>: plies 4, legal 4, failed turns 1, rejected 3, elapsed 115.035s, termination <code>white_forfeit_invalid_or_unparseable_move</code></td>
-          </tr>
-          <tr class="cloud">
-            <td>cloud</td>
-            <td>OpenAI</td>
-            <td class="pairing"><code>openai:gpt-4.1-mini</code><code>openai:gpt-4.1-mini</code></td>
-            <td><code>md</code></td>
-            <td class="maxply">2</td>
-            <td class="results"><span><code>lo</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 4.532s</span><span class="divider">|</span><span><code>md</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 3.370s</span><span class="divider">|</span><span><code>hi</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 3.099s</span></td>
-          </tr>
-          <tr class="cloud">
-            <td>cloud</td>
-            <td>Anthropic</td>
-            <td class="pairing"><code>anthropic:claude-3-5-haiku</code><code>anthropic:claude-3-5-haiku</code></td>
-            <td><code>md</code></td>
-            <td class="maxply">2</td>
-            <td class="results"><span><code>lo</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 5.457s</span><span class="divider">|</span><span><code>md</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 5.719s</span><span class="divider">|</span><span><code>hi</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 5.277s</span></td>
-          </tr>
-          <tr class="cloud">
-            <td>cloud</td>
-            <td>Google/Gemini</td>
-            <td class="pairing"><code>gemini:gemini-3.1-flash-lite</code><code>gemini:gemini-3.1-flash-lite</code></td>
-            <td><code>md</code></td>
-            <td class="maxply">2</td>
-            <td class="results"><span><code>lo</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 2.556s</span><span class="divider">|</span><span><code>md</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 2.353s</span><span class="divider">|</span><span><code>hi</code>: plies 2, legal 2, failed turns 0, rejected 0, elapsed 3.152s</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
+    <p>These are preliminary release-mode data points from the current AIH v4 prototype. They are not final AIH rankings.</p>
+    <p>The local default maxply has been raised and the local/cloud maxply multiplier range is 2x to 4x.</p>
+    <h2>Current default run controls</h2>
+    <ul>
+      <li>Local retry/expand/full-local default maxply: 1</li>
+      <li>Cloud provider-key default maxply: 1, derived from local maxply / ratio</li>
+      <li>Local maxply cap: 40</li>
+      <li>Cloud maxply cap: 10</li>
+      <li>Default local/cloud maxply multiplier: 4x</li>
+      <li>Allowed local/cloud maxply multiplier range: 2x to 4x</li>
+      <li>CLI controls: <code>--local-maxplys=N</code>, <code>--local-cloud-maxply-ratio=N</code></li>
+    </ul>
+    <h2>Latest binary-published summary</h2>
+    <p class="note">Source summary: <code>runs/aih_v4_pairwise_prototype_20260729/aichess_v4_pairwise_prototype_20260729_20260729_160747_summary.md</code></p>
+    <table>
+      <thead><tr><th>Model</th><th>Mode</th><th>Termination</th><th>Completed game</th><th>Plies</th><th>Legal moves</th><th>Failed turns</th><th>Rejected attempts</th><th>Elapsed s</th></tr></thead>
+      <tbody><tr><td>granite4:3b vs qwen2.5-coder:3b</td><td>aichess_hallucination_game</td><td>draw_by_configured_ply_limit</td><td>false</td><td>1</td><td>1</td><td>0</td><td>0</td><td>48.185</td></tr></tbody>
+    </table>
     <h2>Preliminary interpretation</h2>
-    <p>
-      The cloud provider-key paths all produced legal two-ply games across
-      low, medium, and high reasoning at medium verbosity. No missing-key,
-      entitlement, transport, parser, or referee failures were observed in this
-      cloud slice.
-    </p>
-    <p>
-      The local baseline reached four legal plies under the higher local maxply
-      limit, then produced a clean retry/concede data point: the white local
-      agent repeated an illegal move through the retry budget, the harness
-      classified it as an illegal move hallucination rather than a transport
-      failure, and the game ended by configured forfeit.
-    </p>
+    <p>The latest preliminary row is generated and pushed by successful <code>bin/aih_v4</code> runs from the newest v4 run summary.</p>
   </main>
 </body>
 </html>
