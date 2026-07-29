@@ -42,7 +42,7 @@ Local agent labels use `lNN`, for example:
 Each test line prints the exact child selector, for example:
 
 ```text
-agent=c06-hi sel=06,6 loglvl=6 maxplys=4
+agent=c06-hi cluelvl=6 loglvl=6 maxplys=4
 ```
 
 ## Work Cap
@@ -109,6 +109,29 @@ bucket that matches their row index.
 The selector is reproducible. A failed cell can be retested with the same
 agent row, stride, log level, clue level, and maxply cap.
 
+## Cloud Failure Repair
+
+AIH v3 now includes a targeted repair mode for failed cloud-agent test data.
+
+When invoked with:
+
+```bash
+./bin/aih_all_v3 --regenerate-test-data --agent-set missing-key
+```
+
+the runner inspects the latest prior all-agent `aichess_run_summary.csv`,
+detects rows whose termination was recorded as
+`missing_artifact_or_command_failed_*`, reruns those exact failed cells, and
+merges the replacement rows back into the existing all-agent summary.
+
+The merge is row-specific. It replaces only the prior failed cloud-run rows and
+preserves the existing successful OpenAI, Google, Anthropic, Codex, and local
+agent data that was not regenerated in the repair run.
+
+The repair path still honors stride, but scales it against the smaller subset
+of failed agent rows so a partial repair run does not accidentally skip most of
+the failed cloud cells.
+
 Reduced-cadence agents are not deleted from the run. They are sampled at the
 stride cadence unless a full-validation run is requested.
 
@@ -147,3 +170,15 @@ The latest static outputs are published under:
 ```text
 aih/aichess/v3/static/latest
 ```
+
+## Completion Checkpoint
+
+The v3 completion checkpoint is recorded in:
+
+```text
+aih/v3/AIH_V3_COMPLETION_README_20260729.md
+```
+
+That checkpoint summarizes the final merged v3 data set, the targeted
+missing-key repair pass, the supported v3 conclusion, and the handoff boundary
+for AIH v4.
