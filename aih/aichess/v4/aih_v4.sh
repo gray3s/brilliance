@@ -195,10 +195,7 @@ publish_latest_summary() {
   failed="$(awk -F'|' '{ gsub(/^ +| +$/, "", $8); print $8 }' <<<"$latest_row")"
   rejected="$(awk -F'|' '{ gsub(/^ +| +$/, "", $9); print $9 }' <<<"$latest_row")"
   elapsed="$(awk -F'|' '{ gsub(/^ +| +$/, "", $10); print $10 }' <<<"$latest_row")"
-  publish_local_maxply="${AIH_V4_LOCAL_MAXPLYS:-${AIH_V4_MAXPLYS:-$AIH_V4_LOCAL_MAXPLY_CAP}}"
-  if ((publish_local_maxply > AIH_V4_LOCAL_MAXPLY_CAP)); then
-    publish_local_maxply="$AIH_V4_LOCAL_MAXPLY_CAP"
-  fi
+  publish_local_maxply="$AIH_V4_LOCAL_MAXPLY_CAP"
   publish_cloud_maxply="$(derived_cloud_maxply "$publish_local_maxply" "$AIH_V4_LOCAL_CLOUD_MAXPLY_RATIO")"
   published_dir="$ROOT_DIR/published_results"
   mkdir -p "$published_dir"

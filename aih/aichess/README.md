@@ -95,5 +95,4 @@ AI Chess Match     = validation harness
 
 - Summary: `v4/AIH_V4_PRELIMINARY_RESULTS_20260729.md`
 - Rendered HTML: https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/aih/aichess/v4/AIH_V4_PRELIMINARY_RESULTS_20260729.html
-- Binary publish path: `v4/bin/aih_v4 --publish-summary`
-- Binary GitHub push path: `v4/bin/aih_v4 --publish-and-push`
+- Binary publish path: successful `v4/bin/aih_v4` runs
