@@ -71,27 +71,33 @@ Cloud token burn is part of the v3 design problem, so AIH v3 does not simply
 brute-force every cloud model and thinking mode through every matrix cell.
 
 The runner uses a stride selector across the stable sorted agent/thinking-mode
-rows. If there are 20 rows and `stride=4`, the first log level tests rows:
+rows. In one-based slice notation, each log level tests:
 
 ```text
-1, 5, 9, 13, 17
+start:stride:row(N)
 ```
 
-The next log level starts at row 2:
+If there are 20 agent/thinking-mode rows and `stride=4`, the first log level
+tests:
 
 ```text
-2, 6, 10, 14, 18
+1:4:20  ->  1, 5, 9, 13, 17
 ```
 
-Then:
+The next log levels advance the starting row:
 
 ```text
-3, 7, 11, 15, 19
-4, 8, 12, 16, 20
+2:4:20  ->  2, 6, 10, 14, 18
+3:4:20  ->  3, 7, 11, 15, 19
+4:4:20  ->  4, 8, 12, 16, 20
 ```
+
+Then the selector wraps and starts at row `1` again.
 
 The selected rows are then expanded across the configured clue levels for that
 log level.
+
+The current default is `stride=4`.
 
 This cuts the run size by roughly the stride factor while still spreading
 coverage across the full sorted agent set. A `stride=4` run is about one
