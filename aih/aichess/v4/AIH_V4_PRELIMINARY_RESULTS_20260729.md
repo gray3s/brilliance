@@ -5,6 +5,9 @@ They are not final AIH rankings. The local run used a higher maxply limit to
 exercise retry/concede behavior without cloud cost. The cloud runs kept maxply
 low and broadened provider reasoning levels before increasing cloud depth.
 
+Rendered HTML results:
+https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/aih/aichess/v4/AIH_V4_PRELIMINARY_RESULTS_20260729.html
+
 ## Preliminary local/cloud results - local maxply 8, cloud maxply 2, local/cloud maxply multiplier 4x
 
 In the model-pairing column, the first line is the white player and the second
