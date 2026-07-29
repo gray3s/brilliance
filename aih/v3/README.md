@@ -65,16 +65,50 @@ Examples:
 - `loglvl=0, cluelvl=6` -> `maxplys=256`
 - `loglvl=0, cluelvl=0` -> `maxplys=16384`
 
-## Reduced-Cadence Eval
+## Stride-Selected Eval
 
 Cloud token burn is part of the v3 design problem, so AIH v3 does not simply
 brute-force every cloud model and thinking mode through every matrix cell.
 
-After each log-level sweep, the runner selects reduced-cadence candidates using
+The runner uses a stride selector across the stable sorted agent/thinking-mode
+rows. If there are 20 rows and `stride=4`, the first log level tests rows:
+
+```text
+1, 5, 9, 13, 17
+```
+
+The next log level starts at row 2:
+
+```text
+2, 6, 10, 14, 18
+```
+
+Then:
+
+```text
+3, 7, 11, 15, 19
+4, 8, 12, 16, 20
+```
+
+The selected rows are then expanded across the configured clue levels for that
+log level.
+
+This cuts the run size by roughly the stride factor while still spreading
+coverage across the full sorted agent set. A `stride=4` run is about one
+quarter of the full agent/log/clue matrix. Full validation is `stride=1`.
+
+Uneven row counts are allowed. The final rows simply appear in the offset
+bucket that matches their row index.
+
+The selector is reproducible. A failed cell can be retested with the same
+agent row, stride, log level, clue level, and maxply cap.
+
+Reduced-cadence agents are not deleted from the run. They are sampled at the
+stride cadence unless a full-validation run is requested.
+
+After each log-level sweep, the runner can still rank pruning candidates using
 percent of maxply used, not raw ply count. That keeps agent ranking comparable
 when different cells have different maxply caps.
-
-Reduced-cadence agents are not deleted from the run.
 
 For cloud agents, reduced cadence skips odd log levels and still runs even log
 levels, including `loglvl=0`. This keeps cloud capability represented in the
