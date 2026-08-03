@@ -99,9 +99,10 @@ AI Chess Match     = validation harness
 
 ## AIH v4 Versions
 
-- `v4/20260803-local-default-50ply`
+- `v4/20260803-local-default-50ply` (latest)
   - Binary: `v4/bin/aih_v4`
-  - Timestamped archive: `aih-v4_20260803_1640MDT.zip`
+  - Latest timestamped archive: `aih-v4_20260803_1640MDT.zip`
+  - Archive timestamp: 2026-08-03 16:40 MDT
   - Normal default: local-only `local-retry`, 50 max plies, harness referee
   - Tournament policy: no same-agent same-mode self-play by default
   - Cloud representative: explicit Gemini-vs-local mode via `--cloud-representative-gemini`
