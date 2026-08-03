@@ -74,11 +74,17 @@ retry/error behavior, cost, and elapsed-time data used as supporting evidence.
 Classification of the AIH tests themselves is a separate issue and should not
 be conflated with agent-selection reporting.
 
-V4 should allow the same base model to play against itself when the two sides
-use different model modes, such as different reasoning, verbosity, stack,
-prompt, or adapter configurations. Direct same-model same-mode comparisons
-should be skipped because they do not add useful relative ranking information
-at this stage.
+V4 should not use self-play as the default tournament posture. During the
+initial tournament, agents should play against other agents so the results
+support relative ranking and elimination decisions. Direct same-agent
+same-mode comparisons should be rejected by default because they do not add
+useful relative ranking information at this stage.
+
+After the main tournament is complete, a later explicit runoff may allow the
+top three agents to play mixed-mode self-comparisons, such as different
+reasoning, verbosity, stack, prompt, or adapter configurations for the same
+base model. That top-3 mixed-mode runoff should be a deliberate post-tournament
+phase, not the default v4 binary behavior.
 
 AIH behavior should be measured from the agent's ability to keep participating
 in the harness correctly, including response validity, invalid-move handling,
@@ -267,7 +273,9 @@ variables still available for batch scripts. The generic engine `--mxply` flag
 should remain an internal runner argument after the v4 wrapper has selected
 the stage-appropriate limit. For v4, the local/cloud maxply ratio should
 default to 4 and be constrained to the range 2 through 4 until further notice.
-The local maxply cap should be 40, producing a derived cloud maxply cap of 10.
+The local maxply cap should be 50. Cloud stages remain explicitly selected
+and should stay capped at 10 unless a later review deliberately raises the
+cloud cap.
 
 The v4 binary entry point should also be able to regenerate the preliminary
 summary publication artifacts without another manual editing pass. A run with
@@ -281,11 +289,42 @@ modify the remote repository.
 
 The default local maxply should be increased from the first release-mode
 baseline. The current baseline used local maxply 8 against cloud maxply 2, a
-4x multiplier. The next v4 default should use local maxply 40 and derive cloud
-maxply 10 from the default 4x local/cloud ratio. Raising the default local side
-while halving the multiplier means the cloud baseline moves up deliberately,
-with cloud cost still protected by the existing reasoning-sweep acceptance
-gate.
+4x multiplier. The current v4 default should use local maxply 50 for ordinary
+local-only binary and wrapper runs. This gives local agents a longer game
+window while keeping cloud agents out of the default path. A higher local
+default is also justified by the planned tournament structure: if roughly half
+of the agents are disqualified from further participation after an initial
+game, some agents may not get another opportunity to demonstrate performance.
+The default first-game depth should therefore be high enough to provide a
+meaningful participation record before possible elimination. Explicit cloud
+runs should still derive their maxply from the local setting and the
+local/cloud ratio, but the cloud cap remains 10 until cloud cost and
+reasoning-sweep results justify raising it.
+
+With this default, one tournament round should already produce useful
+comparative evidence. Later rounds should improve confidence, expose
+consistency or collapse under repeated play, and strengthen ranking decisions,
+but the tournament should not require two or three rounds before producing
+meaningful local-agent results.
+
+V4 should include at least one deliberate cloud representative game so the
+local tournament data has a cloud comparison point. Gemini is the first
+preferred cloud representative because the plaintiff has substantial Gemini
+credits available and AIChess prompts do not contain sensitive legal/private
+project material. The cloud representative path should be explicit, not part
+of the ordinary no-argument local binary run. The initial representative mode
+should pair a low-cost Gemini Flash-Lite model against a discovered local
+agent and keep cloud maxply capped at the existing cloud depth until a later
+review raises it.
+
+V4 should also measure whether 100-ply games are justified for local agents.
+The current default remains 50 plies, but an opt-in 100-ply local run should be
+used to estimate how often matches reach 100 plies without earlier
+disqualification, invalid-move forfeiture, configured draw, or other terminal
+state. The 100-ply question is empirical: if many games meaningfully reach 50
+plies and remain useful, longer local defaults may be justified later. If most
+games end earlier, 100 plies should remain an analysis mode rather than the
+ordinary default.
 
 Cloud staging should broaden the allowed provider thought/reasoning levels
 before increasing cloud maxply. Keep cloud maxply low while testing provider

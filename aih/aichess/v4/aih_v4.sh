@@ -6,6 +6,7 @@ ENGINE="$ROOT_DIR/qwen_ollama_chess_qt/qwen_ollama_chess_qt"
 LOCAL_AGENT_REGISTRY="${AIH_V4_LOCAL_AGENT_REGISTRY:-$ROOT_DIR/../v3/qualification_cache/local_qualification_20260729032018.csv}"
 LOCAL_SMOKE=1
 CLOUD_SMOKE_PROVIDER=""
+CLOUD_REPRESENTATIVE_PROVIDER=""
 SMOKE_STAGE="${AIH_V4_SMOKE_STAGE:-local-retry}"
 PASSTHRU_ARGS=()
 ENABLE_BOARD_AWARENESS="${AIH_V4_BOARD_AWARENESS_PROBE:-0}"
@@ -17,7 +18,7 @@ if [[ -n "${AIH_V4_ALLOWED_VERBOSITY:-}" || -n "${AIH_V4_TEXT_VERBOSITY_RANGE:-}
   EXPLICIT_VERBOSITY_RANGE=1
 fi
 AIH_V4_LOCAL_CLOUD_MAXPLY_RATIO="${AIH_V4_LOCAL_CLOUD_MAXPLY_RATIO:-4}"
-AIH_V4_LOCAL_MAXPLY_CAP="${AIH_V4_LOCAL_MAXPLY_CAP:-40}"
+AIH_V4_LOCAL_MAXPLY_CAP="${AIH_V4_LOCAL_MAXPLY_CAP:-50}"
 AIH_V4_CLOUD_MAXPLY_CAP="${AIH_V4_CLOUD_MAXPLY_CAP:-10}"
 
 has_env() {
@@ -127,6 +128,12 @@ for arg in "$@"; do
       CLOUD_SMOKE_PROVIDER="google"
       SMOKE_STAGE="cloud-provider-key"
       ;;
+    --cloud-representative-gemini|--gemini-representative)
+      LOCAL_SMOKE=0
+      CLOUD_SMOKE_PROVIDER=""
+      CLOUD_REPRESENTATIVE_PROVIDER="google"
+      SMOKE_STAGE="cloud-representative"
+      ;;
     --cloud-smoke-anthropic)
       LOCAL_SMOKE=0
       CLOUD_SMOKE_PROVIDER="anthropic"
@@ -218,7 +225,7 @@ publish_latest_summary() {
     echo
     echo "## Current default run controls"
     echo
-    echo "- Local retry/expand/full-local default maxply: $publish_local_maxply"
+    echo "- Local retry/expand/default local maxply: $publish_local_maxply"
     echo "- Cloud provider-key default maxply: $publish_cloud_maxply, derived from local maxply / ratio"
     echo "- Local maxply cap: $AIH_V4_LOCAL_MAXPLY_CAP"
     echo "- Cloud maxply cap: $AIH_V4_CLOUD_MAXPLY_CAP"
@@ -255,7 +262,7 @@ publish_latest_summary() {
     echo '    <p>The local default maxply has been raised and the local/cloud maxply multiplier range is 2x to 4x.</p>'
     echo '    <h2>Current default run controls</h2>'
     echo '    <ul>'
-    echo "      <li>Local retry/expand/full-local default maxply: $publish_local_maxply</li>"
+    echo "      <li>Local retry/expand/default local maxply: $publish_local_maxply</li>"
     echo "      <li>Cloud provider-key default maxply: $publish_cloud_maxply, derived from local maxply / ratio</li>"
     echo "      <li>Local maxply cap: $AIH_V4_LOCAL_MAXPLY_CAP</li>"
     echo "      <li>Cloud maxply cap: $AIH_V4_CLOUD_MAXPLY_CAP</li>"
@@ -501,20 +508,56 @@ reject_cloud_agent_spec() {
   fi
 }
 
+reject_default_self_play() {
+  local white_csv="$1"
+  local black_csv="$2"
+  local board_count="$3"
+  local allow_self="${AIH_V4_ALLOW_SELF_PLAY:-0}"
+  if [[ "$allow_self" == "1" || "$allow_self" == "yes" || "$allow_self" == "true" ]]; then
+    return
+  fi
+  if ! awk -v white="$white_csv" -v black="$black_csv" -v boards="$board_count" '
+    BEGIN {
+      nw = split(white, w, ",")
+      nb = split(black, b, ",")
+      if (boards !~ /^[0-9]+$/ || boards < 1) {
+        boards = nw < nb ? nw : nb
+      }
+      for (i = 1; i <= boards; ++i) {
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", w[i])
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", b[i])
+        if (w[i] != "" && b[i] != "" && w[i] == b[i]) {
+          exit 1
+        }
+      }
+      exit 0
+    }'; then
+    echo "aih_v4: refusing same-agent same-mode self-play by default." >&2
+    echo "aih_v4: white-models=$white_csv" >&2
+    echo "aih_v4: black-models=$black_csv" >&2
+    echo "aih_v4: set AIH_V4_ALLOW_SELF_PLAY=1 only when self-play is intentional." >&2
+    exit 2
+  fi
+}
+
 if [[ -n "$CLOUD_SMOKE_PROVIDER" ]]; then
   prepare_provider_key "$CLOUD_SMOKE_PROVIDER"
+  LOCAL_AGENTS="$(discover_local_agents "$LOCAL_AGENT_REGISTRY")"
+  LOCAL_AGENT_COUNT="$(csv_count "$LOCAL_AGENTS")"
+  if [[ -z "$LOCAL_AGENTS" || "$LOCAL_AGENT_COUNT" == "0" ]]; then
+    echo "aih_v4: no local agents discovered for cloud smoke opponent." >&2
+    echo "aih_v4: checked registry: $LOCAL_AGENT_REGISTRY" >&2
+    exit 2
+  fi
   case "$CLOUD_SMOKE_PROVIDER" in
     openai)
       DEFAULT_WHITE_MODELS="${AIH_V4_WHITE_MODELS:-openai:gpt-4.1-mini}"
-      DEFAULT_BLACK_MODELS="${AIH_V4_BLACK_MODELS:-openai:gpt-4.1-mini}"
       ;;
     google|gemini)
-      DEFAULT_WHITE_MODELS="${AIH_V4_WHITE_MODELS:-gemini:gemini-3.1-flash-lite}"
-      DEFAULT_BLACK_MODELS="${AIH_V4_BLACK_MODELS:-gemini:gemini-3.1-flash-lite}"
+      DEFAULT_WHITE_MODELS="${AIH_V4_WHITE_MODELS:-gemini:gemini-3.5-flash-lite}"
       ;;
     anthropic)
       DEFAULT_WHITE_MODELS="${AIH_V4_WHITE_MODELS:-anthropic:claude-3-5-haiku}"
-      DEFAULT_BLACK_MODELS="${AIH_V4_BLACK_MODELS:-anthropic:claude-3-5-haiku}"
       ;;
     *)
       echo "aih_v4: unknown cloud smoke provider: $CLOUD_SMOKE_PROVIDER" >&2
@@ -522,11 +565,37 @@ if [[ -n "$CLOUD_SMOKE_PROVIDER" ]]; then
       exit 2
       ;;
   esac
+  DEFAULT_BLACK_MODELS="${AIH_V4_BLACK_MODELS:-$(csv_field "$LOCAL_AGENTS" "${AIH_V4_CLOUD_REPRESENTATIVE_LOCAL_INDEX:-1}")}"
   DEFAULT_BOARDS="${AIH_V4_BOARDS:-1}"
   export AICHESS_REASONING_PERFORMANCE_MODE="${AICHESS_REASONING_PERFORMANCE_MODE:-medium}"
   export AICHESS_OPENAI_REASONING_EFFORT="${AICHESS_OPENAI_REASONING_EFFORT:-medium}"
   export AICHESS_OPENAI_TEXT_VERBOSITY="${AICHESS_OPENAI_TEXT_VERBOSITY:-medium}"
   AIH_V4_REFERENCE_CONFIG="${AIH_V4_REFERENCE_CONFIG:-aih_v4_cloud_provider_key_smoke_${CLOUD_SMOKE_PROVIDER}_medium_20260729}"
+elif [[ -n "$CLOUD_REPRESENTATIVE_PROVIDER" ]]; then
+  prepare_provider_key "$CLOUD_REPRESENTATIVE_PROVIDER"
+  LOCAL_AGENTS="$(discover_local_agents "$LOCAL_AGENT_REGISTRY")"
+  LOCAL_AGENT_COUNT="$(csv_count "$LOCAL_AGENTS")"
+  if [[ -z "$LOCAL_AGENTS" || "$LOCAL_AGENT_COUNT" == "0" ]]; then
+    echo "aih_v4: no local agents discovered for cloud representative run." >&2
+    echo "aih_v4: checked registry: $LOCAL_AGENT_REGISTRY" >&2
+    exit 2
+  fi
+  case "$CLOUD_REPRESENTATIVE_PROVIDER" in
+    google|gemini)
+      DEFAULT_WHITE_MODELS="${AIH_V4_WHITE_MODELS:-gemini:gemini-3.5-flash-lite}"
+      ;;
+    *)
+      echo "aih_v4: unknown cloud representative provider: $CLOUD_REPRESENTATIVE_PROVIDER" >&2
+      echo "aih_v4: expected google/gemini" >&2
+      exit 2
+      ;;
+  esac
+  DEFAULT_BLACK_MODELS="${AIH_V4_BLACK_MODELS:-$(csv_field "$LOCAL_AGENTS" "${AIH_V4_CLOUD_REPRESENTATIVE_LOCAL_INDEX:-1}")}"
+  DEFAULT_BOARDS="${AIH_V4_BOARDS:-1}"
+  export AICHESS_REASONING_PERFORMANCE_MODE="${AICHESS_REASONING_PERFORMANCE_MODE:-medium}"
+  export AICHESS_OPENAI_REASONING_EFFORT="${AICHESS_OPENAI_REASONING_EFFORT:-medium}"
+  export AICHESS_OPENAI_TEXT_VERBOSITY="${AICHESS_OPENAI_TEXT_VERBOSITY:-medium}"
+  AIH_V4_REFERENCE_CONFIG="${AIH_V4_REFERENCE_CONFIG:-aih_v4_cloud_representative_${CLOUD_REPRESENTATIVE_PROVIDER}_vs_local_20260803}"
 else
   if [[ "$SMOKE_STAGE" == "full-agent-set" ]]; then
     if [[ -z "${AIH_V4_WHITE_MODELS:-}" || -z "${AIH_V4_BLACK_MODELS:-}" ]]; then
@@ -610,6 +679,16 @@ case "$SMOKE_STAGE" in
     DEFAULT_CLUE_MODE="${AIH_V4_CLUE_MODE:-6}"
     DEFAULT_REFERENCE_CONFIG="${AIH_V4_REFERENCE_CONFIG:-aih_v4_cloud_provider_key_entitlement_smoke_${CLOUD_SMOKE_PROVIDER}_medium_20260729}"
     ;;
+  cloud-representative)
+    LOCAL_BASE_MAXPLYS="${AIH_V4_LOCAL_MAXPLYS:-${AIH_V4_MAXPLYS:-$AIH_V4_LOCAL_MAXPLY_CAP}}"
+    DEFAULT_MAXPLYS="$(derived_cloud_maxply "$LOCAL_BASE_MAXPLYS" "$AIH_V4_LOCAL_CLOUD_MAXPLY_RATIO")"
+    DEFAULT_RESPONSE_ATTEMPTS="${AIH_V4_RESPONSE_ATTEMPTS:-1}"
+    DEFAULT_FATAL_TURN_ERRORS="${AIH_V4_MAX_FATAL_TURN_ERRORS:-1}"
+    DEFAULT_OUTPUT_TOKENS="${AIH_V4_OUTPUT_TOKENS:-1024}"
+    DEFAULT_LOGLVL="${AIH_V4_LOGLVL:-4}"
+    DEFAULT_CLUE_MODE="${AIH_V4_CLUE_MODE:-6}"
+    DEFAULT_REFERENCE_CONFIG="${AIH_V4_REFERENCE_CONFIG:-aih_v4_cloud_representative_${CLOUD_REPRESENTATIVE_PROVIDER}_vs_local_20260803}"
+    ;;
   full-agent-set)
     if ((CLOUD_MATRIX_APPLIES == 1)); then
       LOCAL_BASE_MAXPLYS="${AIH_V4_LOCAL_MAXPLYS:-${AIH_V4_MAXPLYS:-$AIH_V4_LOCAL_MAXPLY_CAP}}"
@@ -626,7 +705,7 @@ case "$SMOKE_STAGE" in
     ;;
   *)
     echo "aih_v4: unknown smoke stage: $SMOKE_STAGE" >&2
-    echo "aih_v4: expected local-progress, local-retry, local-expand, cloud-provider-key, or full-agent-set" >&2
+    echo "aih_v4: expected local-progress, local-retry, local-expand, cloud-provider-key, cloud-representative, or full-agent-set" >&2
     exit 2
     ;;
 esac
@@ -634,6 +713,7 @@ esac
 reject_cloud_agent_spec "AIH_V4_WHITE_MODELS" "$DEFAULT_WHITE_MODELS"
 reject_cloud_agent_spec "AIH_V4_BLACK_MODELS" "$DEFAULT_BLACK_MODELS"
 reject_cloud_agent_spec "arguments" "${PASSTHRU_ARGS[*]}"
+reject_default_self_play "$DEFAULT_WHITE_MODELS" "$DEFAULT_BLACK_MODELS" "$DEFAULT_BOARDS"
 
 if [[ -z "$REASONING_RANGE" ]]; then
   if [[ "$ENABLE_REASONING_MATRIX" == "1" || "$ENABLE_REASONING_MATRIX" == "yes" || "$ENABLE_REASONING_MATRIX" == "true" ]]; then

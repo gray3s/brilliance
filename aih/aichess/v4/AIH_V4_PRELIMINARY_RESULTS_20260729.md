@@ -9,9 +9,9 @@ https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/ai
 
 ## Current default run controls
 
-- Local retry/expand/full-local default maxply: 40
+- Local retry/expand/default local maxply: 50
 - Cloud provider-key default maxply: 10, derived from local maxply / ratio
-- Local maxply cap: 40
+- Local maxply cap: 50
 - Cloud maxply cap: 10
 - Default local/cloud maxply multiplier: 4x
 - Allowed local/cloud maxply multiplier range: 2x to 4x

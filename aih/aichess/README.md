@@ -96,3 +96,15 @@ AI Chess Match     = validation harness
 - Summary: `v4/AIH_V4_PRELIMINARY_RESULTS_20260729.md`
 - Rendered HTML: https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/aih/aichess/v4/AIH_V4_PRELIMINARY_RESULTS_20260729.html
 - Binary publish path: successful `v4/bin/aih_v4` runs
+
+## AIH v4 Versions
+
+- `v4/20260803-local-default-50ply`
+  - Binary: `v4/bin/aih_v4`
+  - Timestamped archive: `aih-v4_20260803_1640MDT.zip`
+  - Normal default: local-only `local-retry`, 50 max plies, harness referee
+  - Tournament policy: no same-agent same-mode self-play by default
+  - Cloud representative: explicit Gemini-vs-local mode via `--cloud-representative-gemini`
+  - 100-ply evaluation: explicit opt-in via `--local-retry-smoke --local-maxplys=100`
+  - Run note: `v4/RUN_AIH_V4_BINARY_LOCAL_DEFAULT_20260803.md`
+  - Candidate plan: `v4/AIH_V4_LOCAL_MODEL_CANDIDATE_PLAN_DEEPSEEK_VS_KIMI_20260803.md`
