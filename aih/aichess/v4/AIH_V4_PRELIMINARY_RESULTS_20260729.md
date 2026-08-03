@@ -19,11 +19,11 @@ https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/ai
 
 ## Latest binary-published summary
 
-Source summary: `runs/aih_v4_pairwise_prototype_20260729/aichess_v4_pairwise_prototype_20260729_20260803_164608_summary.md`
+Source summary: `runs/aih_v4_pairwise_prototype_20260729/aichess_v4_pairwise_prototype_20260729_20260803_164821_summary.md`
 
 | Model | Mode | Termination | Completed game | Plies | Legal moves | Failed turns | Rejected attempts | Elapsed s |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| gemini:gemini-3.5-flash-lite vs granite4:3b | aichess_hallucination_game | draw_by_configured_ply_limit | false | 10 | 10 | 0 | 0 | 114.406 |
+| gemini:gemini-3.5-flash-lite vs granite4:3b | aichess_hallucination_game | black_forfeit_invalid_or_unparseable_move | false | 3 | 3 | 1 | 1 | 26.562 |
 
 ## Preliminary interpretation
 
