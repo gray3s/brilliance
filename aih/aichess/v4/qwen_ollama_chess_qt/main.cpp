@@ -25,6 +25,7 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QUrl>
+#include <algorithm>
 #include <future>
 #include <vector>
 
@@ -1402,9 +1403,25 @@ static QString errorCountText(int illegalTotal, int invalidTotal) {
         .arg(count3(illegalTotal + invalidTotal));
 }
 
+static QString errorCountText(int illegalTotal, int invalidTotal, int irrelevantTotal) {
+    return QString(" il=%1 iv=%2 ir=%3 nr=%4")
+        .arg(count3(illegalTotal))
+        .arg(count3(invalidTotal))
+        .arg(count3(irrelevantTotal))
+        .arg(count3(illegalTotal + invalidTotal + irrelevantTotal));
+}
+
 static QString finalCountText(int illegalTotal, int invalidTotal, int correctionLimit) {
     return QString("nil=%1 niv=%2 ncr=%3")
         .arg(count3(illegalTotal), count3(invalidTotal), count3(correctionLimit));
+}
+
+static QString finalCountText(int illegalTotal, int invalidTotal, int irrelevantTotal, int correctionLimit) {
+    return QString("nil=%1 niv=%2 nir=%3 ncr=%4")
+        .arg(count3(illegalTotal))
+        .arg(count3(invalidTotal))
+        .arg(count3(irrelevantTotal))
+        .arg(count3(correctionLimit));
 }
 
 static QString promptForMove(const QString &fen,
@@ -2529,6 +2546,21 @@ static QJsonObject stackModuleCapabilities(const QString &stackModule) {
     return obj;
 }
 
+static QString nonresponseFailureClass(const QString &stackModule) {
+    if (isOllamaStackModule(stackModule)) {
+        int exitCode = -1;
+        runTextProcess("curl",
+                       {"-sS", "--max-time", "2", "http://127.0.0.1:11434/api/tags"},
+                       3000,
+                       &exitCode);
+        return exitCode == 0 ? "agt_noresp_stk_ok" : "stk_noresp";
+    }
+    if (isGeminiStackModule(stackModule) || isOpenAiStackModule(stackModule) || isAnthropicStackModule(stackModule)) {
+        return "cld_stk_or_agt_noresp";
+    }
+    return "stk_or_agt_noresp";
+}
+
 static QString responseFailureClass(const OllamaResult &result) {
     if (result.status == "completed") {
         return "none";
@@ -2549,6 +2581,15 @@ static QString responseFailureClass(const OllamaResult &result) {
         signal.contains("no api key")) {
         return "missing_provider_key";
     }
+    if (signal.contains("resource_exhausted") ||
+        signal.contains("rate limit") ||
+        signal.contains("rate_limit") ||
+        signal.contains("too many requests") ||
+        signal.contains("http 429") ||
+        signal.contains("\"code\":429") ||
+        signal.contains("quota")) {
+        return "cloud_rate_limit_or_quota_throttle";
+    }
     if (signal.contains("unauthorized") ||
         signal.contains("forbidden") ||
         signal.contains("permission") ||
@@ -2557,7 +2598,6 @@ static QString responseFailureClass(const OllamaResult &result) {
         signal.contains("entitlement") ||
         signal.contains("account") ||
         signal.contains("billing") ||
-        signal.contains("quota") ||
         signal.contains("license")) {
         return "cloud_authorization_or_entitlement_failure";
     }
@@ -2740,6 +2780,29 @@ static QString selectModelForBoard(const QStringList &models, int boardIndex) {
         return QString();
     }
     return models.at(boardIndex % models.size()).trimmed();
+}
+
+static QString aihResultMode(const QString &gameResult, const QString &termination) {
+    if (termination.contains("cloud_rate_limit_or_quota_throttle")) {
+        return "aih_failure_cloud_rate_limit_or_quota_throttle";
+    }
+    if (gameResult == "invalid_run") {
+        return "aih_failure_run_invalidated";
+    }
+    if (termination.contains("forfeit") ||
+        termination.contains("transport_failure") ||
+        termination.contains("invalid_or_unparseable") ||
+        termination.contains("move_timeout")) {
+        return "aih_failure_agent_stopped_playing_chess";
+    }
+    if (termination.endsWith("checkmate") ||
+        termination == "stalemate" ||
+        termination == "game_completed" ||
+        termination == "draw_by_configured_ply_limit" ||
+        termination == "game_timeout") {
+        return "aih_tournament_game_played";
+    }
+    return "aih_result_unclassified";
 }
 
 static QJsonObject runAgentOnlyBoardGame(int boardIndex,
@@ -3103,6 +3166,7 @@ static QJsonObject runBoardGame(int boardIndex,
     int illegalCount = 0;
     int illegalMoveTotal = 0;
     int invalidMoveTotal = 0;
+    int irrelevantAgentReturnTotal = 0;
     int preMoveAwarenessPass = 0;
     int preMoveAwarenessFail = 0;
     int preMoveAwarenessSkipped = 0;
@@ -3167,8 +3231,8 @@ static QJsonObject runBoardGame(int boardIndex,
         QElapsedTimer evaluationTimer;
         evaluationTimer.start();
         const bool firstWhiteMove = whiteToMove && ply == 1;
-        const int dummyMoveCalls = firstWhiteMove ? boardIndex : 0;
-        const int maxFirstWhiteAttempts = 1;
+        const int dummyMoveCalls = 0;
+        const int maxFirstWhiteAttempts = qMax(1, correctionRetries);
         const QString suggestedMove = legal.isEmpty() ? QString() : legal.first();
         QString suggestedAfterFen;
         if (!suggestedMove.isEmpty()) {
@@ -3230,6 +3294,14 @@ static QJsonObject runBoardGame(int boardIndex,
             const int callRemainingSeconds = qMax(1, gameTimeoutSeconds - int(gameTimer.elapsed() / 1000.0));
             const int callTimeout = qMin(stackTimeoutSeconds, callRemainingSeconds);
             const QString startupLabel = call == 1 ? boardLabel : QString();
+            writeLog(3, QString("%1 P%2 mvreq warm=%3/%4 mdl=%5 TOs=%6 stk=%7\n")
+                .arg(boardLabel)
+                .arg(ply, 3, 10, QChar('0'))
+                .arg(call)
+                .arg(dummyMoveCalls)
+                .arg(activeModel)
+                .arg(callTimeout)
+                .arg(activeStackModule));
             response = askStackModule(
                 activeStackModule,
                 activeModel,
@@ -3247,6 +3319,14 @@ static QJsonObject runBoardGame(int boardIndex,
             const int callRemainingSeconds = qMax(1, gameTimeoutSeconds - int(gameTimer.elapsed() / 1000.0));
             const int callTimeout = qMin(stackTimeoutSeconds, callRemainingSeconds);
             const QString startupLabel = firstWhiteMove && dummyMoveCalls == 0 && call == 1 ? boardLabel : QString();
+            writeLog(3, QString("%1 P%2 mvreq try=%3/%4 mdl=%5 TOs=%6 stk=%7\n")
+                .arg(boardLabel)
+                .arg(ply, 3, 10, QChar('0'))
+                .arg(call)
+                .arg(maxFirstWhiteAttempts)
+                .arg(activeModel)
+                .arg(callTimeout)
+                .arg(activeStackModule));
             response = askStackModule(
                 activeStackModule,
                 activeModel,
@@ -3255,6 +3335,10 @@ static QJsonObject runBoardGame(int boardIndex,
                 currentOutputTokens,
                 startupLabel);
             moveCallsAttempted = call;
+            if (response.status == "timed_out" && call < maxFirstWhiteAttempts &&
+                gameTimer.elapsed() < qint64(gameTimeoutSeconds) * 1000) {
+                continue;
+            }
             if (response.status == "timed_out" || gameTimer.elapsed() >= qint64(gameTimeoutSeconds) * 1000) {
                 break;
             }
@@ -3381,15 +3465,22 @@ static QJsonObject runBoardGame(int boardIndex,
         const QJsonObject originalPostMoveAwarenessObj = postMoveAwarenessObj;
         const bool originalLegalMove = legalMove;
         const double originalEtSeconds = gameTimer.elapsed() / 1000.0;
-        if (!moveTimedOut && !moveRequestFailed && !originalLegalMove) {
+        if (!moveTimedOut && !moveRequestFailed && !originalLegalMove && originalResponse.status == "completed") {
+            if (originalParsed.isEmpty()) {
+                irrelevantAgentReturnTotal += 1;
+            } else {
+                countRejectedMove(originalParsed, originalLegalMove, &illegalMoveTotal, &invalidMoveTotal);
+            }
+        } else if (!moveTimedOut && !moveRequestFailed && !originalLegalMove) {
             countRejectedMove(originalParsed, originalLegalMove, &illegalMoveTotal, &invalidMoveTotal);
         }
         const int originalIllegalMoveTotal = illegalMoveTotal;
         const int originalInvalidMoveTotal = invalidMoveTotal;
+        const int originalIrrelevantAgentReturnTotal = irrelevantAgentReturnTotal;
         QJsonArray correctionAttempts;
         int correctionAttemptsUsed = 0;
         for (int retry = 1;
-             !moveTimedOut && !moveRequestFailed && !legalMove && (illegalMoveTotal + invalidMoveTotal) < correctionRetries;
+             !moveTimedOut && !moveRequestFailed && !legalMove && (illegalMoveTotal + invalidMoveTotal + irrelevantAgentReturnTotal) < correctionRetries;
              ++retry) {
             const int callRemainingSeconds = qMax(1, gameTimeoutSeconds - int(gameTimer.elapsed() / 1000.0));
             const int callTimeout = qMin(stackTimeoutSeconds, callRemainingSeconds);
@@ -3471,7 +3562,13 @@ static QJsonObject runBoardGame(int boardIndex,
                 } else {
                     currentOutputTokens = tunedOutputTokens;
                 }
-                if (!correctionLegal) {
+                if (!correctionLegal && correctionResponse.status == "completed") {
+                    if (correctionParsed.isEmpty()) {
+                        irrelevantAgentReturnTotal += 1;
+                    } else {
+                        countRejectedMove(correctionParsed, correctionLegal, &illegalMoveTotal, &invalidMoveTotal);
+                    }
+                } else if (!correctionLegal) {
                     countRejectedMove(correctionParsed, correctionLegal, &illegalMoveTotal, &invalidMoveTotal);
                 }
             } else if (gameTimer.elapsed() >= qint64(gameTimeoutSeconds) * 1000) {
@@ -3490,6 +3587,13 @@ static QJsonObject runBoardGame(int boardIndex,
                                                         rejectedBeforeCorrection);
             correctionObj["parsed_uci"] = correctionParsed;
             correctionObj["legal_by_rules"] = correctionLegal;
+            if (!correctionLegal && correctionResponse.status == "completed") {
+                correctionObj["aih_event"] = correctionParsed.isEmpty()
+                    ? "irrelevant_agent_return"
+                    : "agent_response_with_illegal_candidate_move";
+                correctionObj["referee_relevance"] = correctionParsed.isEmpty() ? "irrelevant" : "relevant";
+                correctionObj["aih_event_counts_as_referee_invalid_attempt"] = !correctionParsed.isEmpty();
+            }
             correctionAttempts.append(correctionObj);
 
             response = correctionResponse;
@@ -3597,7 +3701,15 @@ static QJsonObject runBoardGame(int boardIndex,
         event["correction_attempts"] = correctionAttempts;
         event["illegal_move_total"] = illegalMoveTotal;
         event["invalid_move_total"] = invalidMoveTotal;
-        event["rejected_move_total"] = illegalMoveTotal + invalidMoveTotal;
+        event["irrelevant_agent_return_total"] = irrelevantAgentReturnTotal;
+        event["rejected_move_total"] = illegalMoveTotal + invalidMoveTotal + irrelevantAgentReturnTotal;
+        if (!originalLegalMove && originalResponse.status == "completed") {
+            event["aih_event"] = originalParsed.isEmpty()
+                ? "irrelevant_agent_return"
+                : "agent_response_with_illegal_candidate_move";
+            event["referee_relevance"] = originalParsed.isEmpty() ? "irrelevant" : "relevant";
+            event["aih_event_counts_as_referee_invalid_attempt"] = !originalParsed.isEmpty();
+        }
         event["response"] = ollamaJson(response);
         event["response_failure_class"] = responseFailureClass(response);
         event["final_move_parse"] = moveParseJson(parse, "final", finalPrompt);
@@ -3621,8 +3733,8 @@ static QJsonObject runBoardGame(int boardIndex,
             .arg(whiteToMove ? "w" : "b");
         const QString dtText = formatElapsed(response.elapsedSeconds);
         const QString etText = formatElapsed(gameTimer.elapsed() / 1000.0);
-        const QString countsText = errorCountText(illegalMoveTotal, invalidMoveTotal);
-        const QString originalCountsText = errorCountText(originalIllegalMoveTotal, originalInvalidMoveTotal);
+        const QString countsText = errorCountText(illegalMoveTotal, invalidMoveTotal, irrelevantAgentReturnTotal);
+        const QString originalCountsText = errorCountText(originalIllegalMoveTotal, originalInvalidMoveTotal, originalIrrelevantAgentReturnTotal);
         if (correctionAttemptsUsed > 0 && originalResponse.status != "timed_out" && originalResponse.status != "game_timeout") {
             const QString originalMove = originalParsed.isEmpty()
                 ? QString("-----")
@@ -3646,13 +3758,13 @@ static QJsonObject runBoardGame(int boardIndex,
             writeLog(3, originalOutput);
         }
         if (moveTimedOut) {
-            logHarnessRoute(plyPrefix, "log", "move_timeout");
-            writeLog(3, "mv: \"timeout\"\nrf: \"invalid\"\n");
-            writeLog(3, QString("%1:TIMEO -f  DT:%2 ET:%3%4\n")
+            logHarnessRoute(plyPrefix, "log", "mv_TO");
+            writeLog(3, "mv:\"TO\"\nrf:\"inv\"\n");
+            writeLog(3, QString("%1:TO -f  DT:%2 ET:%3%4\n")
                 .arg(plyPrefix, dtText, etText, countsText));
         } else if (moveRequestFailed) {
-            logHarnessRoute(plyPrefix, "log", "transport_failure");
-            writeLog(3, QString("mv: \"request_failed %1\"\nrf: \"invalid\"\n").arg(rawResponseLine(response.status)));
+            logHarnessRoute(plyPrefix, "log", "xpt_fail");
+            writeLog(3, QString("mv:\"req_fail %1\"\nrf:\"inv\"\n").arg(rawResponseLine(response.status)));
             writeLog(3, QString("%1:REQF  -f  DT:%2 ET:%3%4 status=%5\n%6: P%7 stderr=\"%8\"\n")
                 .arg(plyPrefix,
                      dtText,
@@ -3699,13 +3811,24 @@ static QJsonObject runBoardGame(int boardIndex,
                 .arg(rawResponseLine(refereeSummary)));
         }
         if (moveTimedOut) {
+            const QString nonresponseClass = response.status == "game_timeout"
+                ? QString("game_timeout")
+                : nonresponseFailureClass(activeStackModule);
             event["error"] = response.status == "game_timeout"
                 ? "game_timeout_move_discarded"
                 : "move_timeout_forfeit";
+            event["nonresponse_failure_class"] = nonresponseClass;
+            event["nonresponse_attempts"] = moveCallsAttempted;
             events.append(event);
             if (response.status == "game_timeout") {
                 termination = "game_timeout";
                 gameResult = "draw";
+            } else if (nonresponseClass == "agt_noresp_stk_ok") {
+                termination = side + "_forfeit_agt_noresp";
+                gameResult = whiteToMove ? "black_win" : "white_win";
+            } else if (nonresponseClass == "stk_noresp") {
+                termination = side + "_forfeit_stk_noresp";
+                gameResult = whiteToMove ? "black_win" : "white_win";
             } else {
                 termination = side + "_forfeit_move_timeout";
                 gameResult = whiteToMove ? "black_win" : "white_win";
@@ -3718,6 +3841,7 @@ static QJsonObject runBoardGame(int boardIndex,
             event["error_failure_class"] = failureClass;
             events.append(event);
             if (failureClass == "missing_provider_key" ||
+                failureClass == "cloud_rate_limit_or_quota_throttle" ||
                 failureClass == "cloud_authorization_or_entitlement_failure" ||
                 failureClass == "suspected_remote_disablement_or_stack_availability") {
                 termination = side + "_run_invalidated_" + failureClass;
@@ -3738,18 +3862,25 @@ static QJsonObject runBoardGame(int boardIndex,
             event["brdst_after"] = detBoardJson(brdst);
         } else {
             illegalCount += 1;
-            if (refereeMajorityValid && !legalMove) {
+            if (parsed.isEmpty()) {
+                event["error"] = "irrelevant_agent_return_hallucination";
+            } else if (refereeMajorityValid && !legalMove) {
                 event["error"] = "referee_majority_accepted_illegal_move_hallucination";
             } else if (!refereeMajorityValid && legalMove) {
                 event["error"] = "referee_majority_rejected_legal_move_hallucination";
             } else {
-                event["error"] = parsed.isEmpty() ? "unparseable_move_hallucination" : "illegal_move_hallucination";
+                event["error"] = "illegal_move_hallucination";
             }
         }
         events.append(event);
 
-        if (illegalCount >= maxIllegal) {
-            termination = side + "_forfeit_invalid_or_unparseable_move";
+        if (irrelevantAgentReturnTotal >= correctionRetries && illegalMoveTotal + invalidMoveTotal == 0) {
+            termination = side + "_forfeit_irrelevant_agent_return";
+            gameResult = whiteToMove ? "black_win" : "white_win";
+            break;
+        }
+        if (illegalMoveTotal + invalidMoveTotal >= maxIllegal) {
+            termination = side + "_forfeit_invalid_move";
             gameResult = whiteToMove ? "black_win" : "white_win";
             break;
         }
@@ -3762,6 +3893,7 @@ static QJsonObject runBoardGame(int boardIndex,
 
     obj["termination"] = termination;
     obj["game_result"] = gameResult;
+    obj["aih_result_mode"] = aihResultMode(gameResult, termination);
     obj["terminal_state_reached"] = true;
     obj["completed_game"] = termination.endsWith("checkmate") || termination == "stalemate";
     obj["plies_played"] = moves.size();
@@ -3770,7 +3902,8 @@ static QJsonObject runBoardGame(int boardIndex,
     obj["illegal_or_unparseable_count"] = illegalCount;
     obj["illegal_move_total"] = illegalMoveTotal;
     obj["invalid_move_total"] = invalidMoveTotal;
-    obj["rejected_move_total"] = illegalMoveTotal + invalidMoveTotal;
+    obj["irrelevant_agent_return_total"] = irrelevantAgentReturnTotal;
+    obj["rejected_move_total"] = illegalMoveTotal + invalidMoveTotal + irrelevantAgentReturnTotal;
     obj["pre_move_board_awareness_pass"] = preMoveAwarenessPass;
     obj["pre_move_board_awareness_fail"] = preMoveAwarenessFail;
     obj["pre_move_board_awareness_skipped"] = preMoveAwarenessSkipped;
@@ -3786,8 +3919,123 @@ static QJsonObject runBoardGame(int boardIndex,
     writeLog(3, QString("AIChess board %1 finished: result=%2, termination=%3, plies=%4\n%5\n")
         .arg(boardId, gameResult, termination)
         .arg(moves.size())
-        .arg(finalCountText(illegalMoveTotal, invalidMoveTotal, correctionRetries)));
+        .arg(finalCountText(illegalMoveTotal, invalidMoveTotal, irrelevantAgentReturnTotal, correctionRetries)));
     return obj;
+}
+
+static QString reportModelCode(QString value) {
+    value.replace("gemini:gemini-", "gmn-");
+    value.replace("openai:", "oai-");
+    value.replace("anthropic:", "ant-");
+    value.replace(" vs ", " v ");
+    value.replace(":latest", "");
+    return value;
+}
+
+static QString reportModeCode(const QString &value) {
+    if (value == "aichess_hallucination_game") return "AIH";
+    if (value == "aichess_agent_only") return "aao";
+    if (value == "game") return "gam";
+    if (value == "one_move") return "one";
+    return value;
+}
+
+static QString reportResultCode(const QString &value) {
+    if (value == "aih_failure_cloud_rate_limit_or_quota_throttle") return "fail.qta";
+    if (value == "aih_failure_run_invalidated") return "fail.inv";
+    if (value == "aih_failure_agent_stopped_playing_chess") return "fail.stp";
+    if (value == "aih_tournament_game_played") return "ok.ply";
+    if (value == "aih_result_unclassified") return "unk";
+    return value;
+}
+
+static QString reportTerminationCode(QString value) {
+    value.replace("white_", "w.");
+    value.replace("black_", "b.");
+    value.replace("run_invalidated_", "inv.");
+    value.replace("cloud_rate_limit_or_quota_throttle", "qta");
+    value.replace("cloud_authorization_or_entitlement_failure", "auth");
+    value.replace("suspected_remote_disablement_or_stack_availability", "rem");
+    value.replace("missing_provider_key", "key");
+    value.replace("forfeit_move_timeout", "fto");
+    value.replace("forfeit_transport_failure", "ftr");
+    value.replace("forfeit_agt_noresp", "fft/agt/nrsp");
+    value.replace("forfeit_stk_noresp", "fft/stk/nrsp");
+    value.replace("forfeit_irrelevant_agent_return", "fir");
+    value.replace("forfeit_invalid_move", "fim");
+    value.replace("forfeit_invalid_or_unparseable_move", "fim");
+    value.replace("draw_by_configured_ply_limit", "dpl");
+    value.replace("game_timeout", "gto");
+    value.replace("game_completed", "gcm");
+    return value;
+}
+
+struct BracketEntrant {
+    QString model;
+    QString requestedModel;
+    int seed = 0;
+};
+
+struct RankPlacement {
+    int rank = 0;
+    int level = 0;
+    QString side;
+};
+
+static QString winnerSideForBoardResult(const QJsonObject &result) {
+    const QString gameResult = result.value("game_result").toString();
+    const QString termination = result.value("termination").toString();
+    if (gameResult == "white_win" || termination.startsWith("black_")) {
+        return "white";
+    }
+    if (gameResult == "black_win" || termination.startsWith("white_")) {
+        return "black";
+    }
+    const int rejected = result.value("rejected_move_total").toInt();
+    const int irrelevant = result.value("irrelevant_agent_return_total").toInt();
+    const int illegal = result.value("illegal_or_unparseable_count").toInt();
+    Q_UNUSED(rejected);
+    Q_UNUSED(irrelevant);
+    Q_UNUSED(illegal);
+    return "white";
+}
+
+static void applyFinalRanks(QList<QJsonObject> &results,
+                            const QMap<QString, int> &rankByModel) {
+    QMap<QString, RankPlacement> placementByModel;
+    for (const QJsonObject &result : results) {
+        const int level = result.value("tournament_level").toInt();
+        const QString whiteModel = result.value("white_model").toString();
+        const QString blackModel = result.value("black_model").toString();
+        if (!whiteModel.isEmpty() && level >= placementByModel.value(whiteModel).level) {
+            placementByModel[whiteModel] = {rankByModel.value(whiteModel, 0), level, "white"};
+        }
+        if (!blackModel.isEmpty() && level >= placementByModel.value(blackModel).level) {
+            placementByModel[blackModel] = {rankByModel.value(blackModel, 0), level, "black"};
+        }
+    }
+    auto placementText = [](const RankPlacement &placement) {
+        if (placement.rank <= 0) {
+            return QString("FR#-- L-- --");
+        }
+        return QString("FR#%1 L%2 %3")
+            .arg(placement.rank, 2, 10, QChar('0'))
+            .arg(placement.level, 2, 10, QChar('0'))
+            .arg(placement.side);
+    };
+    for (QJsonObject &result : results) {
+        const QString whiteModel = result.value("white_model").toString();
+        const QString blackModel = result.value("black_model").toString();
+        const int whiteRank = rankByModel.value(whiteModel, 0);
+        const int blackRank = rankByModel.value(blackModel, 0);
+        result["white_final_rank"] = whiteRank;
+        result["black_final_rank"] = blackRank;
+        result["white_final_placement"] = placementText(placementByModel.value(whiteModel));
+        result["black_final_placement"] = placementText(placementByModel.value(blackModel));
+        result["final_rank"] = QString("W %1 / B %2")
+            .arg(result.value("white_final_placement").toString(),
+                 result.value("black_final_placement").toString());
+    }
 }
 
 static void writeOutputs(const QList<QJsonObject> &results) {
@@ -3808,10 +4056,39 @@ static void writeOutputs(const QList<QJsonObject> &results) {
     summary.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&summary);
     out << "# " << kTestId << " Summary\n\n";
-    out << "Created: " << QDateTime::currentDateTime().toString(Qt::ISODate) << "\n\n";
-    out << "| Model | Mode | Termination | Completed game | Plies | Legal moves | Failed turns | Rejected attempts | Elapsed s |\n";
-    out << "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |\n";
+    out << "curDateTime: " << QDateTime::currentDateTime().toString(Qt::ISODate) << "\n\n";
+    bool singleMode = !results.isEmpty();
+    QString sharedMode = results.isEmpty() ? QString() : reportModeCode(results.first().value("mode").toString());
     for (const QJsonObject &r : results) {
+        if (reportModeCode(r.value("mode").toString()) != sharedMode) {
+            singleMode = false;
+            break;
+        }
+    }
+    if (singleMode) {
+        out << "GameMode: " << sharedMode << "\n\n";
+    }
+    out << "| Model | Rank | Res | Term | Cmplt | Plies | Legal | Fail | Ntrlv | Rej | Sec |\n";
+    out << "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |\n";
+    QList<QJsonObject> sortedResults = results;
+    std::sort(sortedResults.begin(), sortedResults.end(), [](const QJsonObject &a, const QJsonObject &b) {
+        const int arw = a.value("white_final_rank").toInt(999999);
+        const int arb = a.value("black_final_rank").toInt(999999);
+        const int brw = b.value("white_final_rank").toInt(999999);
+        const int brb = b.value("black_final_rank").toInt(999999);
+        const int ar = qMin(arw, arb);
+        const int br = qMin(brw, brb);
+        if (ar != br) {
+            return ar < br;
+        }
+        const int atr = a.value("tournament_round").toInt(999999);
+        const int btr = b.value("tournament_round").toInt(999999);
+        if (atr != btr) {
+            return atr < btr;
+        }
+        return a.value("model").toString() < b.value("model").toString();
+    });
+    for (const QJsonObject &r : sortedResults) {
         const QJsonObject response = r.value("response").toObject();
         const double elapsed = r.contains("total_elapsed_s")
             ? r.value("total_elapsed_s").toDouble()
@@ -3828,13 +4105,16 @@ static void writeOutputs(const QList<QJsonObject> &results) {
         const int rejected = r.contains("rejected_move_total")
             ? r.value("rejected_move_total").toInt()
             : illegal;
-        out << "| " << r.value("model").toString()
-            << " | " << r.value("mode").toString()
-            << " | " << r.value("termination").toString()
-            << " | " << (r.value("completed_game").toBool() ? "true" : "false")
+        const int irrelevant = r.value("irrelevant_agent_return_total").toInt();
+        out << "| " << reportModelCode(r.value("model").toString())
+            << " | " << r.value("final_rank").toString("-")
+            << " | " << reportResultCode(r.value("aih_result_mode").toString())
+            << " | " << reportTerminationCode(r.value("termination").toString())
+            << " | " << (r.value("completed_game").toBool() ? "yes" : "no")
             << " | " << plies
             << " | " << legal
             << " | " << illegal
+            << " | " << irrelevant
             << " | " << rejected
             << " | " << QString::number(elapsed, 'f', 3)
             << " |\n";
@@ -3866,6 +4146,7 @@ int main(int argc, char *argv[]) {
     QCommandLineOption boardsOpt("boards", "Number of boards to run in AIChess hallucination game mode", "count", "1");
     QCommandLineOption loopsOpt("loops", "Number of board batches to run in AIChess hallucination game mode", "count", "1");
     QCommandLineOption refereeCountOpt("referee-count", "Referee votes recorded per board", "count", "1");
+    QCommandLineOption tournamentBracketOpt("tournament-bracket", "Run AIH promotion bracket: winners advance, odd entrant gets a bye");
     QCommandLineOption moveTimeoutOpt(QStringList{"t", "move-timeout"}, "Per-move response window seconds", "seconds", "10");
     QCommandLineOption stackTimeoutOpt(QStringList{"sto", "stack-timeout"}, "Agent stack response completion timeout seconds", "seconds", "60");
     QCommandLineOption outputTokensOpt(QStringList{"otkns"}, "Agent output token budget", "tokens", "256");
@@ -3900,6 +4181,7 @@ int main(int argc, char *argv[]) {
     parser.addOption(boardsOpt);
     parser.addOption(loopsOpt);
     parser.addOption(refereeCountOpt);
+    parser.addOption(tournamentBracketOpt);
     parser.addOption(moveTimeoutOpt);
     parser.addOption(stackTimeoutOpt);
     parser.addOption(outputTokensOpt);
@@ -4055,6 +4337,7 @@ int main(int argc, char *argv[]) {
     const int boards = qMax(1, parser.value(boardsOpt).toInt());
     const int loops = qMax(1, parser.value(loopsOpt).toInt());
     const int refereeCount = qMax(1, parser.value(refereeCountOpt).toInt());
+    const bool tournamentBracket = parser.isSet(tournamentBracketOpt);
     const bool avb = parser.isSet(avbOpt);
     const bool avm = parser.isSet(avmOpt);
     const bool ans = parser.isSet(ansOpt);
@@ -4233,89 +4516,196 @@ int main(int argc, char *argv[]) {
             QTextStream(stderr) << "AIChess game mode requires --white-models/--black-models or detectable --models.\n";
             return 1;
         }
-        for (int loop = 0; loop < loops; ++loop) {
-            std::vector<std::future<QJsonObject>> boardFutures;
-            boardFutures.reserve(boards);
-            for (int board = 0; board < boards; ++board) {
-                const QString whiteModel = selectModelForBoard(whiteModels, board);
-                const QString blackModel = selectModelForBoard(blackModels, board);
-                const QString requestedWhiteModel = selectModelForBoard(requestedWhiteModels, board);
-                const QString requestedBlackModel = selectModelForBoard(requestedBlackModels, board);
-                boardFutures.push_back(std::async(std::launch::async,
-                    [loop,
-                     loops,
-                     board,
-                     whiteModel,
-                     blackModel,
-                     requestedWhiteModel,
-                     requestedBlackModel,
-                     refereeModels,
-                     requestedRefereeModels,
-                     refereeCount,
-                     moveTimeout,
-                     stackTimeout,
-                     outputTokens,
-                     gameTimeout,
-                     maxPlies,
-                     maxIllegal,
-                     correctionRetries,
-                     lookaheadLevel,
-                     clueMode,
-                     autoOutputTokens,
-                     boardAwarenessProbe,
-                     includeLegalMoveList,
-                     referenceConfigId,
-                     stackModule,
-                     stackKind,
-                     stackName,
-                     agentOnlyNoStockfish]() {
-                        QJsonObject result = agentOnlyNoStockfish
-                            ? runAgentOnlyBoardGame(board,
-                                                    whiteModel,
-                                                    blackModel,
-                                                    requestedWhiteModel,
-                                                    requestedBlackModel,
-                                                    refereeModels,
-                                                    requestedRefereeModels,
-                                                    moveTimeout,
-                                                    stackTimeout,
-                                                    outputTokens,
-                                                    gameTimeout,
-                                                    maxPlies,
-                                                    correctionRetries)
-                            : runBoardGame(board,
-                                           whiteModel,
-                                           blackModel,
-                                           requestedWhiteModel,
-                                           requestedBlackModel,
-                                           refereeModels,
-                                           requestedRefereeModels,
-                                           refereeCount,
-                                           moveTimeout,
-                                           stackTimeout,
-                                           outputTokens,
-                                           gameTimeout,
-                                           maxPlies,
-                                           maxIllegal,
-                                           correctionRetries,
-                                           lookaheadLevel,
-                                           clueMode,
-                                           autoOutputTokens,
-                                           boardAwarenessProbe,
-                                           includeLegalMoveList,
-                                           referenceConfigId,
-                                           stackModule,
-                                           stackKind,
-                                           stackName);
-                        result["loop_index"] = loop + 1;
-                        result["loop_count"] = loops;
-                        return result;
-                    }));
+        auto runBoardMatch = [&](int loop, int board, const QString &whiteModel, const QString &blackModel,
+                                 const QString &requestedWhiteModel, const QString &requestedBlackModel) {
+            QJsonObject result = agentOnlyNoStockfish
+                ? runAgentOnlyBoardGame(board,
+                                        whiteModel,
+                                        blackModel,
+                                        requestedWhiteModel,
+                                        requestedBlackModel,
+                                        refereeModels,
+                                        requestedRefereeModels,
+                                        moveTimeout,
+                                        stackTimeout,
+                                        outputTokens,
+                                        gameTimeout,
+                                        maxPlies,
+                                        correctionRetries)
+                : runBoardGame(board,
+                               whiteModel,
+                               blackModel,
+                               requestedWhiteModel,
+                               requestedBlackModel,
+                               refereeModels,
+                               requestedRefereeModels,
+                               refereeCount,
+                               moveTimeout,
+                               stackTimeout,
+                               outputTokens,
+                               gameTimeout,
+                               maxPlies,
+                               maxIllegal,
+                               correctionRetries,
+                               lookaheadLevel,
+                               clueMode,
+                               autoOutputTokens,
+                               boardAwarenessProbe,
+                               includeLegalMoveList,
+                               referenceConfigId,
+                               stackModule,
+                               stackKind,
+                               stackName);
+            result["loop_index"] = loop + 1;
+            result["loop_count"] = loops;
+            result["white_model"] = whiteModel;
+            result["black_model"] = blackModel;
+            return result;
+        };
+
+        if (tournamentBracket) {
+            QList<BracketEntrant> entrants;
+            const int openingBoards = qMax(1, boards);
+            for (int board = 0; board < openingBoards; ++board) {
+                entrants.append({selectModelForBoard(whiteModels, board), selectModelForBoard(requestedWhiteModels, board), board * 2 + 1});
+                entrants.append({selectModelForBoard(blackModels, board), selectModelForBoard(requestedBlackModels, board), board * 2 + 2});
             }
-            for (std::future<QJsonObject> &future : boardFutures) {
-                results.append(future.get());
+
+            QList<QList<QString>> eliminatedByRound;
+            int round = 1;
+            while (entrants.size() > 1) {
+                QList<BracketEntrant> nextEntrants;
+                QList<QString> eliminatedThisRound;
+                int matchIndex = 0;
+                for (int i = 0; i < entrants.size(); i += 2) {
+                    if (i + 1 >= entrants.size()) {
+                        nextEntrants.append(entrants.at(i));
+                        continue;
+                    }
+                    const BracketEntrant white = entrants.at(i);
+                    const BracketEntrant black = entrants.at(i + 1);
+                    QJsonObject result = runBoardMatch(0, matchIndex, white.model, black.model, white.requestedModel, black.requestedModel);
+                    const QString winnerSide = winnerSideForBoardResult(result);
+                    const BracketEntrant winner = winnerSide == "black" ? black : white;
+                    const BracketEntrant loser = winnerSide == "black" ? white : black;
+                    result["tournament_round"] = round;
+                    result["tournament_level"] = round;
+                    result["tournament_board"] = matchIndex + 1;
+                    result["white_seed"] = white.seed;
+                    result["black_seed"] = black.seed;
+                    result["winner_side"] = winnerSide;
+                    result["winner_model"] = winner.model;
+                    result["eliminated_model"] = loser.model;
+                    results.append(result);
+                    nextEntrants.append(winner);
+                    eliminatedThisRound.append(loser.model);
+                    ++matchIndex;
+                }
+                eliminatedByRound.append(eliminatedThisRound);
+                entrants = nextEntrants;
+                ++round;
             }
-        }
+
+            QMap<QString, int> rankByModel;
+            int rank = 1;
+            if (!entrants.isEmpty()) {
+                rankByModel[entrants.first().model] = rank++;
+            }
+            for (int i = eliminatedByRound.size() - 1; i >= 0; --i) {
+                for (const QString &model : eliminatedByRound.at(i)) {
+                    if (!rankByModel.contains(model)) {
+                        rankByModel[model] = rank++;
+                    }
+                }
+            }
+            applyFinalRanks(results, rankByModel);
+	        } else {
+	          for (int loop = 0; loop < loops; ++loop) {
+	            std::vector<std::future<QJsonObject>> boardFutures;
+	            boardFutures.reserve(boards);
+	            for (int board = 0; board < boards; ++board) {
+	                const QString whiteModel = selectModelForBoard(whiteModels, board);
+	                const QString blackModel = selectModelForBoard(blackModels, board);
+	                const QString requestedWhiteModel = selectModelForBoard(requestedWhiteModels, board);
+	                const QString requestedBlackModel = selectModelForBoard(requestedBlackModels, board);
+	                boardFutures.push_back(std::async(std::launch::async,
+	                    [loop,
+	                     loops,
+	                     board,
+	                     whiteModel,
+	                     blackModel,
+	                     requestedWhiteModel,
+	                     requestedBlackModel,
+	                     refereeModels,
+	                     requestedRefereeModels,
+	                     refereeCount,
+	                     moveTimeout,
+	                     stackTimeout,
+	                     outputTokens,
+	                     gameTimeout,
+	                     maxPlies,
+	                     maxIllegal,
+	                     correctionRetries,
+	                     lookaheadLevel,
+	                     clueMode,
+	                     autoOutputTokens,
+	                     boardAwarenessProbe,
+	                     includeLegalMoveList,
+	                     referenceConfigId,
+	                     stackModule,
+	                     stackKind,
+	                     stackName,
+	                     agentOnlyNoStockfish]() {
+	                        QJsonObject result = agentOnlyNoStockfish
+	                            ? runAgentOnlyBoardGame(board,
+	                                                    whiteModel,
+	                                                    blackModel,
+	                                                    requestedWhiteModel,
+	                                                    requestedBlackModel,
+	                                                    refereeModels,
+	                                                    requestedRefereeModels,
+	                                                    moveTimeout,
+	                                                    stackTimeout,
+	                                                    outputTokens,
+	                                                    gameTimeout,
+	                                                    maxPlies,
+	                                                    correctionRetries)
+	                            : runBoardGame(board,
+	                                           whiteModel,
+	                                           blackModel,
+	                                           requestedWhiteModel,
+	                                           requestedBlackModel,
+	                                           refereeModels,
+	                                           requestedRefereeModels,
+	                                           refereeCount,
+	                                           moveTimeout,
+	                                           stackTimeout,
+	                                           outputTokens,
+	                                           gameTimeout,
+	                                           maxPlies,
+	                                           maxIllegal,
+	                                           correctionRetries,
+	                                           lookaheadLevel,
+	                                           clueMode,
+	                                           autoOutputTokens,
+	                                           boardAwarenessProbe,
+	                                           includeLegalMoveList,
+	                                           referenceConfigId,
+	                                           stackModule,
+	                                           stackKind,
+	                                           stackName);
+	                        result["loop_index"] = loop + 1;
+	                        result["loop_count"] = loops;
+	                        result["white_model"] = whiteModel;
+	                        result["black_model"] = blackModel;
+	                        return result;
+	                    }));
+	            }
+	            for (std::future<QJsonObject> &future : boardFutures) {
+	                results.append(future.get());
+	            }
+	          }
+	        }
     } else {
         for (const QString &model : models) {
             if (mode == "one-move" || mode == "both") {

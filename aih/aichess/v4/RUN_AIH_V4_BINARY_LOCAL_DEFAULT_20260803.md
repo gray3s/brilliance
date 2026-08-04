@@ -40,16 +40,20 @@ run has analytical value.
 ## Gemini Cloud Representative
 
 The ordinary binary run remains local-only. To spend Gemini credits
-deliberately and add one cloud comparison point, use:
+deliberately and run the Gemini cloud tournament slice, use:
 
 ```bash
 /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v4/bin/aih_v4 --cloud-representative-gemini
 ```
 
-This mode pairs `gemini:gemini-3.5-flash-lite` against one discovered local
-agent for one board. It is intended to provide a cloud representative without
-turning every local tournament run into a cloud-token run. It is deliberately
-cloud-vs-local, not Gemini self-play.
+This mode pairs `gemini:gemini-3.5-flash-lite` against the discovered passing
+local roster by default. It derives the board count from the selected local
+opponent list, so it is a cloud-vs-local tournament slice, not a one-board
+smoke test and not Gemini self-play.
+
+To split a cloud tournament into smaller batches, set
+`AIH_V4_CLOUD_REPRESENTATIVE_LOCAL_START` and
+`AIH_V4_CLOUD_REPRESENTATIVE_LOCAL_COUNT`.
 
 ## Self-Play Policy
 
