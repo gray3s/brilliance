@@ -2,13 +2,13 @@
 
 Date: 2026-08-11
 
-This file supplements `AIH_V5_PROJECT_GOALS_20260811.md`. The goals file defines the target behavior. This implementation plan describes one practical way to build it.
+This file supplements `AIH_V5_PROJECT_GOALS.md`. The goals file defines the target behavior. This implementation plan describes one practical way to build it.
 
 Public artifact links:
 
-- Project goals: `AIH_V5_PROJECT_GOALS_20260811.md`
-- Project implementation plan: `AIH_V5_IMPLEMENTATION_PLAN_20260811.md`
-- Current aggregate HTML summary: `data/AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`
+- Project goals: `AIH_V5_PROJECT_GOALS.md`
+- Project implementation plan: `AIH_V5_IMPLEMENTATION_PLAN.md`
+- Current aggregate HTML summary: `AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`
 
 ## 1. Build Shape
 
@@ -261,7 +261,8 @@ Behavior:
 - `--nruns=N` reads the oldest N matching direct CSV files in `v5/data` for the current target.
 - Agents may differ by run.
 - Attempts are summed per agent across processed rows.
-- Coverage% is based on how many selected CSV files include that agent.
+- Coverage% means: Agent in this % of CSVs.
+- Missing agent rows are not fabricated and are not counted as AIH/pass/fail data.
 - Registration failures remain visible in the main ranking table.
 - The input section should show only `data/registration_status_run_*.csv` and the number of processed CSVs. Do not list every CSV filename.
 - The generated aggregate report should be written directly under `v5/data` as `AIH_V5_REGISTRATION_AGGREGATE_<timestamp>.html`, with `AIH_V5_REGISTRATION_AGGREGATE_LATEST.html` updated to the latest report.
@@ -352,8 +353,8 @@ Before publishing an AIH v5 build, verify:
 
 Minimum public artifact set:
 
-- `AIH_V5_PROJECT_GOALS_20260811.md`
-- `AIH_V5_IMPLEMENTATION_PLAN_20260811.md`
+- `AIH_V5_PROJECT_GOALS.md`
+- `AIH_V5_IMPLEMENTATION_PLAN.md`
 - `data/AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`
 
 The aggregate HTML should be a real multi-run summary after a validated longer run.

@@ -4,9 +4,9 @@ Date: 2026-08-11
 
 Public artifact links:
 
-- Project goals: `AIH_V5_PROJECT_GOALS_20260811.md`
-- Project implementation plan: `AIH_V5_IMPLEMENTATION_PLAN_20260811.md`
-- Current aggregate HTML summary: `data/AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`
+- Project goals: `AIH_V5_PROJECT_GOALS.md`
+- Project implementation plan: `AIH_V5_IMPLEMENTATION_PLAN.md`
+- Current aggregate HTML summary: `AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`
 
 AIH v5 is a local-first agentic AI benchmark prototype. The immediate goal is to compare locally available AI agents under a small, repeatable chess-harness workload that can run on a normal laptop and improve as local hardware improves.
 
@@ -106,7 +106,7 @@ Registration is a pre-tournament filter, not a ranking tournament.
 - A simple liveness query is acceptable as the default registration smoke test.
 - Track elapsed registration time per candidate.
 - Track timeout count and failure reason per candidate.
-- Save all candidate rows, including failures, to CSV.
+- Save rows for agents tested in that run, including failures, to CSV.
 - Batch local registration attempts, for example 5 agents per batch, and reset/unload the local stack between batches.
 - Use a stack-reset settle wait after reset, for example 5 seconds.
 - If consecutive local timeout behavior suggests a stack problem, reset the local stack and continue with bounded retry behavior.
@@ -226,6 +226,7 @@ data/registration_status_run_*.csv
 ```
 
 It should not read CSV files from `runs/` or from subfolders under `v5/data`. It should handle different candidate sets across runs and compute per-agent totals from whatever rows exist.
+If an agent does not appear in a given processed CSV, the HTML aggregator should not fabricate a row or treat that absence as AIH data.
 
 ## HTML Reporting Contract
 
@@ -247,6 +248,7 @@ Repeat-run aggregate report:
 - Support `--nruns=0` to aggregate all saved direct `v5/data` registration CSVs.
 - For the current target, when `--nruns=N`, summarize the oldest N matching CSV files in `v5/data`.
 - Show how many CSV files were aggregated and what percentage of saved run CSVs they represent.
+- `Coverage%` means: Agent in this % of CSVs.
 - Rank rows by AIH% ascending, then pass rate descending, then timeout count ascending, then agent name.
 - Show the input file set as a relative path spec and processed count, not a full filename listing.
 - Use concise table columns:
@@ -314,7 +316,7 @@ This file, the implementation plan, and the current aggregate HTML report are th
 Use this document as the core prompt:
 
 ```text
-Create AIH v5 as a local-first command-line benchmark named ./bin/aih_v5. Implement registration filtering for local Ollama agents, run a compact chess-harness tournament over registered agents, save registration CSV snapshots directly in v5/data, support repeated runs with --nruns and --minregs, and generate browser-opened single-run and aggregate HTML summaries. Follow the runtime architecture, default values, CSV contract, terminal output contract, and HTML reporting contract in AIH_V5_PROJECT_GOALS_20260811.md.
+Create AIH v5 as a local-first command-line benchmark named ./bin/aih_v5. Implement registration filtering for local Ollama agents, run a compact chess-harness tournament over registered agents, save registration CSV snapshots directly in v5/data, support repeated runs with --nruns and --minregs, and generate browser-opened single-run and aggregate HTML summaries. Follow the runtime architecture, default values, CSV contract, terminal output contract, and HTML reporting contract in AIH_V5_PROJECT_GOALS.md.
 ```
 
 The user or builder should then provide the target language, build system, host OS, local model list, and any required Ollama installation details.

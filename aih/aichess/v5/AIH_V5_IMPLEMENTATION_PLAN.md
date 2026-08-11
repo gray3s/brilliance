@@ -261,7 +261,8 @@ Behavior:
 - `--nruns=N` reads the oldest N matching direct CSV files in `v5/data` for the current target.
 - Agents may differ by run.
 - Attempts are summed per agent across processed rows.
-- Coverage% is based on how many selected CSV files include that agent.
+- Coverage% means: Agent in this % of CSVs.
+- Missing agent rows are not fabricated and are not counted as AIH/pass/fail data.
 - Registration failures remain visible in the main ranking table.
 - The input section should show only `data/registration_status_run_*.csv` and the number of processed CSVs. Do not list every CSV filename.
 - The generated aggregate report should be written directly under `v5/data` as `AIH_V5_REGISTRATION_AGGREGATE_<timestamp>.html`, with `AIH_V5_REGISTRATION_AGGREGATE_LATEST.html` updated to the latest report.

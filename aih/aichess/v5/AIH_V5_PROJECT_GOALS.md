@@ -106,7 +106,7 @@ Registration is a pre-tournament filter, not a ranking tournament.
 - A simple liveness query is acceptable as the default registration smoke test.
 - Track elapsed registration time per candidate.
 - Track timeout count and failure reason per candidate.
-- Save all candidate rows, including failures, to CSV.
+- Save rows for agents tested in that run, including failures, to CSV.
 - Batch local registration attempts, for example 5 agents per batch, and reset/unload the local stack between batches.
 - Use a stack-reset settle wait after reset, for example 5 seconds.
 - If consecutive local timeout behavior suggests a stack problem, reset the local stack and continue with bounded retry behavior.
@@ -226,6 +226,7 @@ data/registration_status_run_*.csv
 ```
 
 It should not read CSV files from `runs/` or from subfolders under `v5/data`. It should handle different candidate sets across runs and compute per-agent totals from whatever rows exist.
+If an agent does not appear in a given processed CSV, the HTML aggregator should not fabricate a row or treat that absence as AIH data.
 
 ## HTML Reporting Contract
 
@@ -247,6 +248,7 @@ Repeat-run aggregate report:
 - Support `--nruns=0` to aggregate all saved direct `v5/data` registration CSVs.
 - For the current target, when `--nruns=N`, summarize the oldest N matching CSV files in `v5/data`.
 - Show how many CSV files were aggregated and what percentage of saved run CSVs they represent.
+- `Coverage%` means: Agent in this % of CSVs.
 - Rank rows by AIH% ascending, then pass rate descending, then timeout count ascending, then agent name.
 - Show the input file set as a relative path spec and processed count, not a full filename listing.
 - Use concise table columns:
