@@ -2,6 +2,12 @@
 
 Date: 2026-08-10
 
+Public artifact links:
+
+- Project goals: `AIH_V5_PROJECT_GOALS_20260810.md`
+- Project implementation plan: `AIH_V5_IMPLEMENTATION_PLAN_20260810.md`
+- Demo HTML summary: `AIH_V5_20260810_demo.html`
+
 AIH v5 is a local-first agentic AI benchmark prototype. The immediate goal is to compare locally available AI agents under a small, repeatable chess-harness workload that can run on a normal laptop and improve as local hardware improves.
 
 This document is intentionally written as a project recreation target. A user should be able to paste it into a coding agent as the primary prompt, add ordinary build/environment details for their machine, and ask the agent to recreate the AIH v5 behavior.
