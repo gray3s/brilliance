@@ -8,7 +8,7 @@ Public artifact links:
 
 - Project goals: `AIH_V5_PROJECT_GOALS.md`
 - Project implementation plan: `AIH_V5_IMPLEMENTATION_PLAN.md`
-- Current aggregate HTML summary: `AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`
+- Current CSV analyzer HTML summary: `AIH_V5_CSV_AGGREGATE_LATEST.html`
 
 ## 1. Build Shape
 
