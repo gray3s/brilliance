@@ -26,6 +26,13 @@ chmod +x "$OUT_DIR/aih_v5_html_report"
 printf '%s -> %s\n' "$OUT_DIR/aih_v5_html_report" "tools/generate_aih_v5_html_report.cpp"
 
 "$CXX" ${CXXFLAGS:-$CXXFLAGS_DEFAULT} \
+  "$ROOT_DIR/tools/generate_aih_v5_repeat_html.cpp" \
+  -o "$OUT_DIR/aih_v5_repeat_html"
+
+chmod +x "$OUT_DIR/aih_v5_repeat_html"
+printf '%s -> %s\n' "$OUT_DIR/aih_v5_repeat_html" "tools/generate_aih_v5_repeat_html.cpp"
+
+"$CXX" ${CXXFLAGS:-$CXXFLAGS_DEFAULT} \
   "$ROOT_DIR/tools/run_aih_v5_single_game.cpp" \
   -o "$OUT_DIR/aih_v5_single_game"
 

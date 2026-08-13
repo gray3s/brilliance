@@ -26,6 +26,22 @@ struct AgentAggregate {
   int move_attempts = 0;
 };
 
+struct DiagnosticRow {
+  std::string file;
+  std::string run_time;
+  std::string game_mode;
+  std::string model;
+  std::string result;
+  std::string termination;
+  std::string complete;
+  int plies = 0;
+  int legal = 0;
+  int fail = 0;
+  int neutral = 0;
+  int rejected = 0;
+  double seconds = 0.0;
+};
+
 static std::string timestamp() {
   auto now = std::chrono::system_clock::now();
   std::time_t t = std::chrono::system_clock::to_time_t(now);
@@ -70,6 +86,53 @@ static std::vector<std::string> split_csv_line(const std::string& line) {
   return fields;
 }
 
+static std::vector<std::string> split_pipe_row(const std::string& line) {
+  std::vector<std::string> fields;
+  std::string cur;
+  for (char c : line) {
+    if (c == '|') {
+      fields.push_back(trim(cur));
+      cur.clear();
+    } else {
+      cur += c;
+    }
+  }
+  fields.push_back(trim(cur));
+  if (!fields.empty() && fields.front().empty()) fields.erase(fields.begin());
+  if (!fields.empty() && fields.back().empty()) fields.pop_back();
+  return fields;
+}
+
+static bool is_markdown_separator_row(const std::vector<std::string>& fields) {
+  if (fields.empty()) return false;
+  for (const auto& f : fields) {
+    bool has_dash = false;
+    for (char c : f) {
+      if (c == '-') has_dash = true;
+      else if (c != ':' && !std::isspace(static_cast<unsigned char>(c))) return false;
+    }
+    if (!has_dash) return false;
+  }
+  return true;
+}
+
+static int parse_int_field(const std::string& s) {
+  try { return std::stoi(trim(s)); } catch (...) { return 0; }
+}
+
+static double parse_double_field(const std::string& s) {
+  try { return std::stod(trim(s)); } catch (...) { return 0.0; }
+}
+
+static std::string compact_model_name(std::string s) {
+  const std::string latest = ":latest";
+  size_t pos = 0;
+  while ((pos = s.find(latest, pos)) != std::string::npos) {
+    s.erase(pos, latest.size());
+  }
+  return s;
+}
+
 static fs::path project_root() {
   fs::path cwd = fs::current_path();
   if (fs::exists(cwd / "aih_v5.sh")) return cwd;
@@ -110,6 +173,139 @@ static void read_registration_csv(const fs::path& csv, std::map<std::string, Age
       if (reason.find("timed out") != std::string::npos) a.timeout++;
     }
   }
+}
+
+static void read_diagnostic_summary(const fs::path& root, const fs::path& summary, std::vector<DiagnosticRow>& rows) {
+  std::ifstream in(summary);
+  if (!in) return;
+
+  std::string line;
+  std::string run_time;
+  std::string game_mode;
+  bool in_table = false;
+  while (std::getline(in, line)) {
+    if (line.rfind("curDateTime:", 0) == 0) {
+      run_time = trim(line.substr(std::string("curDateTime:").size()));
+      continue;
+    }
+    if (line.rfind("GameMode:", 0) == 0) {
+      game_mode = trim(line.substr(std::string("GameMode:").size()));
+      continue;
+    }
+    if (line.rfind("| Model |", 0) == 0) {
+      in_table = true;
+      continue;
+    }
+    if (!in_table || line.empty() || line[0] != '|') continue;
+
+    auto f = split_pipe_row(line);
+    if (is_markdown_separator_row(f) || f.size() < 11) continue;
+
+    DiagnosticRow row;
+    row.file = fs::relative(summary, root).string();
+    row.run_time = run_time;
+    row.game_mode = game_mode;
+    row.model = compact_model_name(f[0]);
+    row.result = f[2];
+    row.termination = f[3];
+    row.complete = f[4];
+    row.plies = parse_int_field(f[5]);
+    row.legal = parse_int_field(f[6]);
+    row.fail = parse_int_field(f[7]);
+    row.neutral = parse_int_field(f[8]);
+    row.rejected = parse_int_field(f[9]);
+    row.seconds = parse_double_field(f[10]);
+    rows.push_back(row);
+  }
+}
+
+static std::vector<DiagnosticRow> read_diagnostic_summaries(const fs::path& root) {
+  std::vector<DiagnosticRow> rows;
+  fs::path runs_dir = root / "runs";
+  if (!fs::exists(runs_dir) || !fs::is_directory(runs_dir)) return rows;
+
+  for (const auto& ent : fs::recursive_directory_iterator(runs_dir)) {
+    if (!ent.is_regular_file()) continue;
+    std::string name = ent.path().filename().string();
+    if (name.size() >= 11 && name.rfind("_summary.md") == name.size() - 11) {
+      read_diagnostic_summary(root, ent.path(), rows);
+    }
+  }
+  std::sort(rows.begin(), rows.end(), [](const DiagnosticRow& a, const DiagnosticRow& b) {
+    if (a.run_time != b.run_time) return a.run_time > b.run_time;
+    return a.model < b.model;
+  });
+  return rows;
+}
+
+static std::string term_label(const std::string& term) {
+  if (term == "dpl") return "draw by configured ply limit";
+  if (term == "b.fim") return "black invalid move";
+  if (term == "w.fim") return "white invalid move";
+  if (term == "b.fir") return "black irrelevant return";
+  if (term == "w.fir") return "white irrelevant return";
+  if (term == "b.ftr") return "black transport failure";
+  if (term == "w.ftr") return "white transport failure";
+  return term;
+}
+
+static void write_diagnostic_html(const fs::path& root, const fs::path& out, const std::vector<DiagnosticRow>& diagnostics) {
+  std::ofstream html(out);
+  html << "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">\n";
+  html << "<title>AIH v5 diagnostic aggregate</title>\n";
+  html << "<style>body{font-family:Arial,sans-serif;margin:2rem;line-height:1.45;color:#1f2933}"
+       << "table{border-collapse:collapse;width:100%;margin-top:1rem}th,td{border:1px solid #cad2dc;padding:.55rem;text-align:left;vertical-align:top}"
+       << "th{background:#eef2f6}td.num{text-align:right;font-variant-numeric:tabular-nums}.note{color:#52606d}"
+       << "code,pre{background:#eef2f6;border-radius:3px}code{padding:.1rem .25rem}pre{padding:.75rem;overflow:auto}"
+       << "th.num,td.num{white-space:nowrap;width:1%;padding-left:.35rem;padding-right:.35rem}"
+       << "th.avgsec,td.avgsec{width:11rem;padding-left:.55rem;padding-right:.55rem}"
+       << ".ok{color:#166534;font-weight:700}.fail{color:#991b1b;font-weight:700}</style>\n";
+  html << "</head><body><main>\n<h1>AIH v5 Diagnostic Aggregate</h1>\n";
+  html << "<p class=\"note\">Generated from <code>v5/runs/**/*_summary.md</code>. "
+       << "This page covers diagnostic and single-game summary modes, including local-agent/inter-agent diagnostic runs.</p>\n";
+  html << "<p class=\"note\">Basic registration CSV aggregate: <a href=\"AIH_V5_REGISTRATION_AGGREGATE_LATEST.html\">AIH_V5_REGISTRATION_AGGREGATE_LATEST.html</a></p>\n";
+  html << "<p class=\"note\">Repository source root: <code>" << html_escape(root.string()) << "</code></p>\n";
+
+  int total = 0;
+  int ok = 0;
+  int failed = 0;
+  int transport = 0;
+  int invalid = 0;
+  int irrelevant = 0;
+  double seconds = 0.0;
+  for (const auto& row : diagnostics) {
+    total++;
+    seconds += row.seconds;
+    if (row.result == "ok.ply") ok++;
+    else failed++;
+    if (row.termination == "w.ftr" || row.termination == "b.ftr") transport++;
+    if (row.termination == "w.fim" || row.termination == "b.fim") invalid++;
+    if (row.termination == "w.fir" || row.termination == "b.fir") irrelevant++;
+  }
+
+  html << "<h2>Summary</h2>\n";
+  html << "<table><thead><tr><th class=\"num\">Rows</th><th class=\"num\">Reached Ply Limit</th><th class=\"num\">Failed</th>"
+       << "<th class=\"num\">Transport</th><th class=\"num\">Invalid</th><th class=\"num\">Irrelevant</th><th class=\"num avgsec\">Total Sec</th></tr></thead><tbody>\n";
+  html << "<tr><td class=\"num\">" << total << "</td><td class=\"num\">" << ok << "</td><td class=\"num\">" << failed << "</td>"
+       << "<td class=\"num\">" << transport << "</td><td class=\"num\">" << invalid << "</td><td class=\"num\">" << irrelevant << "</td>"
+       << "<td class=\"num avgsec\">" << std::fixed << std::setprecision(3) << seconds << "</td></tr>\n";
+  html << "</tbody></table>\n";
+
+  html << "<h2>Diagnostic Rows</h2>\n";
+  html << "<table><thead><tr><th>Run Time</th><th>Mode</th><th>Model</th><th>Result</th><th>Termination</th>"
+       << "<th class=\"num\">Plies</th><th class=\"num\">Legal</th><th class=\"num\">Fail</th><th class=\"num\">Rejected</th>"
+       << "<th class=\"num avgsec\">Sec</th><th>Source</th></tr></thead><tbody>\n";
+  for (const auto& row : diagnostics) {
+    std::string cls = row.result == "ok.ply" ? "ok" : "fail";
+    html << "<tr><td>" << html_escape(row.run_time) << "</td><td>" << html_escape(row.game_mode) << "</td>"
+         << "<td>" << html_escape(row.model) << "</td><td class=\"" << cls << "\">" << html_escape(row.result) << "</td>"
+         << "<td>" << html_escape(term_label(row.termination)) << "</td>"
+         << "<td class=\"num\">" << row.plies << "</td><td class=\"num\">" << row.legal << "</td>"
+         << "<td class=\"num\">" << row.fail << "</td><td class=\"num\">" << row.rejected << "</td>"
+         << "<td class=\"num avgsec\">" << std::fixed << std::setprecision(3) << row.seconds << "</td>"
+         << "<td><code>" << html_escape(row.file) << "</code></td></tr>\n";
+  }
+  html << "</tbody></table>\n</main></body></html>\n";
 }
 
 static int run_open_command(const char* cmd, const std::string& target, bool wait_for_exit = true) {
@@ -218,6 +414,7 @@ int main(int argc, char** argv) {
 
   std::map<std::string, AgentAggregate> agents;
   for (const auto& csv : csvs) read_registration_csv(csv, agents);
+  std::vector<DiagnosticRow> diagnostics = read_diagnostic_summaries(root);
 
   struct Row { std::string agent; AgentAggregate agg; };
   std::vector<Row> rows;
@@ -233,7 +430,10 @@ int main(int argc, char** argv) {
     return a.agent < b.agent;
   });
 
-  fs::path out = data_dir / ("AIH_V5_REGISTRATION_AGGREGATE_" + timestamp() + ".html");
+  fs::path out = data_dir / "AIH_V5_REGISTRATION_AGGREGATE_LATEST.html";
+  fs::path diagnostic_latest = data_dir / "AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html";
+  fs::path root_csv_latest = root / "AIH_V5_CSV_AGGREGATE_LATEST.html";
+  fs::path root_diagnostic_latest = root / "AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html";
   std::ofstream html(out);
   html << "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">\n";
   html << "<title>AIH v5 registration aggregate</title>\n";
@@ -258,7 +458,8 @@ int main(int argc, char** argv) {
   html << "<p class=\"note\"><code>./bin/aih_v5</code> launches a general AIH v5 run. ";
   html << "<code>./bin/aih_v5_repeat_html</code> rebuilds and opens this HTML aggregate page.</p>\n";
   html << "<p class=\"note\">Data section: v5/data</p>\n";
-  html << "<p class=\"note\">Input source: registration_status_run_*.csv files only.</p>\n";
+  html << "<p class=\"note\">Input source: registration_status_run_*.csv files.</p>\n";
+  html << "<p class=\"note\">Diagnostic mode aggregate: <a href=\"AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html\">AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html</a></p>\n";
   html << "<p class=\"note\">Runs aggregated: " << csvs.size() << "</p>\n";
   double saved_csv_pct = saved_csv_count == 0 ? 0.0 : 100.0 * csvs.size() / saved_csv_count;
   size_t start_from_beginning = 0;
@@ -306,13 +507,17 @@ int main(int argc, char** argv) {
   html << "<h2>Input Files</h2>\n";
   html << "<table><thead><tr><th>Relative Path Spec</th><th class=\"num\">CSV Files Processed</th></tr></thead><tbody>\n";
   html << "<tr><td><code>v5/data/registration_status_run_*.csv</code></td><td class=\"num\">" << csvs.size() << "</td></tr>\n";
+  html << "<tr><td><code>v5/runs/**/*_summary.md</code></td><td class=\"num\">" << diagnostics.size() << "</td></tr>\n";
   html << "</tbody></table>\n</main></body></html>\n";
   html.close();
 
-  fs::path latest = data_dir / "AIH_V5_REGISTRATION_AGGREGATE_LATEST.html";
-  fs::copy_file(out, latest, fs::copy_options::overwrite_existing);
+  write_diagnostic_html(root, diagnostic_latest, diagnostics);
+  fs::copy_file(out, root_csv_latest, fs::copy_options::overwrite_existing);
+  fs::copy_file(diagnostic_latest, root_diagnostic_latest, fs::copy_options::overwrite_existing);
   std::cout << "aih_v5_repeat_html: wrote " << out << "\n";
-  std::cout << "aih_v5_repeat_html: wrote " << latest << "\n";
+  std::cout << "aih_v5_repeat_html: wrote " << diagnostic_latest << "\n";
+  std::cout << "aih_v5_repeat_html: wrote " << root_csv_latest << "\n";
+  std::cout << "aih_v5_repeat_html: wrote " << root_diagnostic_latest << "\n";
   open_report(out);
   return 0;
 }

@@ -1,35 +1,45 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>AIH v5 CSV Analyzer</title>
-<style>:root{color-scheme:light;background:#f7f8fa;color:#17202a}body{font-family:Arial,sans-serif;margin:0;line-height:1.45;color:#17202a;background:#f7f8fa}main{max-width:1220px;margin:0 auto;padding:28px}h1{font-size:30px;margin:0 0 6px}.process-date{color:#52606d;font-size:15px;font-weight:400;margin-left:14px;white-space:nowrap}h2{margin-top:28px;font-size:20px}.note{color:#52606d;margin:.25rem 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:18px 0}.metric{background:#fff;border:1px solid #d8dee6;border-radius:6px;padding:12px}.metric b{display:block;font-size:22px;margin-top:4px}table{border-collapse:collapse;width:100%;margin-top:12px;background:#fff}th,td{border:1px solid #d8dee6;padding:8px;text-align:left;vertical-align:top}th{background:#edf1f5;position:sticky;top:0}td.num{text-align:right;font-variant-numeric:tabular-nums}code{background:#edf1f5;padding:.1rem .25rem;border-radius:3px}.good{color:#146c43;font-weight:700}.warn{color:#8a5a00;font-weight:700}.bad{color:#b42318;font-weight:700}</style>
-</head>
-<body>
-<main>
-<h1>AIH v5 CSV Analyzer <span class="process-date">Process date: 2026-08-13 12:38:52 MDT</span></h1>
-<h2>Agent Ranking</h2>
-<p class="note">Two event classes are used per agent: AIH events and non-AIH events. Nevents is observed event count. AIH% = AIH events / Nevents. Legal and AIH seconds are averaged separately from event-level JSONL records when available.</p>
-<table><thead><tr><th>Rank</th><th class="num">AIH%</th><th>Agent</th><th class="num">CSV Rows</th><th class="num">AIH Events</th><th class="num">Non-AIH Events</th><th class="num">Nevents</th><th class="num">Avg Legal Sec</th><th class="num">Avg AIH Sec</th><th class="num">Avg Weighted</th><th class="num">Avg Tokens/sec</th></tr></thead><tbody>
-<tr><td class="num">1</td><td class="num good">1.870</td><td>smollm2:135m</td><td class="num">116</td><td class="num">17.0</td><td class="num">892.0</td><td class="num">909</td><td class="num">5.985</td><td class="num">47.928</td><td class="num">18.837</td><td class="num">53.884</td></tr>
-<tr><td class="num">2</td><td class="num warn">49.634</td><td>gemma3:270m</td><td class="num">120</td><td class="num">543.0</td><td class="num">551.0</td><td class="num">1094</td><td class="num">2.952</td><td class="num">3.994</td><td class="num">37.315</td><td class="num">67.247</td></tr>
-<tr><td class="num">3</td><td class="num warn">51.561</td><td>gemma3:1b</td><td class="num">107</td><td class="num">512.0</td><td class="num">481.0</td><td class="num">993</td><td class="num">11.873</td><td class="num">13.026</td><td class="num">68.421</td><td class="num">15.182</td></tr>
-<tr><td class="num">4</td><td class="num warn">52.918</td><td>qwen2.5:0.5b</td><td class="num">121</td><td class="num">526.0</td><td class="num">468.0</td><td class="num">994</td><td class="num">7.258</td><td class="num">8.565</td><td class="num">49.223</td><td class="num">66.302</td></tr>
-<tr><td class="num">5</td><td class="num warn">54.783</td><td>tinyllama:latest</td><td class="num">108</td><td class="num">544.0</td><td class="num">449.0</td><td class="num">993</td><td class="num">17.738</td><td class="num">20.391</td><td class="num">52.676</td><td class="num">8.256</td></tr>
-<tr><td class="num">6</td><td class="num bad">100.000</td><td>llama3.2:1b</td><td class="num">85</td><td class="num">747.0</td><td class="num">0.0</td><td class="num">747</td><td class="num">0.000</td><td class="num">15.005</td><td class="num">91.577</td><td class="num">18.045</td></tr>
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>AIH v5 registration aggregate</title>
+<style>body{font-family:Arial,sans-serif;margin:2rem;line-height:1.45;color:#1f2933}table{border-collapse:collapse;width:100%;margin-top:1rem}th,td{border:1px solid #cad2dc;padding:.55rem;text-align:left;vertical-align:top}th{background:#eef2f6}td.num{text-align:right;font-variant-numeric:tabular-nums}.note{color:#52606d}code,pre{background:#eef2f6;border-radius:3px}code{padding:.1rem .25rem}pre{padding:.75rem;overflow:auto}th.num,td.num{white-space:nowrap;width:1%;padding-left:.35rem;padding-right:.35rem}th.avgsec,td.avgsec{width:13rem;padding-left:.55rem;padding-right:.55rem}.timing{display:grid;grid-template-columns:7ch 1ch 8ch;gap:.35rem;justify-content:end;font-variant-numeric:tabular-nums}.timing span{text-align:right}</style>
+</head><body><main>
+<h1>AIH v5 Registration Aggregate</h1>
+<p class="note">Published artifact date: 2026-08-11</p>
+<p class="note">Project goals: <a href="https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_PROJECT_GOALS.md">AIH_V5_PROJECT_GOALS.md</a></p>
+<p class="note">Project implementation plan: <a href="https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_IMPLEMENTATION_PLAN.md">AIH_V5_IMPLEMENTATION_PLAN.md</a></p>
+<p class="note">Current aggregate HTML: <a href="https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_REGISTRATION_AGGREGATE_LATEST.html">AIH_V5_REGISTRATION_AGGREGATE_LATEST.html</a></p>
+<h2>Launch and Relaunch Instructions</h2>
+<p class="note">Run commands from the AIH v5 project directory.</p>
+<pre><code>cd ~/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+./bin/aih_v5
+./bin/aih_v5_repeat_html</code></pre>
+<p class="note"><code>./bin/aih_v5</code> launches a general AIH v5 run. <code>./bin/aih_v5_repeat_html</code> rebuilds and opens this HTML aggregate page.</p>
+<p class="note">Data section: v5/data</p>
+<p class="note">Input source: registration_status_run_*.csv files.</p>
+<p class="note">Diagnostic mode aggregate: <a href="AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html">AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html</a></p>
+<p class="note">Runs aggregated: 5</p>
+<p class="note">Registration files aggregated: 5/109 (4.6%) of saved run CSVs, starting at #0 from the beginning</p>
+<p class="note">Coverage% means: Agent in this % of CSVs.</p>
+<table><thead><tr><th>Rank</th><th>Agent</th><th class="num">AIH%</th><th class="num">Attempts</th><th class="num">Total Runs</th><th class="num">Coverage%</th><th class="num">Pass%</th><th class="num">Fail</th><th class="num">Timeout</th><th class="num">Timeout%</th><th class="num avgsec">Avg Sec</th></tr></thead><tbody>
+<tr><td class="num">1</td><td>gemma3:1b</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>4.500</span><span>/</span><span>13.726</span></span></td></tr>
+<tr><td class="num">2</td><td>gemma3:270m</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>2.500</span><span>/</span><span>3.354</span></span></td></tr>
+<tr><td class="num">3</td><td>qwen2.5:0.5b</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>3.000</span><span>/</span><span>8.226</span></span></td></tr>
+<tr><td class="num">4</td><td>smollm2:135m</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>1.000</span><span>/</span><span>6.335</span></span></td></tr>
+<tr><td class="num">5</td><td>tinyllama:latest</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>3.000</span><span>/</span><span>19.796</span></span></td></tr>
+<tr><td class="num">6</td><td>gemma3:4b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">7</td><td>granite4:3b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">8</td><td>llama3.2:1b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">9</td><td>mistral:latest</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">10</td><td>phi4-mini:latest</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">11</td><td>qwen2.5-coder:3b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">12</td><td>qwen2.5:latest</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">13</td><td>qwen:4b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">14</td><td>robit/qwen3.5-9b-r7-research:q4km</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">15</td><td>llama3.2:3b</td><td class="num">100.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num">0.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.600</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">16</td><td>phi3:mini</td><td class="num">100.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num">0.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
 </tbody></table>
-<h2>Processor Run Summary</h2>
-<p class="note">#csv files inc.: <code>277</code></p>
-<p class="note">Included CSV timestamp range: <code>20260810_152233</code> to <code>20260811_083451</code></p>
-<p class="note">Source directory: <code>/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5/data</code></p>
-<div class="grid">
-<div class="metric">Ranking CSV files<b>165</b></div>
-<div class="metric">Event JSONL files<b>363</b></div>
-<div class="metric">Registration CSV files<b>112</b></div>
-<div class="metric">Ranking rows<b>657</b></div>
-<div class="metric">Agents ranked<b>6</b></div>
-<div class="metric">Total events observed<b>6340</b></div>
-</div>
-</main>
-</body>
-</html>
+<h2>Input Files</h2>
+<table><thead><tr><th>Relative Path Spec</th><th class="num">CSV Files Processed</th></tr></thead><tbody>
+<tr><td><code>v5/data/registration_status_run_*.csv</code></td><td class="num">5</td></tr>
+<tr><td><code>v5/runs/**/*_summary.md</code></td><td class="num">3369</td></tr>
+</tbody></table>
+</main></body></html>

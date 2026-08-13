@@ -137,6 +137,18 @@ data/AIH_V5_CSV_AGGREGATE_LATEST.html
 
 The registration-only aggregate is a separate artifact and must not be substituted for the broader CSV aggregate.
 
+Diagnostic and single-game summary modes are reported through a companion page:
+
+```text
+AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html
+```
+
+The canonical CSV page must link to this diagnostic page. The diagnostic page is
+generated from saved `v5/runs/**/*_summary.md` files and is intended to cover
+local-agent diagnostics, single-game diagnostics, inter-agent diagnostics, and
+future Siren-in-AIH-v5 evaluation summaries. The processor must update the two
+latest HTML pages in place rather than creating timestamped public HTML names.
+
 ## Thought / Reasoning / Verbosity Configuration
 
 The current implementation keeps base provider/model identity separate from controls such as:
@@ -163,6 +175,10 @@ The public AIH v5 state is represented by four permanent files:
 
 Their filenames and public links are intentionally stable. Publication updates replace their contents rather than creating new dated public links.
 
+`AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html` is a companion diagnostic artifact.
+It should be pushed with AIH v5 admin updates when diagnostic summaries are
+present, but the existing LinkedIn links above remain unchanged.
+
 The source ZIP is source-only: current C/C++/Qt code plus supporting shell/build files. It excludes compiled binaries, object files, raw CSV/JSONL datasets, logs, caches, and run-output directories.
 
 ## Recreation Target
@@ -176,4 +192,5 @@ A recreation is close to the AIH v5 target when it can:
 - persist run data under `v5/data`;
 - repeat runs without opening a browser tab for every child run;
 - regenerate the aggregate CSV/JSONL-derived HTML report from saved data; and
+- regenerate the companion diagnostic HTML report from saved diagnostic summaries; and
 - reproduce the four canonical publication artifacts above.

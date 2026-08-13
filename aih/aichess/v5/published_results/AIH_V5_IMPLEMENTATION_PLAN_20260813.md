@@ -155,15 +155,27 @@ Repeat behavior should:
 - generate one final aggregate report; and
 - open only the final report unless explicitly configured otherwise.
 
-## 7. Current All-CSV Analyzer
+## 7. Current CSV And Diagnostic Analyzer
 
-The current analyzer is implemented in:
+The current broad CSV analyzer is implemented in:
 
 ```text
 tools/generate_aih_v5_html_report.cpp
 ```
 
-Build it with a C++17 compiler, then run it from the v5 root with one of its equivalent all-data options:
+The repeat/diagnostic publication processor is implemented in:
+
+```text
+tools/generate_aih_v5_repeat_html.cpp
+```
+
+Build the processors with the normal v5 build helper:
+
+```bash
+./tools/build_aih_v5.sh
+```
+
+The broad all-CSV analyzer can still be run from the v5 root with one of its equivalent all-data options:
 
 ```bash
 ./<compiled-html-reporter> --csv-all AIH_V5_CSV_AGGREGATE_LATEST.html
@@ -175,6 +187,17 @@ The all-CSV path scans `v5/data`, combines available ranking CSV, registration C
 
 - `AIH_V5_CSV_AGGREGATE_LATEST.html`
 - local mirror `data/AIH_V5_CSV_AGGREGATE_LATEST.html`
+
+The repeat/diagnostic publication processor scans registration CSVs and saved
+diagnostic summaries, then updates stable non-timestamped pages:
+
+- `data/AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`
+- `data/AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html`
+- root mirror `AIH_V5_CSV_AGGREGATE_LATEST.html`
+- root mirror `AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html`
+
+The root CSV page must link to the root diagnostic page. Do not create
+timestamped public HTML names for these two latest pages.
 
 The broader CSV aggregate is separate from `AIH_V5_REGISTRATION_AGGREGATE_LATEST.html`.
 
@@ -225,16 +248,20 @@ Include a manifest in the archive describing the inclusion/exclusion policy and 
 
 ## 11. Canonical Publication Procedure
 
-A publication update should modify and stage exactly these four repository paths:
+A publication update should modify and stage the four stable LinkedIn targets
+plus the diagnostic companion page and the admin scripts that regenerate them:
 
 ```text
 aih/aichess/v5/AIH_V5_PROJECT_GOALS.md
 aih/aichess/v5/AIH_V5_IMPLEMENTATION_PLAN.md
 aih/aichess/v5/AIH_V5_CSV_AGGREGATE_LATEST.html
+aih/aichess/v5/AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html
 aih/aichess/v5/AIH_V5_SOURCE_LATEST.zip
+aih/aichess/v5/aih_v5_push_current_20260813v0.sh
+aih/aichess/v5/aih_v5_refresh_source_zip_20260813v0.sh
 ```
 
-Do not stage dated copies, raw run data, binaries, local project-summary files, or unrelated working-tree changes.
+Do not stage raw run data, unrelated binaries, local project-summary files, or unrelated working-tree changes.
 
 Before committing:
 
@@ -242,11 +269,11 @@ Before committing:
 2. Fetch `origin/main`.
 3. Require local HEAD to match remote HEAD before making the publication commit.
 4. Refuse to continue if unrelated files are already staged.
-5. Regenerate the CSV aggregate.
+5. Regenerate the CSV aggregate and companion diagnostic HTML.
 6. Rebuild the source ZIP.
-7. Rewrite the two canonical Markdown files.
-8. Stage only the four paths above.
-9. Confirm the staged set exactly matches the four-path allowlist.
+7. Rewrite the two canonical Markdown files when their contract changes.
+8. Stage only the allowlisted publication/admin paths above.
+9. Confirm the staged set exactly matches the allowlist.
 
 After committing and pushing, verify the remote bytes of all four canonical files against the local files.
 
