@@ -1,6 +1,6 @@
 # AIH v5 Implementation Plan
 
-Date: 2026-08-12
+Date: 2026-08-13
 
 This file supplements `AIH_V5_PROJECT_GOALS.md`. The goals file defines what AIH v5 is intended to measure and publish; this file describes the current practical implementation and the steps needed to keep the benchmark reproducible.
 
@@ -35,6 +35,8 @@ Maintain these principal source components:
 - `tools/generate_aih_v5_html_report.cpp`: current single-run and all-CSV report generator.
 - `tools/generate_aih_v5_repeat_html.cpp`: registration-repeat aggregate generator.
 - `tools/run_aih_v5_repeat.cpp`: repeat-run support.
+- `tools/run_aih_v5_single_game.cpp`: bounded core board-play wrapper for
+  direct uni-agent and inter-agent tests.
 - local-stack discovery/intake/scan scripts under `tools/`.
 
 Compiled binaries are build products, not publication source.
@@ -76,6 +78,51 @@ For each measured ply:
 7. Record timing and throughput fields when the provider/runtime exposes them.
 
 Default execution should remain serial/conservative on local hardware unless the user explicitly raises concurrency.
+
+## 4A. Core Board-Play Binary
+
+Maintain a separate binary for direct board-play tests:
+
+```bash
+./bin/aih_v5_single_game
+```
+
+This binary should let the user test local agents without rerunning full
+registration and wrapper-level tourney setup. It must write local logs by
+default under:
+
+```text
+logs/single_game/
+```
+
+Required current manual test strings:
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play nemotron-3-nano:4b
+```
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play \
+  gemma3:270m \
+  qwen2.5:0.5b \
+  llama3.2:1b \
+  phi3:mini \
+  granite4:3b \
+  nemotron-3-nano:4b \
+  gemma3:4b
+```
+
+The second command is the current bounded local-agent size ladder. It is used
+to watch for responsiveness, memory, swap, timeout, and AIH degradation as the
+selected local model footprint increases. It is not yet an automatic scan of
+every installed local model.
+
+The core binary should support both `--uni-agent-play` and
+`--inter-agent-play`. Wrapper-level AIH v5 execution may call this core binary
+with the appropriate mode once registration and model selection are complete.
 
 ## 5. Tournament and Ranking
 
@@ -150,6 +197,12 @@ Ranking CSV should continue to retain base agent identity and ranking configurat
 Every run should end with readable status information. If tournament execution fails, the system should still preserve registration/evidence files and generate a status/failure HTML page when practical.
 
 Terminal output should identify start time, selected candidates, registration progress, tournament phase progress, report path, end time, and elapsed time so an apparent hang can be distinguished from a long local inference step.
+
+All generated binaries must follow `/home/sag/RPA2/REQUIREMENTS.md`: write
+local logs by default, keep logging level tunable, and preserve enough
+start/end/exit, command, phase, error, and output-path evidence for post-run
+analysis. Logs are evaluation evidence and should remain out of public push
+scope unless explicitly included in a reviewed publication task.
 
 ## 10. Source Publication ZIP
 

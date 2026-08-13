@@ -1,6 +1,6 @@
 # AIH v5 Implementation Plan
 
-Date: 2026-08-11
+Date: 2026-08-13
 
 This file supplements `AIH_V5_PROJECT_GOALS.md`. The goals file defines the target behavior. This implementation plan describes one practical way to build it.
 
@@ -26,8 +26,12 @@ Recommended internal components:
 - Tournament module: schedules round-robin and top-4 ladder-rungs phases.
 - Single-run HTML reporter: builds a per-run report and status/failure page.
 - Repeat-run HTML reporter: aggregates direct `v5/data/registration_status_run_*.csv` files.
+- Core board-play binary: runs direct uni-agent and inter-agent board-play
+  tests with default local logging.
 
-The implementation may be shell, C++, Python, or another local-friendly stack, but it should produce a binary-like user command in `./bin/aih_v5`.
+The active implementation should be C++/Qt/shell-fronted binary work unless the
+user explicitly approves another language. It should produce binary-like user
+commands under `./bin`.
 
 Recommended file layout:
 
@@ -38,6 +42,7 @@ aih/aichess/v5/
     aih_v5_repeat
     aih_v5_html_report
     aih_v5_repeat_html
+    aih_v5_single_game
   tools/
     run_aih_v5_repeat.<ext>
     generate_aih_v5_html_report.<ext>
@@ -50,6 +55,8 @@ aih/aichess/v5/
     registration_status_run_N_START_END.csv
     aichess_v5_*_rankings_top4-ladder-rungs_weighted.csv
   AIH_V5_REGISTRATION_DIAGNOSTICS.log
+  logs/
+    single_game/
 ```
 
 The exact language can vary, but active CSV data belongs directly in `v5/data`, not in top-level `v5` and not in `runs/` subfolders.
@@ -219,6 +226,44 @@ Support additional modes:
 - Round-robin into ladder.
 - Top-4 ladder with lower rungs resolved by round-robin sequences.
 
+## 5A. Core Board-Play Binary
+
+Maintain a direct board-play binary:
+
+```bash
+./bin/aih_v5_single_game
+```
+
+It must write local logs by default under:
+
+```text
+logs/single_game/
+```
+
+Required current manual commands:
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play nemotron-3-nano:4b
+```
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play \
+  gemma3:270m \
+  qwen2.5:0.5b \
+  llama3.2:1b \
+  phi3:mini \
+  granite4:3b \
+  nemotron-3-nano:4b \
+  gemma3:4b
+```
+
+The size ladder is manually selected and bounded. Use it to observe where
+responsiveness, swap pressure, timeout behavior, or AIH behavior becomes
+unacceptable before expanding the candidate set.
+
 ## 6. Repeat Runner Implementation
 
 Support:
@@ -332,6 +377,11 @@ Failure report should include:
 - start/end timestamps if available.
 
 Do not leave the user with a silent terminal or no HTML output.
+
+All generated binaries must follow `/home/sag/RPA2/REQUIREMENTS.md`: write
+local logs by default, keep logging level tunable, and preserve enough
+start/end/exit, command, phase, error, and output-path evidence for post-run
+analysis.
 
 ## 10. Validation Checklist
 

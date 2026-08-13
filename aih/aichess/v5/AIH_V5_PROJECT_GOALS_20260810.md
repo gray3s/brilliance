@@ -1,6 +1,6 @@
 # AIH v5 Project Goals and Implementation Target
 
-Date: 2026-08-11
+Date: 2026-08-13
 
 Public artifact links:
 
@@ -22,6 +22,8 @@ This document is intentionally written as a project recreation target. A user sh
 - Preserve run CSV data directly in `v5/data` so multiple runs can be aggregated from one data folder.
 - Prefer open-source and locally inspectable implementation choices.
 - Treat better CPU, GPU, RAM, and SSD hardware as accelerators, not as baseline requirements.
+- Follow `/home/sag/RPA2/REQUIREMENTS.md`: every generated binary must write
+  local logs by default, with logging level tunable per binary or run.
 
 ## Runtime Architecture
 
@@ -47,6 +49,8 @@ The implementation should avoid saturating the host by default:
 - Reset or unload local models between registration batches and before tournament boards when needed.
 - Use conservative timeouts so dead or overloaded agents are filtered instead of holding up the tournament.
 - Produce terminal progress output continuously so the user knows the current run state.
+- Produce local binary logs by default so the user can run binaries directly and
+  analyze results afterward without rerunning the binary inside Codex.
 
 ## Default User Command
 
@@ -91,6 +95,7 @@ qwen2.5:latest
 qwen2.5-coder:3b
 qwen:4b
 robit/qwen3.5-9b-r7-research:q4km
+nemotron-3-nano:4b
 ```
 
 The candidate order should be random by default so registration behavior is not biased by a fixed order. Also provide flags for deterministic order when debugging.
@@ -170,6 +175,45 @@ Default game settings should prefer completion over depth:
 - Clue/scaffold mode may include a legal UCI move hint so the test measures whether the agent can stay inside a constrained answer format.
 
 The move prompt should ask for exactly one legal UCI move and no prose. The parser should accept legal UCI candidates from a verbose response when possible, but hallucinated, illegal, irrelevant, empty, timed-out, or transport-failed responses should be counted as AIH events according to the reporting model.
+
+## Core Board-Play Binary
+
+AIH v5 includes a direct board-play binary:
+
+```bash
+./bin/aih_v5_single_game
+```
+
+It writes logs under:
+
+```text
+logs/single_game/
+```
+
+Current single Nemotron self-play command:
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play nemotron-3-nano:4b
+```
+
+Current bounded increasing local-agent size ladder:
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play \
+  gemma3:270m \
+  qwen2.5:0.5b \
+  llama3.2:1b \
+  phi3:mini \
+  granite4:3b \
+  nemotron-3-nano:4b \
+  gemma3:4b
+```
+
+This ladder is a manual responsiveness and AIH evaluation string, not yet an
+automatic scan of every installed local model.
 
 ## Ranking Model
 

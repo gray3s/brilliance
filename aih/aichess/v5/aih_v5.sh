@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 ENGINE="$ROOT_DIR/qwen_ollama_chess_qt/qwen_ollama_chess_qt"
+CORE_PLAY="$ROOT_DIR/bin/aih_v5_single_game"
 case "$ROOT_DIR" in
   */aih/aichess/v5) ;;
   *)
@@ -14,6 +15,13 @@ case "$ENGINE" in
   "$ROOT_DIR"/*) ;;
   *)
     echo "aih_v5: refusing engine outside the AIH v5 tree: $ENGINE" >&2
+    exit 127
+    ;;
+esac
+case "$CORE_PLAY" in
+  "$ROOT_DIR"/*) ;;
+  *)
+    echo "aih_v5: refusing core play binary outside the AIH v5 tree: $CORE_PLAY" >&2
     exit 127
     ;;
 esac
@@ -73,7 +81,7 @@ aih_v5_print_exit_footer() {
 trap aih_v5_print_exit_footer EXIT
 LOCAL_AGENT_REGISTRY="${AIH_V5_LOCAL_AGENT_REGISTRY:-$ROOT_DIR/qualification_cache/local_qualification_20260729032018.csv}"
 LOCAL_AGENT_REGISTRY="${AIH_V5_LOCAL_AGENT_REGISTRY:-$LOCAL_AGENT_REGISTRY}"
-DEFAULT_LOCAL_AGENTS="${AIH_V5_DEFAULT_LOCAL_AGENTS:-gemma3:270m,qwen2.5:0.5b,smollm2:135m,llama3.2:1b,gemma3:1b,phi3:mini,mistral:latest,gemma3:4b}"
+DEFAULT_LOCAL_AGENTS="${AIH_V5_DEFAULT_LOCAL_AGENTS:-gemma3:270m,qwen2.5:0.5b,smollm2:135m,llama3.2:1b,gemma3:1b,phi3:mini,mistral:latest,gemma3:4b,nemotron-3-nano:4b}"
 REGISTRATION_STATUS_CSV="${AIH_V5_REGISTRATION_STATUS_CSV:-$ROOT_DIR/AIH_V5_REGISTRATION_STATUS.csv}"
 REGISTRATION_DIAGNOSTIC_LOG="${AIH_V5_REGISTRATION_DIAGNOSTIC_LOG:-$ROOT_DIR/AIH_V5_REGISTRATION_DIAGNOSTICS.log}"
 REGISTRATION_SMOKE_ENABLED="${AIH_V5_REGISTRATION_SMOKE_ENABLED:-1}"
@@ -117,6 +125,7 @@ LOCAL_SMOKE=1
 CLOUD_SMOKE_PROVIDER=""
 CLOUD_REPRESENTATIVE_PROVIDER=""
 SMOKE_STAGE="${AIH_V5_SMOKE_STAGE:-local-retry}"
+AGENT_PLAY_MODE="${AIH_V5_AGENT_PLAY_MODE:-inter-agent}"
 PUBLISH_LATEST_ONLY=0
 REPEAT_RUNS="${AIH_V5_NRUNS:-1}"
 MIN_REGISTRATIONS="${AIH_V5_MINREGS:-0}"
@@ -278,6 +287,13 @@ for arg in "$@"; do
     --top4-ladder-rungs|--top4-ladder-round-robin|--ladder-top4-rungs)
       TOURNAMENT_FORMAT="top4-ladder-rungs"
       ;;
+    --uni-agent-play|--uni-agent-tourney|--self-play-tourney|--self-play-each)
+      AGENT_PLAY_MODE="uni-agent"
+      AIH_V5_ALLOW_SELF_PLAY=1
+      ;;
+    --inter-agent-play|--inter-agent-tourney|--cross-agent-play)
+      AGENT_PLAY_MODE="inter-agent"
+      ;;
     --ranking-mode=*)
       RANKING_MODE="${arg#*=}"
       ;;
@@ -367,20 +383,19 @@ for arg in "$@"; do
       SMOKE_STAGE="cloud-provider-key"
       ;;
     --cloud-smoke-google|--cloud-smoke-gemini)
-      LOCAL_SMOKE=0
-      CLOUD_SMOKE_PROVIDER="google"
-      SMOKE_STAGE="cloud-provider-key"
+      echo "aih_v5: rejected cloud provider: google/gemini" >&2
+      echo "aih_v5: only OpenAI ChatGPT-style cloud agents are allowed in AIH v5 cloud runs." >&2
+      exit 2
       ;;
     --cloud-rep-gemini|--cloud-representative-gemini|--gemini-representative)
-      LOCAL_SMOKE=0
-      CLOUD_SMOKE_PROVIDER=""
-      CLOUD_REPRESENTATIVE_PROVIDER="google"
-      SMOKE_STAGE="cloud-rep"
+      echo "aih_v5: rejected cloud representative provider: google/gemini" >&2
+      echo "aih_v5: only OpenAI ChatGPT-style cloud agents are allowed in AIH v5 cloud runs." >&2
+      exit 2
       ;;
     --cloud-smoke-anthropic)
-      LOCAL_SMOKE=0
-      CLOUD_SMOKE_PROVIDER="anthropic"
-      SMOKE_STAGE="cloud-provider-key"
+      echo "aih_v5: rejected cloud provider: anthropic" >&2
+      echo "aih_v5: only OpenAI ChatGPT-style cloud agents are allowed in AIH v5 cloud runs." >&2
+      exit 2
       ;;
     --cloud-smoke-provider=*)
       LOCAL_SMOKE=0
@@ -1403,8 +1418,10 @@ validate_verbosity_range() {
 discover_local_agents() {
   local registry="$1"
   local discovered=""
+  local registry_models=""
+  local ollama_models=""
   if [[ -r "$registry" ]]; then
-    discovered="$(
+    registry_models="$(
       awk -F, '
         NR == 1 {
           active_schema = ($0 ~ /model_mode/)
@@ -1426,12 +1443,8 @@ discover_local_agents() {
       ' "$registry"
     )"
   fi
-  if [[ -n "$discovered" ]]; then
-    printf '%s\n' "$discovered"
-    return
-  fi
   if command -v ollama >/dev/null 2>&1; then
-    discovered="$(
+    ollama_models="$(
       ollama list 2>/dev/null | awk '
         NR > 1 {
           if (out != "") out = out ","
@@ -1439,13 +1452,14 @@ discover_local_agents() {
         }
         END { print out }
       '
-    )" || discovered=""
+    )" || ollama_models=""
   fi
+  discovered="$(csv_unique "$registry_models,$ollama_models,$DEFAULT_LOCAL_AGENTS")"
   if [[ -n "$discovered" ]]; then
     printf '%s\n' "$discovered"
     return
   fi
-  printf '%s\n' "$DEFAULT_LOCAL_AGENTS"
+  printf '%s\n' "$(csv_unique "$DEFAULT_LOCAL_AGENTS")"
 }
 
 rotate_left_one() {
@@ -2428,6 +2442,28 @@ reject_cloud_agent_spec() {
   fi
 }
 
+reject_non_chatgpt_cloud_agent_spec() {
+  local label="$1"
+  local spec="$2"
+  if [[ -z "$spec" ]]; then
+    return
+  fi
+  if [[ "$spec" =~ (^|[[:space:],:=])(anthropic|gemini|google|codex): ||
+        "$spec" =~ (^|[[:space:],:=])(claude-|gemini-|gemini-cli|codex)([[:space:],:]|$) ]]; then
+    echo "aih_v5: rejected non-ChatGPT cloud agent: $label=$spec" >&2
+    echo "aih_v5: AIH v5 cloud agent scope is OpenAI ChatGPT-style agents only." >&2
+    exit 2
+  fi
+  if [[ "$spec" =~ (^|[[:space:],:=])openai:([^,[:space:]]+) ]]; then
+    local openai_model="${BASH_REMATCH[2]}"
+    if [[ "$openai_model" != gpt-* ]]; then
+      echo "aih_v5: rejected non-ChatGPT OpenAI model: $label=$spec" >&2
+      echo "aih_v5: use openai:gpt-* for the one-pass ChatGPT cloud reference." >&2
+      exit 2
+    fi
+  fi
+}
+
 reject_default_self_play() {
   local white_csv="$1"
   local black_csv="$2"
@@ -2481,15 +2517,9 @@ if [[ -n "$CLOUD_SMOKE_PROVIDER" ]]; then
     openai)
       DEFAULT_WHITE_MODELS="${AIH_V5_WHITE_MODELS:-openai:gpt-4.1-mini}"
       ;;
-    google|gemini)
-      DEFAULT_WHITE_MODELS="${AIH_V5_WHITE_MODELS:-gemini:gemini-3.5-flash-lite}"
-      ;;
-    anthropic)
-      DEFAULT_WHITE_MODELS="${AIH_V5_WHITE_MODELS:-anthropic:claude-3-5-haiku}"
-      ;;
     *)
       echo "aih_v5: unknown cloud smoke provider: $CLOUD_SMOKE_PROVIDER" >&2
-      echo "aih_v5: expected openai, google/gemini, or anthropic" >&2
+      echo "aih_v5: expected openai" >&2
       exit 2
       ;;
   esac
@@ -2629,6 +2659,8 @@ else
   fi
   if [[ -n "${AIH_V5_BLACK_MODELS:-}" ]]; then
     DEFAULT_BLACK_MODELS="$(csv_filter_registered "${AIH_V5_BLACK_MODELS:-}" "$LOCAL_AGENTS")"
+  elif [[ "$AGENT_PLAY_MODE" == "uni-agent" ]]; then
+    DEFAULT_BLACK_MODELS="$SELECTED_LOCAL_AGENTS"
   else
     DEFAULT_BLACK_MODELS="$(csv_range "$(rotate_left_one "$LOCAL_AGENTS")" "$PAIR_START" "$PAIR_COUNT")"
   fi
@@ -2736,6 +2768,9 @@ esac
 reject_cloud_agent_spec "AIH_V5_WHITE_MODELS" "$DEFAULT_WHITE_MODELS"
 reject_cloud_agent_spec "AIH_V5_BLACK_MODELS" "$DEFAULT_BLACK_MODELS"
 reject_cloud_agent_spec "arguments" "${PASSTHRU_ARGS[*]}"
+reject_non_chatgpt_cloud_agent_spec "AIH_V5_WHITE_MODELS" "$DEFAULT_WHITE_MODELS"
+reject_non_chatgpt_cloud_agent_spec "AIH_V5_BLACK_MODELS" "$DEFAULT_BLACK_MODELS"
+reject_non_chatgpt_cloud_agent_spec "arguments" "${PASSTHRU_ARGS[*]}"
 reject_default_self_play "$DEFAULT_WHITE_MODELS" "$DEFAULT_BLACK_MODELS" "$DEFAULT_BOARDS"
 
 if [[ -z "$REASONING_RANGE" ]]; then
@@ -2797,6 +2832,11 @@ if [[ ! -x "$ENGINE" ]]; then
   echo "aih_v5: run ./tools/build_aih_v5.sh first" >&2
   exit 127
 fi
+if [[ ! -x "$CORE_PLAY" ]]; then
+  echo "aih_v5: core play binary is not executable: $CORE_PLAY" >&2
+  echo "aih_v5: run ./tools/build_aih_v5.sh first" >&2
+  exit 127
+fi
 
 export AICHESS_TRACE_STRING_CHARS="${AICHESS_TRACE_STRING_CHARS:-1048576}"
 export AICHESS_OLLAMA_NUM_THREAD="${AICHESS_OLLAMA_NUM_THREAD:-$OLLAMA_NUM_THREAD}"
@@ -2828,7 +2868,7 @@ ENGINE_ARGS=(
 BASE_ENGINE_ARGS=("${ENGINE_ARGS[@]}")
 
 if [[ "$SMOKE_STAGE" == "cloud-rep" || "$TOURNAMENT_FORMAT" == "ladder" ]]; then
-  ENGINE_ARGS+=(--tournament-bracket)
+  ENGINE_ARGS+=(--tourney-bracket)
 fi
 
 if [[ "$ENABLE_BOARD_AWARENESS" == "1" || "$ENABLE_BOARD_AWARENESS" == "yes" || "$ENABLE_BOARD_AWARENESS" == "true" ]]; then
@@ -2975,8 +3015,9 @@ run_engine_for_config() {
   export AICHESS_VERBOSITY="$verbosity"
   export AICHESS_OPENAI_TEXT_VERBOSITY="$verbosity"
   run_with_heartbeat "eng refcfg=$reference_config" \
-    "$ENGINE" \
+    "$CORE_PLAY" \
     "${ENGINE_ARGS[@]}" \
+    "--${AGENT_PLAY_MODE}-play" \
     --reference-config "$reference_config" \
     "${PASSTHRU_ARGS[@]}"
 }
@@ -2991,8 +3032,9 @@ run_engine_with_args_for_config() {
   export AICHESS_VERBOSITY="$verbosity"
   export AICHESS_OPENAI_TEXT_VERBOSITY="$verbosity"
   run_with_heartbeat "eng refcfg=$reference_config" \
-    "$ENGINE" \
+    "$CORE_PLAY" \
     "$@" \
+    "--${AGENT_PLAY_MODE}-play" \
     --reference-config "$reference_config" \
     "${PASSTHRU_ARGS[@]}"
 }
@@ -3025,7 +3067,7 @@ run_engine_pairings_for_config() {
     --clue-mode "$DEFAULT_CLUE_MODE"
   )
   if [[ "$bracket" == "1" ]]; then
-    args+=(--tournament-bracket)
+    args+=(--tourney-bracket)
   fi
   run_engine_with_args_for_config "$reasoning" "$verbosity" "$reference_config" "${args[@]}"
 }
@@ -3040,7 +3082,7 @@ run_round_robin_ladder_for_config() {
   echo "aih_v5: hybrid phase 1/2 round-robin refcfg=$rr_reference" >&2
   run_engine_with_args_for_config "$reasoning" "$verbosity" "$rr_reference" "${BASE_ENGINE_ARGS[@]}"
   echo "aih_v5: hybrid phase 2/2 ladder refcfg=$ladder_reference" >&2
-  run_engine_with_args_for_config "$reasoning" "$verbosity" "$ladder_reference" "${BASE_ENGINE_ARGS[@]}" --tournament-bracket
+  run_engine_with_args_for_config "$reasoning" "$verbosity" "$ladder_reference" "${BASE_ENGINE_ARGS[@]}" --tourney-bracket
 }
 
 run_top4_ladder_rungs_for_config() {
@@ -3162,6 +3204,7 @@ emit_run_configuration() {
   local reference_config="$1"
   echo "aih_v5: run config:" >&2
   echo "aih_v5:   tournament_format=$TOURNAMENT_FORMAT ladder_rungs=$LADDER_RUNGS round_robin_rounds=$ROUND_ROBIN_ROUNDS ranking_mode=$RANKING_MODE ranking_aih_weight=$RANKING_AIH_WEIGHT ranking_turn_time_weight=$RANKING_TURN_TIME_WEIGHT" >&2
+  echo "aih_v5:   agent_play_mode=$AGENT_PLAY_MODE" >&2
   echo "aih_v5:   smoke_stage=$SMOKE_STAGE local_smoke=$LOCAL_SMOKE cloud_provider=${CLOUD_SMOKE_PROVIDER:-none} cloud_representative=${CLOUD_REPRESENTATIVE_PROVIDER:-none}" >&2
   echo "aih_v5:   white_models=$DEFAULT_WHITE_MODELS" >&2
   echo "aih_v5:   black_models=$DEFAULT_BLACK_MODELS" >&2

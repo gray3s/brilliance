@@ -1,6 +1,6 @@
 # AIH v5 Project Goals and Implementation Target
 
-Date: 2026-08-12
+Date: 2026-08-13
 
 Permanent public artifacts:
 
@@ -24,6 +24,8 @@ The project is deliberately local-first rather than cloud-dependent. Local Ollam
 - Generate browser-readable HTML summaries from the saved data.
 - Keep the implementation inspectable and reproducible with C++, Qt, shell tooling, and local data files.
 - Publish stable public links whose contents can be refreshed without changing the LinkedIn/GitHub URLs.
+- Follow `/home/sag/RPA2/REQUIREMENTS.md`: every generated binary must write
+  local logs by default, with logging level tunable per binary or run.
 
 ## Current Runtime Shape
 
@@ -41,6 +43,8 @@ The current implementation is a binary-fronted local workflow:
 - `tools/generate_aih_v5_html_report.cpp` is the current C++ HTML/CSV analysis reporter.
 - `tools/generate_aih_v5_repeat_html.cpp` is the registration-repeat aggregate reporter.
 - `tools/run_aih_v5_repeat.cpp` and shell helpers support repeat execution and local-stack handling.
+- `tools/run_aih_v5_single_game.cpp` and `./bin/aih_v5_single_game` provide the
+  bounded core board-play binary for direct uni-agent and inter-agent tests.
 
 The default local backend is Ollama over localhost HTTP. The current code also contains explicit provider/model labeling and controls for reasoning/performance/verbosity configurations. Those settings are benchmark configuration state and must not be confused with model identity.
 
@@ -51,6 +55,50 @@ Registration is a liveness/compatibility filter, not the tournament itself. A pa
 Tournament play uses registered agents only. The principal v5 format is top-4 ladder-rungs with a round-robin seeding phase followed by bounded head-to-head placement. Other round-robin and ladder forms remain supported by the wrapper.
 
 The move request is intentionally constrained: the agent is asked for one legal UCI move. Illegal, unparseable, irrelevant, empty, timed-out, and transport-failed responses are observable AIH/failure events. Legal accepted moves are non-AIH/usable events for the benchmark.
+
+## Core Board-Play Binary
+
+The current direct board-play binary is:
+
+```bash
+./bin/aih_v5_single_game
+```
+
+It supports bounded local-agent tests without running the full registration and
+tourney wrapper. It writes logs under:
+
+```text
+logs/single_game/
+```
+
+Canonical single Nemotron self-play string:
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play nemotron-3-nano:4b
+```
+
+Current bounded increasing local-agent size ladder string:
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+
+./bin/aih_v5_single_game --nruns=1 --uni-agent-play \
+  gemma3:270m \
+  qwen2.5:0.5b \
+  llama3.2:1b \
+  phi3:mini \
+  granite4:3b \
+  nemotron-3-nano:4b \
+  gemma3:4b
+```
+
+The local size ladder is a manual evaluation string, not yet an automatic
+responsiveness walker over every installed local model.
+
+Cloud reference work is currently limited to OpenAI ChatGPT-style
+`openai:gpt-*` agents. Other cloud agents are out of scope for the current AIH
+v5 local-agent update.
 
 ## AIH and Ranking Semantics
 
