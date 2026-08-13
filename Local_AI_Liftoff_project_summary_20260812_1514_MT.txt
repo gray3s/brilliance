@@ -1,0 +1,142 @@
+LOCAL AI LIFTOFF
+Project reconstruction / canonical summary
+Reconstructed: 2026-08-12 15:14 MT
+
+ORIGINAL PROJECT PROMPT
+"generate a project for me for developing local agentic AI stacks taking 3 different approaches. #1 is working with middleware like ollama. #2 is a quasi-local peer-to-peer cloud network with auto load-balancing. #3 is a full-stack local agentic AI model that runs on iron. Call this project "local AI liftoff""
+
+PROJECT GOAL
+Develop, test, and compare three architectures for local-first agentic AI while keeping a common upper-layer agent protocol so that models, tools, memory, evaluation, and user workflows can be compared across architectures.
+
+TRACK 1 — MIDDLEWARE-FIRST LOCAL STACK
+Purpose:
+Build the fastest practical local-agent prototype using an existing model runtime such as Ollama.
+
+Core layers:
+1. Local model runtime / model manager.
+2. Stable local inference API.
+3. Agent controller and deterministic task loop.
+4. Tool/capability layer with explicit permissions.
+5. Local short-term and persistent memory.
+6. Evidence/provenance and confidence tracking.
+7. Local user interface / CLI.
+8. Logging, replay, and benchmark harness.
+
+Initial target:
+A completely usable single-machine agentic AI stack that can operate locally and offline after models and dependencies are installed.
+
+TRACK 2 — QUASI-LOCAL PEER-TO-PEER AI CLOUD
+Purpose:
+Turn multiple user-controlled machines into a cooperative AI compute pool without requiring a conventional centralized hyperscale cloud.
+
+Core concepts:
+1. Peer discovery and authenticated membership.
+2. Each peer advertises available CPU, GPU, RAM, models, context capacity, latency, queue depth, and policy constraints.
+3. Dynamic request routing and automatic load balancing.
+4. Health checking, failure detection, retry, and failover.
+5. Data-locality and privacy rules: tasks remain local unless explicitly eligible for peer execution.
+6. Model-affinity routing so requests prefer peers that already have the needed model loaded.
+7. Optional replication for high-value or verification-sensitive tasks.
+8. Distributed logging and provenance without requiring a central owner.
+
+Prototype strategy:
+Begin with whole-request routing between peers. Do not start by splitting individual transformer layers across the network. Add more granular distributed inference only if measurements justify the added complexity.
+
+TRACK 3 — FULL-STACK LOCAL AI "RUNNING ON IRON"
+Purpose:
+Minimize dependence on AI middleware and progressively own the complete local stack from model execution upward.
+
+Initial stack boundary:
+Use a low-level local inference engine such as llama.cpp/ggml as a reference or bootstrap layer, then progressively replace or directly control components where useful.
+
+Core layers:
+1. Hardware discovery and resource management.
+2. Model-file loading and quantization support.
+3. CPU/GPU inference execution.
+4. Tokenization and context/KV-cache management.
+5. Sampling and structured-output constraints.
+6. Agent state machine / task loop.
+7. Tool execution and capability security.
+8. Local memory, retrieval, and evidence store.
+9. User I/O.
+10. Telemetry, reproducibility, crash recovery, and deterministic replay where possible.
+
+Long-term target:
+A local agentic AI system that can boot, load a model, reason, use authorized tools, maintain state, and produce audited output without requiring Ollama or a remote AI service.
+
+COMMON ARCHITECTURE
+All three tracks should expose the same logical interfaces:
+- Model adapter
+- Agent/task controller
+- Tool/capability interface
+- Memory interface
+- Evidence/provenance interface
+- Scheduler/resource interface
+- Logging/replay interface
+- User I/O interface
+
+This common boundary is important because it lets the project compare architecture rather than application code.
+
+DEVELOPMENT PHASES
+
+PHASE 0 — SPECIFICATION AND BENCHMARK BASELINE
+- Define common interfaces.
+- Define supported local hardware.
+- Select small, medium, and largest-practical local models.
+- Define latency, throughput, memory, power, reliability, hallucination, privacy, and recovery metrics.
+- Build repeatable benchmark tasks.
+
+PHASE 1 — TRACK 1 WORKING SYSTEM
+- Implement the agent loop over Ollama or equivalent middleware.
+- Add local tools and explicit permissions.
+- Add memory and provenance.
+- Add benchmark logging.
+- Establish the practical baseline.
+
+PHASE 2 — TRACK 2 P2P FEDERATION
+- Add peer identity and discovery.
+- Add resource/model advertisements.
+- Implement load-aware request scheduling.
+- Add failover and node-loss recovery.
+- Add privacy/locality policies.
+- Compare centralized coordinator, elected coordinator, and decentralized scheduling.
+
+PHASE 3 — TRACK 3 BARE-METAL/FULL-STACK SYSTEM
+- Build the minimal low-level local inference path.
+- Implement the common model-adapter interface directly.
+- Move agent control, memory, tools, and telemetry into project-owned components.
+- Reduce optional middleware dependencies.
+- Measure the cost and benefit of each layer removed.
+
+PHASE 4 — UNIFIED LOCAL-AI FABRIC
+- Run the same agent workload on all three tracks.
+- Allow Track 1 and Track 3 machines to participate as Track 2 peers.
+- Select execution location based on privacy, latency, capability, model availability, and current load.
+- Preserve local-first behavior as the default.
+
+PHASE 5 — HARDENING
+- Permission sandboxing.
+- Signed peer identities.
+- Encrypted peer transport.
+- Crash recovery.
+- Resource exhaustion limits.
+- Tool-call auditing.
+- Prompt-injection containment boundaries.
+- Model and dependency provenance.
+- Reproducible test suite.
+
+INITIAL SUCCESS CRITERIA
+1. Track 1 can perform a useful multi-step tool task entirely on one local machine.
+2. Track 2 can route requests among at least three heterogeneous peers and automatically avoid an overloaded or failed peer.
+3. Track 3 can run a model and an agent loop locally without Ollama.
+4. The same benchmark and tool interface runs across all three tracks.
+5. A user can determine exactly which machine/model/tool handled each step.
+6. Cloud access is optional rather than structurally required.
+
+KEY DESIGN PRINCIPLE
+Treat the language model as a reasoning/inference component, not as the entire agent. Deterministic software should control permissions, tool execution, task state, evidence, scheduling, recovery, and termination wherever practical.
+
+PROJECT STATUS
+ACTIVE / RECONSTRUCTED
+Canonical project name: Local AI Liftoff
+Canonical anchor: the original project prompt reproduced at the top of this file.
