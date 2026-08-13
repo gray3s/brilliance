@@ -126,6 +126,7 @@ CLOUD_SMOKE_PROVIDER=""
 CLOUD_REPRESENTATIVE_PROVIDER=""
 SMOKE_STAGE="${AIH_V5_SMOKE_STAGE:-local-retry}"
 AGENT_PLAY_MODE="${AIH_V5_AGENT_PLAY_MODE:-inter-agent}"
+LOCAL_AGENT_DIAGNOSTIC="${AIH_V5_LOCAL_AGENT_DIAGNOSTIC:-0}"
 PUBLISH_LATEST_ONLY=0
 REPEAT_RUNS="${AIH_V5_NRUNS:-1}"
 MIN_REGISTRATIONS="${AIH_V5_MINREGS:-0}"
@@ -290,6 +291,13 @@ for arg in "$@"; do
     --uni-agent-play|--uni-agent-tourney|--self-play-tourney|--self-play-each)
       AGENT_PLAY_MODE="uni-agent"
       AIH_V5_ALLOW_SELF_PLAY=1
+      ;;
+    --local-agent-diagnostic|--local-agent-playability|--assume-registration-local-agents)
+      LOCAL_AGENT_DIAGNOSTIC=1
+      AGENT_PLAY_MODE="uni-agent"
+      AIH_V5_ALLOW_SELF_PLAY=1
+      TOURNAMENT_FORMAT="ladder"
+      REGISTRATION_SMOKE_ENABLED=0
       ;;
     --inter-agent-play|--inter-agent-tourney|--cross-agent-play)
       AGENT_PLAY_MODE="inter-agent"
@@ -2612,6 +2620,12 @@ else
     PAIR_COUNT=1
   fi
   LOCAL_AGENT_COUNT="$(csv_count "$LOCAL_AGENTS")"
+  if [[ "$LOCAL_AGENT_DIAGNOSTIC" == "1" ||
+        "$LOCAL_AGENT_DIAGNOSTIC" == "yes" ||
+        "$LOCAL_AGENT_DIAGNOSTIC" == "true" ]]; then
+    PAIR_COUNT="${AIH_V5_LOCAL_PAIR_COUNT:-$LOCAL_AGENT_COUNT}"
+    REGISTRATION_CANDIDATE_COUNT="${AIH_V5_REGISTRATION_CANDIDATE_COUNT:-all}"
+  fi
   if ((LOCAL_AGENT_COUNT > 0 && PAIR_START > LOCAL_AGENT_COUNT)); then
     PAIR_START="$LOCAL_AGENT_COUNT"
   fi
@@ -2686,6 +2700,19 @@ if spec_has_provider openai "$ALL_AGENT_SPECS" ||
    spec_has_provider google "$ALL_AGENT_SPECS" ||
    spec_has_provider anthropic "$ALL_AGENT_SPECS"; then
   CLOUD_MATRIX_APPLIES=1
+fi
+
+if [[ "$LOCAL_AGENT_DIAGNOSTIC" == "1" ||
+      "$LOCAL_AGENT_DIAGNOSTIC" == "yes" ||
+      "$LOCAL_AGENT_DIAGNOSTIC" == "true" ]]; then
+  if spec_has_provider openai "$ALL_AGENT_SPECS" ||
+     spec_has_provider google "$ALL_AGENT_SPECS" ||
+     spec_has_provider anthropic "$ALL_AGENT_SPECS"; then
+    echo "aih_v5: local-agent diagnostic rejects cloud/provider agents." >&2
+    echo "aih_v5: use only local Ollama model names for this mode." >&2
+    exit 2
+  fi
+  DEFAULT_REFERENCE_CONFIG="${AIH_V5_REFERENCE_CONFIG:-aih_v5_local_agent_playability_assumed_registration_20260813}"
 fi
 
 case "$SMOKE_STAGE" in
@@ -2825,6 +2852,20 @@ else
   DEFAULT_MOVE_TIMEOUT="${AIH_V5_MOVE_TIMEOUT_SECONDS:-20}"
   DEFAULT_STACK_TIMEOUT="${AIH_V5_STACK_TIMEOUT_SECONDS:-20}"
   DEFAULT_GAME_TIMEOUT="${AIH_V5_GAME_TIMEOUT_SECONDS:-900}"
+fi
+
+if [[ "$LOCAL_AGENT_DIAGNOSTIC" == "1" ||
+      "$LOCAL_AGENT_DIAGNOSTIC" == "yes" ||
+      "$LOCAL_AGENT_DIAGNOSTIC" == "true" ]]; then
+  DEFAULT_MOVE_TIMEOUT="${AIH_V5_MOVE_TIMEOUT_SECONDS:-60}"
+  DEFAULT_STACK_TIMEOUT="${AIH_V5_STACK_TIMEOUT_SECONDS:-60}"
+  DEFAULT_GAME_TIMEOUT="${AIH_V5_GAME_TIMEOUT_SECONDS:-900}"
+  DEFAULT_MAXPLYS="${AIH_V5_LOCAL_MAXPLYS:-${AIH_V5_MAXPLYS:-2}}"
+  DEFAULT_OUTPUT_TOKENS="${AIH_V5_OUTPUT_TOKENS:-${AIH_V5_LOCAL_OUTPUT_TOKENS:-64}}"
+  DEFAULT_RESPONSE_ATTEMPTS="${AIH_V5_RESPONSE_ATTEMPTS:-1}"
+  DEFAULT_FATAL_TURN_ERRORS="${AIH_V5_MAX_FATAL_TURN_ERRORS:-1}"
+  DEFAULT_LOGLVL="${AIH_V5_LOGLVL:-5}"
+  DEFAULT_CLUE_MODE="${AIH_V5_CLUE_MODE:-6}"
 fi
 
 if [[ ! -x "$ENGINE" ]]; then
@@ -3238,6 +3279,15 @@ if ((MATRIX_COUNT <= 1)); then
     run_round_robin_ladder_for_config "$reasoning" "$verbosity" "$DEFAULT_REFERENCE_CONFIG"
   elif [[ "$TOURNAMENT_FORMAT" == "top4-ladder-rungs" ]]; then
     run_top4_ladder_rungs_for_config "$reasoning" "$verbosity" "$DEFAULT_REFERENCE_CONFIG"
+  elif [[ "$LOCAL_AGENT_DIAGNOSTIC" == "1" ||
+          "$LOCAL_AGENT_DIAGNOSTIC" == "yes" ||
+          "$LOCAL_AGENT_DIAGNOSTIC" == "true" ]]; then
+    run_with_heartbeat "local-agent diagnostic refcfg=$DEFAULT_REFERENCE_CONFIG" \
+      "$CORE_PLAY" \
+      "${ENGINE_ARGS[@]}" \
+      --local-agent-diagnostic \
+      --reference-config "$DEFAULT_REFERENCE_CONFIG" \
+      "${PASSTHRU_ARGS[@]}"
   else
     run_with_heartbeat "eng refcfg=$DEFAULT_REFERENCE_CONFIG" \
       "$ENGINE" \
@@ -3264,6 +3314,15 @@ if ((CLOUD_MATRIX_APPLIES == 0)); then
     run_round_robin_ladder_for_config "$(csv_field "$REASONING_RANGE" 1)" "$(csv_field "$VERBOSITY_RANGE" 1)" "$DEFAULT_REFERENCE_CONFIG"
   elif [[ "$TOURNAMENT_FORMAT" == "top4-ladder-rungs" ]]; then
     run_top4_ladder_rungs_for_config "$(csv_field "$REASONING_RANGE" 1)" "$(csv_field "$VERBOSITY_RANGE" 1)" "$DEFAULT_REFERENCE_CONFIG"
+  elif [[ "$LOCAL_AGENT_DIAGNOSTIC" == "1" ||
+          "$LOCAL_AGENT_DIAGNOSTIC" == "yes" ||
+          "$LOCAL_AGENT_DIAGNOSTIC" == "true" ]]; then
+    run_with_heartbeat "local-agent diagnostic refcfg=$DEFAULT_REFERENCE_CONFIG" \
+      "$CORE_PLAY" \
+      "${ENGINE_ARGS[@]}" \
+      --local-agent-diagnostic \
+      --reference-config "$DEFAULT_REFERENCE_CONFIG" \
+      "${PASSTHRU_ARGS[@]}"
   else
     run_with_heartbeat "eng refcfg=$DEFAULT_REFERENCE_CONFIG" \
       "$ENGINE" \

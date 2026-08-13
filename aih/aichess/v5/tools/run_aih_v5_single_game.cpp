@@ -42,6 +42,7 @@ static void usage(const char* argv0) {
       << "Options:\n"
       << "  --nruns=N              global run count, default 1\n"
       << "  --uni-agent-play       each model plays both sides on its own board\n"
+      << "  --local-agent-diagnostic local-only one-board-per-agent assumed-registration diagnostic\n"
       << "  --inter-agent-play     explicit two-agent play mode, default for two models\n"
       << "  --white-models=CSV     explicit white-side model list\n"
       << "  --black-models=CSV     explicit black-side model list\n"
@@ -97,6 +98,8 @@ int main(int argc, char** argv) {
   std::string log_level = "3";
   std::string nruns = "1";
   bool pre_reset = true;
+  bool reset_all_ollama = false;
+  bool local_agent_diagnostic = false;
   bool uni_agent_play = false;
   bool tourney_bracket = false;
   bool board_awareness_probe = false;
@@ -154,6 +157,11 @@ int main(int argc, char** argv) {
       nruns = value_after_eq(arg);
     } else if (arg == "--uni-agent-play" || arg == "--self-play-each" || arg == "--self-play-by-agent") {
       uni_agent_play = true;
+    } else if (arg == "--local-agent-diagnostic" || arg == "--local-agent-playability" || arg == "--assume-registration-local-agents") {
+      uni_agent_play = true;
+      local_agent_diagnostic = true;
+      reset_all_ollama = true;
+      nruns = "1";
     } else if (arg == "--inter-agent-play" || arg == "--cross-agent-play") {
       uni_agent_play = false;
     } else if (arg == "--mxply" || arg == "--max-plies") {
@@ -209,6 +217,37 @@ int main(int argc, char** argv) {
     usage(argv[0]);
     return 2;
   }
+  auto has_cloud_provider = [](const std::string& value) {
+    return starts_with(value, "openai:") || starts_with(value, "google:") ||
+           starts_with(value, "gemini:") || starts_with(value, "anthropic:") ||
+           starts_with(value, "codex:");
+  };
+  if (local_agent_diagnostic) {
+    for (const std::string& model : models) {
+      if (has_cloud_provider(model)) {
+        std::cerr << "aih_v5_single_game: local-agent diagnostic rejects cloud/provider model: " << model << "\n";
+        return 2;
+      }
+    }
+    auto reject_cloud_csv = [&](const std::string& csv, const char* label) {
+      size_t start = 0;
+      while (start <= csv.size()) {
+        size_t end = csv.find(',', start);
+        std::string item = csv.substr(start, end == std::string::npos ? std::string::npos : end - start);
+        item.erase(0, item.find_first_not_of(" \t\r\n"));
+        item.erase(item.find_last_not_of(" \t\r\n") + 1);
+        if (has_cloud_provider(item)) {
+          std::cerr << "aih_v5_single_game: local-agent diagnostic rejects cloud/provider model in "
+                    << label << ": " << item << "\n";
+          std::exit(2);
+        }
+        if (end == std::string::npos) break;
+        start = end + 1;
+      }
+    };
+    reject_cloud_csv(white_models, "--white-models");
+    reject_cloud_csv(black_models, "--black-models");
+  }
 
   auto join_csv = [](const std::vector<std::string>& values) {
     std::string out;
@@ -250,7 +289,15 @@ int main(int argc, char** argv) {
   std::string safe_black = black_models;
   for (char& c : safe_white) if (c == '/' || c == ':' || c == ' ') c = '_';
   for (char& c : safe_black) if (c == '/' || c == ':' || c == ' ') c = '_';
-  const fs::path log_path = log_dir / ("aih_v5_single_game_" + now_stamp() + "_" + safe_white + "_vs_" + safe_black + "_nruns" + nruns + ".log");
+  auto shorten = [](const std::string& value) {
+    constexpr size_t kMax = 80;
+    if (value.size() <= kMax) return value;
+    return value.substr(0, 48) + "_plus_" + std::to_string(csv_count(value)) + "_models";
+  };
+  const std::string log_name = local_agent_diagnostic
+      ? "aih_v5_local_agent_diagnostic_" + now_stamp() + "_models" + std::to_string(csv_count(white_models)) + "_nruns" + nruns + ".log"
+      : "aih_v5_single_game_" + now_stamp() + "_" + shorten(safe_white) + "_vs_" + shorten(safe_black) + "_nruns" + nruns + ".log";
+  const fs::path log_path = log_dir / log_name;
 
   std::vector<std::string> args = {
     engine.string(),
@@ -293,6 +340,7 @@ int main(int argc, char** argv) {
          << "board_concurrency=" << board_concurrency << "\n"
          << "nruns=" << nruns << "\n"
          << "uni_agent_play=" << (uni_agent_play ? "1" : "0") << "\n"
+         << "local_agent_diagnostic=" << (local_agent_diagnostic ? "1" : "0") << "\n"
          << "tourney_bracket=" << (tourney_bracket ? "1" : "0") << "\n"
          << "reference_config=" << reference_config << "\n"
          << "max_plies=" << max_plies << "\n"
@@ -303,7 +351,8 @@ int main(int argc, char** argv) {
          << "response_attempts=" << response_attempts << "\n"
          << "max_illegal=" << max_illegal << "\n"
          << "clue_mode=" << clue_mode << "\n"
-         << "pre_reset=" << (pre_reset ? "1" : "0") << "\n\n";
+         << "pre_reset=" << (pre_reset ? "1" : "0") << "\n"
+         << "reset_all_ollama=" << (reset_all_ollama ? "1" : "0") << "\n\n";
   header.close();
 
   pid_t pid = fork();
@@ -319,6 +368,7 @@ int main(int argc, char** argv) {
       close(fd);
     }
     if (!pre_reset) setenv("AIH_V5_RESET_STACK_BEFORE_BOARD", "0", 1);
+    if (reset_all_ollama) setenv("AIH_V5_RESET_ALL_OLLAMA_BEFORE_BOARD", "1", 1);
     setenv("AICHESS_TRACE_STRING_CHARS", "1048576", 0);
     setenv("AICHESS_OLLAMA_NUM_THREAD", "1", 0);
     execv(engine.c_str(), exec_args.data());

@@ -240,6 +240,7 @@ int main(int argc, char** argv) {
   html << "<style>body{font-family:Arial,sans-serif;margin:2rem;line-height:1.45;color:#1f2933}"
        << "table{border-collapse:collapse;width:100%;margin-top:1rem}th,td{border:1px solid #cad2dc;padding:.55rem;text-align:left;vertical-align:top}"
        << "th{background:#eef2f6}td.num{text-align:right;font-variant-numeric:tabular-nums}.note{color:#52606d}"
+       << "code,pre{background:#eef2f6;border-radius:3px}code{padding:.1rem .25rem}pre{padding:.75rem;overflow:auto}"
        << "th.num,td.num{white-space:nowrap;width:1%;padding-left:.35rem;padding-right:.35rem}"
        << "th.avgsec,td.avgsec{width:13rem;padding-left:.55rem;padding-right:.55rem}"
        << ".timing{display:grid;grid-template-columns:7ch 1ch 8ch;gap:.35rem;justify-content:end;font-variant-numeric:tabular-nums}"
@@ -249,6 +250,13 @@ int main(int argc, char** argv) {
   html << "<p class=\"note\">Project goals: <a href=\"https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_PROJECT_GOALS.md\">AIH_V5_PROJECT_GOALS.md</a></p>\n";
   html << "<p class=\"note\">Project implementation plan: <a href=\"https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_IMPLEMENTATION_PLAN.md\">AIH_V5_IMPLEMENTATION_PLAN.md</a></p>\n";
   html << "<p class=\"note\">Current aggregate HTML: <a href=\"https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_REGISTRATION_AGGREGATE_LATEST.html\">AIH_V5_REGISTRATION_AGGREGATE_LATEST.html</a></p>\n";
+  html << "<h2>Launch and Relaunch Instructions</h2>\n";
+  html << "<p class=\"note\">Run commands from the AIH v5 project directory.</p>\n";
+  html << "<pre><code>cd ~/RPA2/myLLC/AI/brilliance/aih/aichess/v5\n";
+  html << "./bin/aih_v5\n";
+  html << "./bin/aih_v5_repeat_html</code></pre>\n";
+  html << "<p class=\"note\"><code>./bin/aih_v5</code> launches a general AIH v5 run. ";
+  html << "<code>./bin/aih_v5_repeat_html</code> rebuilds and opens this HTML aggregate page.</p>\n";
   html << "<p class=\"note\">Data section: v5/data</p>\n";
   html << "<p class=\"note\">Input source: registration_status_run_*.csv files only.</p>\n";
   html << "<p class=\"note\">Runs aggregated: " << csvs.size() << "</p>\n";
