@@ -95,6 +95,7 @@ REGISTRATION_ORDER="${AIH_V5_REGISTRATION_ORDER:-random}"
 REGISTRATION_PROMPT="${AIH_V5_REGISTRATION_PROMPT:-OK}"
 REGISTRATION_NUM_PREDICT="${AIH_V5_REGISTRATION_NUM_PREDICT:-4}"
 REGISTRATION_GAME_NUM_PREDICT="${AIH_V5_REGISTRATION_GAME_NUM_PREDICT:-128}"
+REGISTRATION_COMM_SETTINGS_CSV="${AIH_V5_REGISTRATION_COMM_SETTINGS_CSV:-}"
 REGISTRATION_GAME_SMOKE_PLIES="${AIH_V5_REGISTRATION_GAME_SMOKE_PLIES:-1}"
 REGISTRATION_FINAL_RETRY="${AIH_V5_REGISTRATION_FINAL_RETRY:-1}"
 REGISTRATION_KEEP_ALIVE="${AIH_V5_REGISTRATION_KEEP_ALIVE:-0s}"
@@ -1617,6 +1618,47 @@ registration_record() {
   printf '%s,%s,%s,%s,%s\n' "$candidate" "$status" "$reason" "$elapsed_seconds" "$timeout_seconds" >> "$REGISTRATION_STATUS_CSV"
 }
 
+registration_comm_setting() {
+  local candidate="$1"
+  local column="$2"
+  if [[ -z "$REGISTRATION_COMM_SETTINGS_CSV" || ! -r "$REGISTRATION_COMM_SETTINGS_CSV" ]]; then
+    return 0
+  fi
+  awk -F, -v model="$candidate" -v col="$column" '
+    NR == 1 { next }
+    {
+      key = $1
+      gsub(/^"|"$/, "", key)
+      if (key == model) {
+        value = $col
+        gsub(/^"|"$/, "", value)
+        print value
+        exit
+      }
+    }
+  ' "$REGISTRATION_COMM_SETTINGS_CSV"
+}
+
+registration_apply_comm_settings() {
+  local candidate="$1"
+  local timeout_override num_predict_override
+  REGISTRATION_CURRENT_TIMEOUT_SECONDS="$REGISTRATION_TIMEOUT_SECONDS"
+  REGISTRATION_CURRENT_NUM_PREDICT="$REGISTRATION_NUM_PREDICT"
+  REGISTRATION_CURRENT_GAME_NUM_PREDICT="$REGISTRATION_GAME_NUM_PREDICT"
+  timeout_override="$(registration_comm_setting "$candidate" 4 || true)"
+  num_predict_override="$(registration_comm_setting "$candidate" 5 || true)"
+  if [[ "$timeout_override" =~ ^[1-9][0-9]*$ ]]; then
+    REGISTRATION_CURRENT_TIMEOUT_SECONDS="$timeout_override"
+  fi
+  if [[ "$num_predict_override" =~ ^[1-9][0-9]*$ ]]; then
+    REGISTRATION_CURRENT_NUM_PREDICT="$num_predict_override"
+    REGISTRATION_CURRENT_GAME_NUM_PREDICT="$num_predict_override"
+  fi
+  if [[ -n "$timeout_override$num_predict_override" ]]; then
+    registration_diag "registration comm settings candidate=$candidate timeout=${REGISTRATION_CURRENT_TIMEOUT_SECONDS}s num_predict=${REGISTRATION_CURRENT_GAME_NUM_PREDICT} source=$REGISTRATION_COMM_SETTINGS_CSV"
+  fi
+}
+
 registration_diag() {
   mkdir -p "$(dirname "$REGISTRATION_DIAGNOSTIC_LOG")"
   printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S %Z')" "$*" >> "$REGISTRATION_DIAGNOSTIC_LOG"
@@ -1715,7 +1757,7 @@ registration_query_return_local() {
       jq -nc \
         --arg model "$model" \
         --arg prompt "$REGISTRATION_PROMPT" \
-        --argjson num_predict "$REGISTRATION_NUM_PREDICT" \
+        --argjson num_predict "${REGISTRATION_CURRENT_NUM_PREDICT:-$REGISTRATION_NUM_PREDICT}" \
         --arg keep_alive "$REGISTRATION_KEEP_ALIVE" \
         --argjson num_thread "$OLLAMA_NUM_THREAD" \
         '{model:$model,prompt:$prompt,stream:false,keep_alive:$keep_alive,options:{num_predict:$num_predict,temperature:0,num_thread:$num_thread}}'
@@ -1829,7 +1871,7 @@ registration_ollama_generate_local() {
     jq -nc \
       --arg model "$model" \
       --arg prompt "$prompt" \
-      --argjson num_predict "$REGISTRATION_GAME_NUM_PREDICT" \
+      --argjson num_predict "${REGISTRATION_CURRENT_GAME_NUM_PREDICT:-$REGISTRATION_GAME_NUM_PREDICT}" \
       --arg keep_alive "$REGISTRATION_KEEP_ALIVE" \
       --argjson num_thread "$OLLAMA_NUM_THREAD" \
       '{model:$model,prompt:$prompt,stream:false,keep_alive:$keep_alive,options:{num_predict:$num_predict,temperature:0,num_thread:$num_thread}}'
@@ -1978,9 +2020,10 @@ register_candidate_agents() {
       batch_candidates+=","
     fi
     batch_candidates+="$candidate"
+    registration_apply_comm_settings "$candidate"
     current_timeout="${REGISTRATION_CURRENT_TIMEOUT_SECONDS:-$REGISTRATION_TIMEOUT_SECONDS}"
     candidate_started_at="$(date +%s)"
-    echo "aih_v5: registration test starting agent $index/$total: $candidate timeout=${current_timeout}s" >&2
+    echo "aih_v5: registration test starting agent $index/$total: $candidate timeout=${current_timeout}s num_predict=${REGISTRATION_CURRENT_GAME_NUM_PREDICT:-$REGISTRATION_GAME_NUM_PREDICT}" >&2
     if passthru_has_arg "--dry-run"; then
       candidate_elapsed=$(( $(date +%s) - candidate_started_at ))
       ((candidate_elapsed < 1)) && candidate_elapsed=0

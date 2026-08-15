@@ -5,7 +5,8 @@ ROOT="/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5"
 TODAY="$(date +%Y%m%d)"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 SOURCE_ZIP_DATED="${ROOT}/AIH_V5_SOURCE_${TODAY}.zip"
-SOURCE_ZIP_LATEST="${ROOT}/AIH_V5_SOURCE_LATEST.zip"
+SOURCE_ZIP_LATEST="${ROOT}/AIH_V5_SOURCE-LATEST.zip"
+SOURCE_ZIP_LATEST_UNDERSCORE="${ROOT}/AIH_V5_SOURCE_LATEST.zip"
 SOURCE_STAGE="${ROOT}/.aih_v5_source_stage_${STAMP}"
 
 command -v zip >/dev/null 2>&1 || {
@@ -30,6 +31,14 @@ copy_source_file() {
 copy_source_file "${ROOT}/aih_v5.sh"
 copy_source_file "${ROOT}/README.md"
 
+copy_source_file "${ROOT}/AIH_V5_LOCAL_AGENT_REGISTRATION_VERIFIED.csv"
+copy_source_file "${ROOT}/AIH_V5_LOCAL_AGENT_REGISTRATION_FAILURES.csv"
+copy_source_file "${ROOT}/AIH_V5_LOCAL_AGENT_REGISTRATION_COMM_SETTINGS.csv"
+copy_source_file "${ROOT}/AIH_V5_LOCAL_AGENT_REGISTRATION_SUMMARY.csv"
+copy_source_file "${ROOT}/AIH_V5_LOCAL_AGENT_REGISTRATION_README.md"
+copy_source_file "${ROOT}/AIH_V5_OLLAMA_AGENT_COMMUNICATION_SETTINGS_20260815.csv"
+copy_source_file "${ROOT}/AIH_V5_OLLAMA_REGISTRATION_TIMEOUT_PROGRESS_20260815.md"
+
 while IFS= read -r -d '' f; do
   copy_source_file "${f}"
 done < <(
@@ -47,6 +56,7 @@ done < <(
     ! -path '*/node_modules/*' \
     ! -path '*/build/*' \
     ! -path '*/.cache/*' \
+    ! -path '*/.aih_v5_source_stage_*/*' \
     ! -path "${SOURCE_STAGE}/*" \
     -print0
 )
@@ -62,7 +72,8 @@ SOURCE_MANIFEST="${SOURCE_STAGE}/aih/aichess/v5/AIH_V5_SOURCE_MANIFEST.txt"
   printf '\nExplicitly excluded:\n'
   printf '%s\n' '- compiled executables/binaries'
   printf '%s\n' '- *.o and other object files'
-  printf '%s\n' '- raw CSV data'
+  printf '%s\n' '- raw run CSV data'
+  printf '%s\n' '- raw registration response JSON'
   printf '%s\n' '- JSONL event/run data'
   printf '%s\n' '- logs'
   printf '%s\n' '- caches'
@@ -74,7 +85,7 @@ SOURCE_MANIFEST="${SOURCE_STAGE}/aih/aichess/v5/AIH_V5_SOURCE_MANIFEST.txt"
   )
 } > "${SOURCE_MANIFEST}"
 
-rm -f -- "${SOURCE_ZIP_DATED}" "${SOURCE_ZIP_LATEST}"
+rm -f -- "${SOURCE_ZIP_DATED}" "${SOURCE_ZIP_LATEST}" "${SOURCE_ZIP_LATEST_UNDERSCORE}"
 
 (
   cd "${SOURCE_STAGE}" || exit 2
@@ -82,6 +93,7 @@ rm -f -- "${SOURCE_ZIP_DATED}" "${SOURCE_ZIP_LATEST}"
 )
 
 cp -f -- "${SOURCE_ZIP_DATED}" "${SOURCE_ZIP_LATEST}"
+cp -f -- "${SOURCE_ZIP_DATED}" "${SOURCE_ZIP_LATEST_UNDERSCORE}"
 
 file_count="$(unzip -Z1 "${SOURCE_ZIP_DATED}" | grep -v '/$' | wc -l)"
 sha256="$(sha256sum "${SOURCE_ZIP_DATED}" | awk '{print $1}')"
@@ -90,5 +102,6 @@ rm -rf -- "${SOURCE_STAGE}"
 
 echo "[aih-v5-source-zip] wrote ${SOURCE_ZIP_DATED}"
 echo "[aih-v5-source-zip] wrote ${SOURCE_ZIP_LATEST}"
+echo "[aih-v5-source-zip] wrote ${SOURCE_ZIP_LATEST_UNDERSCORE}"
 echo "[aih-v5-source-zip] files: ${file_count}"
 echo "[aih-v5-source-zip] sha256: ${sha256}"

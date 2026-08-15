@@ -65,6 +65,50 @@ local keep-alive          = 0 s where supported
 
 Registration CSV snapshots belong directly under `v5/data`.
 
+## 3A. Local Ollama Registration Package
+
+Local Ollama registration is now a separate AIH v5 admin phase. Its purpose is
+to verify communication with installed local agentic agents before the normal
+tournament path needs to depend on them.
+
+Current stable local-registration artifacts:
+
+- `aih_v5_local_agent_registration.sh`: publishes and verifies the stable
+  registration database from a completed timeout-finder run.
+- `ollama_agentic_registration_smoke.sh`: standalone AIH-v5-style Ollama smoke
+  that preserves full Ollama JSON and treats visible response text as the
+  official answer.
+- `ollama_agentic_registration_timeout_finder.sh`: finds per-agent registration
+  timeouts from a global ceiling, defaulting to `num_predict=256`.
+- `AIH_V5_LOCAL_AGENT_REGISTRATION_VERIFIED.csv`: verified local agents.
+- `AIH_V5_LOCAL_AGENT_REGISTRATION_FAILURES.csv`: first-profile registration
+  failures retained as evidence.
+- `AIH_V5_LOCAL_AGENT_REGISTRATION_COMM_SETTINGS.csv`: per-agent communication
+  settings consumed by `aih_v5.sh`.
+- `AIH_V5_LOCAL_AGENT_REGISTRATION_README.md`: current local registration status
+  and usage.
+
+Status as of 2026-08-15:
+
+```text
+verified_pass=15
+registration_fail=4
+```
+
+The normal AIH v5 registration wrapper can consume the verified settings with:
+
+```bash
+AIH_V5_REGISTRATION_COMM_SETTINGS_CSV=/home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5/AIH_V5_LOCAL_AGENT_REGISTRATION_COMM_SETTINGS.csv \
+AIH_V5_REGISTRATION_MODE=game \
+AIH_V5_REGISTRATION_DYNAMIC_TIMEOUT=0 \
+./aih_v5.sh --registration-only --no-open --registration-forward
+```
+
+Do not rerun the completed full installed-model timeout pass merely to recover
+context. The 2026-08-15 checkpoint and stable CSV files are the current admin
+state. The four first-profile failures should be retested only with targeted
+second-profile communication settings.
+
 ## 4. Chess Harness
 
 For each measured ply:
@@ -257,7 +301,7 @@ aih/aichess/v5/AIH_V5_IMPLEMENTATION_PLAN.md
 aih/aichess/v5/AIH_V5_CSV_AGGREGATE_LATEST.html
 aih/aichess/v5/AIH_V5_DIAGNOSTIC_AGGREGATE_LATEST.html
 aih/aichess/v5/AIH_V5_SOURCE_LATEST.zip
-aih/aichess/v5/aih_v5_push_current_20260813v0.sh
+aih/aichess/v5/aihv5latest.sh
 aih/aichess/v5/aih_v5_refresh_source_zip_20260813v0.sh
 ```
 

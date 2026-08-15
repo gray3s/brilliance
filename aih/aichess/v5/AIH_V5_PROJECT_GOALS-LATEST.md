@@ -17,6 +17,8 @@ The project is deliberately local-first rather than cloud-dependent. Local Ollam
 
 - Run a useful benchmark on laptop-class hardware without requiring cloud APIs.
 - Register candidate agents before tournament play and exclude candidates that cannot reliably talk to the harness.
+- Treat local Ollama registration as its own verifiable admin phase with a
+  stable verified-agent list and per-agent communication settings database.
 - Preserve registration failures and other AIH events in reporting rather than silently dropping them.
 - Use bounded chess positions and constrained UCI-move prompts as a repeatable agent test harness.
 - Rank agents primarily by measured AIH behavior, with response timing and weighted metrics available as additional ranking information.
@@ -51,6 +53,19 @@ The default local backend is Ollama over localhost HTTP. The current code also c
 ## Registration and Tournament Model
 
 Registration is a liveness/compatibility filter, not the tournament itself. A passing candidate has demonstrated that it can communicate with the harness within the configured limits. A registration failure or timeout remains evidence and is retained in the data.
+
+As of 2026-08-15, local Ollama registration has a separate AIH v5 package:
+
+- stable verified-agent CSV;
+- stable failure CSV;
+- stable per-agent communication-settings CSV;
+- standalone smoke and timeout-finder scripts; and
+- a publisher/verifier script for refreshing those stable files without
+  rerunning full tournament play.
+
+This keeps agent communication qualification separate from tournament ranking.
+The current local registration database records 15 verified first-profile
+agents and 4 first-profile failures that need targeted second-profile work.
 
 Tournament play uses registered agents only. The principal v5 format is top-4 ladder-rungs with a round-robin seeding phase followed by bounded head-to-head placement. Other round-robin and ladder forms remain supported by the wrapper.
 
