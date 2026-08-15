@@ -412,3 +412,74 @@ AIH_V5_SOURCE-LATEST.zip
 AIH_V5_SOURCE_LATEST.zip
 file_count=42
 ```
+
+## Restart Plan
+
+Stop point: 2026-08-15.
+
+Current durable state:
+
+- Local Ollama registration package exists in the AIH v5 root.
+- Stable registration database verifies `verified_count=15` and
+  `failure_count=4`.
+- `aih_v5.sh` can consume per-agent registration communication settings through
+  `AIH_V5_REGISTRATION_COMM_SETTINGS_CSV`.
+- Source ZIP latest artifacts were refreshed locally and include the local
+  registration package.
+- Top-level AIH/Nemotron files from `~/RPA2/incoming` were moved under:
+  `reference/incoming_housekeeping_20260815/`.
+- No GitHub I/O should be assumed from Codex; user owns push/update scripts.
+
+Do not rerun the full installed-model registration sweep on restart.
+
+Next AIH v5 work unit:
+
+1. Work one failed local Ollama model at a time.
+2. Use targeted second-profile registration only.
+3. After each successful recovery, publish/verify the stable local registration
+   database and refresh source latest artifacts.
+4. Let the user run the local GitHub update script between successful recoveries
+   if desired.
+
+First-profile failures still requiring targeted recovery:
+
+```text
+qwen3:8b
+phi4-mini:latest
+llama3.2:1b
+robit/qwen3.5-9b-r7-research:q4km
+```
+
+Suggested restart order:
+
+```text
+1. llama3.2:1b
+   Try generate API with legal-list prompt and SAN normalization enabled.
+   Previous visible response was e4, so this is likely recoverable as e2e4.
+
+2. phi4-mini:latest
+   Try generate API with legal-list prompt.
+   Previous visible response was e7e5, a side-confused illegal UCI move.
+
+3. qwen3:8b
+   Try chat API with think=false, legal-list prompt, num_predict=64 or 128,
+   timeout=360.
+
+4. robit/qwen3.5-9b-r7-research:q4km
+   Try chat API with think=false, legal-list prompt, num_predict=64 or 128,
+   timeout=360.
+```
+
+Useful local commands for restart:
+
+```bash
+cd /home/sag/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+
+./aih_v5_local_agent_registration.sh --verify
+
+AIH_V5_STANDALONE_REG_PROMPT_MODE=legal-list \
+AIH_V5_STANDALONE_REG_NORMALIZE_SAN=1 \
+AIH_V5_STANDALONE_REG_NUM_PREDICT=256 \
+AIH_V5_STANDALONE_REG_TIMEOUT_SECONDS=120 \
+./ollama_agentic_registration_smoke.sh llama3.2:1b
+```
