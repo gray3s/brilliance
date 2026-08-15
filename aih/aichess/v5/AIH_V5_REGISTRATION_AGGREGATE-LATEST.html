@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>AIH v5 registration aggregate</title>
+<style>body{font-family:Arial,sans-serif;margin:2rem;line-height:1.45;color:#1f2933}table{border-collapse:collapse;width:100%;margin-top:1rem}th,td{border:1px solid #cad2dc;padding:.55rem;text-align:left;vertical-align:top}th{background:#eef2f6}td.num{text-align:right;font-variant-numeric:tabular-nums}.note{color:#52606d}code,pre{background:#eef2f6;border-radius:3px}code{padding:.1rem .25rem}pre{padding:.75rem;overflow:auto}th.num,td.num{white-space:nowrap;width:1%;padding-left:.35rem;padding-right:.35rem}th.avgsec,td.avgsec{width:13rem;padding-left:.55rem;padding-right:.55rem}.timing{display:grid;grid-template-columns:7ch 1ch 8ch;gap:.35rem;justify-content:end;font-variant-numeric:tabular-nums}.timing span{text-align:right}.ok{color:#166534;font-weight:700}.fail{color:#991b1b;font-weight:700}.na{color:#52606d;font-weight:700}</style>
+</head><body><main>
+<h1>AIH v5 Registration Aggregate</h1>
+<p class="note">Published artifact date: 2026-08-11</p>
+<p class="note">Project goals: <a href="https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_PROJECT_GOALS.md">AIH_V5_PROJECT_GOALS.md</a></p>
+<p class="note">Project implementation plan: <a href="https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_IMPLEMENTATION_PLAN.md">AIH_V5_IMPLEMENTATION_PLAN.md</a></p>
+<p class="note">Current aggregate HTML: <a href="https://htmlpreview.github.io/?https://github.com/gray3s/brilliance/blob/main/aih/aichess/v5/AIH_V5_REGISTRATION_AGGREGATE-LATEST.html">AIH_V5_REGISTRATION_AGGREGATE-LATEST.html</a></p>
+<p class="note">Latest pages: <a href="AIH_V5_CSV_AGGREGATE-LATEST.html">Tournament CSV analyzer</a> | <a href="AIH_V5_REGISTRATION_AGGREGATE-LATEST.html">Registration aggregate</a> | <a href="AIH_V5_DIAGNOSTIC_AGGREGATE-LATEST.html">Diagnostic and model self-test aggregate</a></p>
+<h2>Launch and Relaunch Instructions</h2>
+<p class="note">Run commands from the AIH v5 project directory.</p>
+<pre><code>cd ~/RPA2/myLLC/AI/brilliance/aih/aichess/v5
+./bin/aih_v5
+./bin/aih_v5_repeat_html</code></pre>
+<p class="note"><code>./bin/aih_v5</code> launches a general AIH v5 run. <code>./bin/aih_v5_repeat_html</code> rebuilds and opens this HTML aggregate page.</p>
+<p class="note">Data section: v5/data</p>
+<p class="note">Input source: registration_status_run_*.csv files.</p>
+<p class="note">Runs aggregated: 5</p>
+<p class="note">Registration files aggregated: 5/109 (4.6%) of saved run CSVs, starting at #0 from the beginning</p>
+<p class="note">Coverage% means: Agent in this % of CSVs.</p>
+<table><thead><tr><th>Rank</th><th>Agent</th><th class="num">AIH%</th><th class="num">Attempts</th><th class="num">Total Runs</th><th class="num">Coverage%</th><th class="num">Pass%</th><th class="num">Fail</th><th class="num">Timeout</th><th class="num">Timeout%</th><th class="num avgsec">Avg Sec</th></tr></thead><tbody>
+<tr><td class="num">1</td><td>gemma3:1b</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>4.500</span><span>/</span><span>13.726</span></span></td></tr>
+<tr><td class="num">2</td><td>gemma3:270m</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>2.500</span><span>/</span><span>3.354</span></span></td></tr>
+<tr><td class="num">3</td><td>qwen2.5:0.5b</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>3.000</span><span>/</span><span>8.226</span></span></td></tr>
+<tr><td class="num">4</td><td>smollm2:135m</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>1.000</span><span>/</span><span>6.335</span></span></td></tr>
+<tr><td class="num">5</td><td>tinyllama:latest</td><td class="num">0.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">100.0</td><td class="num">0</td><td class="num">0</td><td class="num">0.0</td><td class="num avgsec"><span class="timing"><span>3.000</span><span>/</span><span>19.796</span></span></td></tr>
+<tr><td class="num">6</td><td>gemma3:4b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">7</td><td>granite4:3b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">8</td><td>llama3.2:1b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">9</td><td>mistral:latest</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">10</td><td>phi4-mini:latest</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">11</td><td>qwen2.5-coder:3b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">12</td><td>qwen2.5:latest</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">13</td><td>qwen:4b</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">14</td><td>robit/qwen3.5-9b-r7-research:q4km</td><td class="num">100.0</td><td class="num">2</td><td class="num">5</td><td class="num">40.0</td><td class="num">0.0</td><td class="num">2</td><td class="num">2</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">15</td><td>llama3.2:3b</td><td class="num">100.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num">0.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.600</span><span>/</span><span>n/a</span></span></td></tr>
+<tr><td class="num">16</td><td>phi3:mini</td><td class="num">100.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num">0.0</td><td class="num">5</td><td class="num">5</td><td class="num">100.0</td><td class="num avgsec"><span class="timing"><span>5.000</span><span>/</span><span>n/a</span></span></td></tr>
+</tbody></table>
+<h2>Input Files</h2>
+<table><thead><tr><th>Relative Path Spec</th><th class="num">CSV Files Processed</th></tr></thead><tbody>
+<tr><td><code>v5/data/registration_status_run_*.csv</code></td><td class="num">5</td></tr>
+<tr><td><code>v5/runs/**/*_summary.md</code></td><td class="num">3369</td></tr>
+</tbody></table>
+</main></body></html>
