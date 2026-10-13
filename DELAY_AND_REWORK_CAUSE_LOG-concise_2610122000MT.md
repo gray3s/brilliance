@@ -1,4 +1,4 @@
-20261012 2000MT
+20261013 1000MT
 Life of a Vibe-Coder, contd.
 
 VC has become an issue of recognizing & resolving AI hallucination & translation efficiency (AIH & AITE). 
@@ -78,10 +78,61 @@ Make sure they form a complete set and then implement them all in one rev.
 20. Be aware of the 90-10 rule: 90% of the work is easy, the last 10% is hard. 
 Be prepared to loop through steps 16-20 repeatedly until the ingredients are well-mixed. 
 
+21. Look for the agent to identify commonality and conflicts in the current project of interest 
+and ask the user whatever questions its think are necessary to eliminate the conflicts 
+and guide the project of interest towards a minimal AITE state.
+
+22. Don't assist the agent when it overly attempts to engage in AIH and AITE.
+Stand your ground.
+This may be more of a problem for the commmercial cloud-based agentic AI systems
+than for local agentic AI stacks. But without a functional local agentic AI stack, 
+this cannot really be isolated to commercial cloud-based agentic AI systems.
+
+23. Don't assume that the data that an agentic AI agent gives in response is valid data. 
+Require the agent to establish that by demonstrating how the data was generated 
+and then have the agent consider other data-generation methods and use a quorum 
+to decide among them. Have the agent establish relevant PDF experimentally. 
+
+24. Ask yes/no quesitions whenever possible. 
+Ultimately use a prompt-response wrapper to qualitatively evaluate prompt-response pairs 
+based on the evaluation of each side as to the quality of the prompt-response pair.
+Don't give too much credence to the individual prompt-response pairs.
+The point of diagnostic observations is to guide user-model interaction towards 100% effectiveness, 
+therefore we must avoid endless recursion in the diagnostic observations.
+
+25. Ultimately the vibe-coder must, at least, attempt to be as logical and complete as possible.
+Assuming that an agentic AI agent will do this for the vibe-coder is a recipe for failure. 
+
+26. Don't allow the agent that you are using for vibe-coding to run the 
+software that it is producing to "smoke-test" it or otherwise to debug it. 
+That has to be the vibe-coders' responsiblity or else the agent will spend 
+a near-infinite amount of tokens doing this testing for the VC. 
+And it will be done to the agents' standards not the VC's standards. 
+
+27. Ultimately you want to get the agent to ask you questions about how the VC wants to implement the prompts, 
+not just run off and merilly do whatever it decides to do and hand you a result.
+The VC should ask the agent if it has any questions of the VC before it does anything more to change the code. 
+Repeat this process between each run of the code. 
+This is where an appropriate statistical evaluation of the project will contribute substantially 
+to reducing AITE so it is important to have the agent generate the appropriate stastical data 
+to experimentally form the appropriate PDFs to support architectual/sw-development decisions.
+
+28. ...likewise all architectual/sw-dev decisions must be tracked over the project lifetime 
+so that a verifiable cause-effect relationship can be established. 
+As alwways this assumes that the agent is at least usefully competent, 
+but it offloads decision-responsiblity from the agent in pursuit of the reduction of AITE.
+
+29. In the general sense the VC needs to issue prompts similar to this one...
+"when I tell you that the run is complete I want you to analyze the resultant results, 
+give me a md file that discusses the aichessplay project progress to date (open it in gedit) 
+prepare a project goal documentation udate Q/A file (open in gedit) before you generate your next mod 
+of either the effvcmk1.sh or the effvcmk2.sh and then stop. I need to address some higher-level issues."
+
+
 This list is still under dev. We do not have an adequate aichessplay build. 
 The ultimate goal here is to develop an adequate local AI-stack to replace Codex "adequately". 
 To do that I need an adequate VC dev process to use against a local AI stack. 
- 
+
 Summary: 
 Work in terms of logical, documented and logged states.
 Minimize dev dependency on agentic AI. 
