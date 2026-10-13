@@ -70,10 +70,10 @@ We would then have to develop a debugging routine for each error...
 i.e. put a decision-tree into the debugging for the auto-tune to have a realistic chance to work. 
 We will have to adjust the software conservatively in retrograde until the failing stage succeeds.
 
-18. Implement a lightweight but effective handshaking protocol for inter-process communication. 
+18. Implement a lightweight & effective handshaking protocol for inter-process communication where useful for debugging. 
 
-19. Plan project-mods between runs effectively. 
-Make sure they form a complete set and then implement them all in one fell swoop.
+19. Plan project-mods effectively between runs effectively. 
+Make sure they form a complete set and then implement them all in one batch.
 
 20. Be aware of the 90-10 rule: 90% of the work is easy, the last 10% is hard. 
 Be prepared to loop through steps 16-20 repeatedly until the ingredients are well-mixed. 
