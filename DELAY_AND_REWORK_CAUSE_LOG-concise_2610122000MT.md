@@ -63,15 +63,17 @@ So we need to build some intelligence into the auto-tuning concept.
 In this specific case we had a comm runaway which was only made worse by increasing the related timeout. 
 So how is the code detecting a runaway? We will have to build the associated classification logic into the code, 
 else we will have to build an AI agent into the code and one that it performs the classification and auto-tuning correctly. 
-That latter option does not seem to be the best option, the former option gives us a deterministic auto-tuning capability. 
+That latter option we generally want to avoid and the former option gives us a deterministic auto-tuning capability. 
 But this means for each error we need to be able to at least give a reasonable guess as to why the error occured. 
-This can be done if we can tie each error down to at least a list of reasons why that error occurred. 
+This can be done if we can tie each error down to a finite list of reasons why that error occurred. 
 We would then have to develop a debugging routine for each error...
-i.e. put some intelligence into the debugging for the auto-tune to have a realistic chance to work. 
+i.e. put a decision-tree into the debugging for the auto-tune to have a realistic chance to work. 
 We will have to adjust the software conservatively in retrograde until the failing stage succeeds.
 
-18. Be aware of the 90-10 rule: 90% of the work is easy, the last 10% is hard. 
-Be prepared to loop through steps 16-17 repeatedly until the ingredients are well-mixed. 
+18. Implement a lightweight but effective handshaking protocol for inter-process communication. 
+
+19. Be aware of the 90-10 rule: 90% of the work is easy, the last 10% is hard. 
+Be prepared to loop through steps 16-19 repeatedly until the ingredients are well-mixed. 
 
 
 This list is still under dev. We do not have an adequate aichessplay build. 
