@@ -72,9 +72,11 @@ We will have to adjust the software conservatively in retrograde until the faili
 
 18. Implement a lightweight but effective handshaking protocol for inter-process communication. 
 
-19. Be aware of the 90-10 rule: 90% of the work is easy, the last 10% is hard. 
-Be prepared to loop through steps 16-19 repeatedly until the ingredients are well-mixed. 
+19. Plan project-mods between runs effectively. 
+Make sure they form a complete set and then implement them all in one fell swoop.
 
+20. Be aware of the 90-10 rule: 90% of the work is easy, the last 10% is hard. 
+Be prepared to loop through steps 16-20 repeatedly until the ingredients are well-mixed. 
 
 This list is still under dev. We do not have an adequate aichessplay build. 
 The ultimate goal here is to develop an adequate local AI-stack to replace Codex "adequately". 
