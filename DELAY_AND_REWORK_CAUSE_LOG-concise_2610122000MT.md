@@ -111,8 +111,10 @@ And it will be done to the agents' standards not the VC's standards.
 
 27. Ultimately you want to get the agent to ask you questions about how the VC wants to implement the prompts, 
 not just run off and merilly do whatever it decides to do and hand you a result.
-The VC should ask the agent if it has any questions of the VC before it does anything more to change the code. 
+The VC should ask the agent if it has any questions of the VC before it does anything to change the project configuration 
+and especially before making any changes to project code. 
 Repeat this process between each run of the code. 
+It is better to have the model/agent plan and measure before cutting than to fix the resultant problems several times.
 This is where an appropriate statistical evaluation of the project will contribute substantially 
 to reducing AITE so it is important to have the agent generate the appropriate stastical data 
 to experimentally form the appropriate PDFs to support architectual/sw-development decisions.
@@ -128,6 +130,15 @@ give me a md file that discusses the aichessplay project progress to date (open 
 prepare a project goal documentation udate Q/A file (open in gedit) before you generate your next mod 
 of either the effvcmk1.sh or the effvcmk2.sh and then stop. I need to address some higher-level issues."
 
+30. Overall the vibe-coder and the model/agent should keep the following questions in mind at all times:
+a. what causes assumptions to be made?
+b. what causes incorrect assumptions to be made? 
+The answers to these two questons till drive AITE and thus AIH. 
+The ultimate question is how to avoid AITE and thus hopefully avoid AIH. 
+Without re-engineering the model/agent in question. 
+The vibe-coder will have to manage their own "hallucination" issues successfully, 
+or model/agent AITE->AIH are inevitable. 
+This train of thought is now driving a model-efficiency local project which is driving a lcodex project.
 
 This list is still under dev. We do not have an adequate aichessplay build. 
 The ultimate goal here is to develop an adequate local AI-stack to replace Codex "adequately". 
