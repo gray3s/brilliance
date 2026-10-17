@@ -58,9 +58,9 @@ We have learned more about designing the benchmark than about whether a model ca
 - “Order” needs multiple measurements, not a model's declaration alone: requirement retention, token and bigram F1, character similarity, prose structure, latency, and token cost.
 - Claims need levels of confidence. Raw outputs and token counts are observations; scores are deterministic proxies; human understandability remains an unvalidated interpretation.
 - Sampling should be measured in **prompt-returns**. The current proposal is every tenth return, plus forced samples at completion, thresholds, errors, and the final return.
-- Full raw text need not be retained every time. Sampled texts plus hashes, lengths, usage, and latency for intermediate returns provide a reasonable audit trail.
-- Local implementation ability is itself a benchmark. Apriel refused; two Ministral implementations and one Phi-4 implementation failed mechanical review; Nemotron produced long-running attempts that did not return usable code before timeout or cancellation.
-- CPU-only generation was approximately **2.7–4.1 tokens per second**. Large implementation responses took many minutes and exposed the need for separate implementation budgets, inference budgets, streaming capture, and early cancellation.
+- Full raw text need not be retained every single pass through the reconstruction loop. We retain the corresponding samples for the retained prompt-order estimates. Sampled texts plus hashes, lengths, usage, and latency for intermediate returns provide a reasonable audit trail.
+- Local implementation ability is itself a benchmark. In the limited time given to project (~ 1hr) Apriel refused; two Ministral implementations and one Phi-4 implementation failed mechanical review; Nemotron produced long-running attempts that did not return usable code before timeout or cancellation.
+- CPU-only generation was approximately **2.7–4.1 tokens per second** on the available 3GHz i3 8GB RAM 16GB laptop platform. Large implementation responses took many minutes and exposed the need for separate implementation budgets, inference budgets, streaming capture, and early cancellation.
 - Completed implementation calls consumed at least **7,494 API-reported local-model tokens**. Interrupted Nemotron attempts consumed additional compute whose complete API usage was never returned.
 - Most importantly, we have **no evidence yet that order was recovered**, because the evaluator was not completed and the experiment ran zero prompt-return loops.
 
