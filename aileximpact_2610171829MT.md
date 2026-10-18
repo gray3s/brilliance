@@ -1,5 +1,7 @@
 Vibecoding Lexicon 200
 
+**Author:** Samuel A. Gray III
+
 **Background & benchmark concept**  
 **Timestamp:** 2026-10-17 18:29 MDT  
 **Status:** Publication draft
