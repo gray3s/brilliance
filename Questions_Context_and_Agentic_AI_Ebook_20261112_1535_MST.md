@@ -4,7 +4,7 @@
 
 **Author:** Samuel A. Gray III  
 **Compiled:** 2026-11-12 15:35 MST  
-**Revised:** 2026-11-12 15:42 MST  
+**Revised:** 2026-11-12 16:03 MST  
 **Edition:** Revised thematic collection with introduction and conclusion  
 **Copyright:** Copyright © 2026 Samuel A. Gray III. All rights reserved.
 
@@ -297,6 +297,33 @@ its relevance to a particular application must still be established.
 The standard proposed here is therefore explicit: claims of proper AI engineering should be supported by a scientific approach
 to evaluation and by demonstrated satisfaction of the application's requirements. DTA/DTE must earn that description through the
 same scrutiny it proposes for other methodologies.
+
+#### Determining successful engineering in agentic AI
+
+> The question is how do we determine what is and is not 'successful engineering' when it comes to agentic AI?
+
+For this book, successful engineering means demonstrated satisfaction of relevant, declared requirements under stated operating
+conditions, supported by inspectable evidence. The definition of success must precede the judgment that a particular result passed.
+Otherwise, an impressive demonstration can quietly become its own acceptance criterion.
+
+Evaluate the complete agentic process against four questions:
+
+1. **Did it address the intended problem?** Trace the result to the user's context, goals, constraints, and acceptance criteria.
+2. **Were its claims and actions justified?** Check supporting evidence, AIH and AITE outcomes, and compliance with declared authority.
+3. **Was its performance dependable within scope?** Examine repeated trials, representative variations, failure handling, and recovery.
+4. **Was the result useful at an acceptable cost?** Assess completion, human correction effort, latency, and other relevant resources.
+
+Specify the thresholds, failure conditions, and tradeoffs before evaluation. If a methodology claims improvement, compare it with a
+defined baseline under comparable conditions. Evaluate necessary constraints separately so a favorable average cannot conceal a
+disqualifying failure. Record uncertainty and the limits of the tested population and environment.
+
+An investigation that establishes a question remains unresolved can succeed when its declared objective was to investigate and
+report the available evidence. It cannot be credited as having solved a problem whose required answer or behavior was not obtained.
+This distinction allows honest partial progress without redefining completion after the fact.
+
+Successful agentic AI engineering is therefore an evidence-bounded judgment about an actual system and task. An attractive output,
+a passing isolated benchmark, or agreement with a preferred social convention supplies only the evidence it actually contains.
+The engineering claim must account for the process that produced the result and the requirements that result was meant to satisfy.
 
 ### Source document
 
@@ -860,6 +887,10 @@ The corresponding challenge is: **if the methodology is not scientific, how can 
 In this book, answering that challenge means making performance claims testable and showing that the resulting system satisfies
 declared requirements under documented conditions, with its remaining limitations visible.
 
+Determining "successful engineering" therefore begins with the intended problem and a definition of success fixed before the
+result is judged. The agent's work must satisfy that definition with evidence of intent fidelity, justified claims and actions,
+dependability within scope, and useful performance at an acceptable cost. An unresolved question must remain visibly unresolved.
+
 Taken together, the chapters support an approach we can use now:
 
 1. State the question, relevant context, desired outcome, and constraints.
@@ -880,7 +911,7 @@ before deciding what agentic AI can contribute, let an appropriate, bounded atte
 ## Colophon
 
 Samuel A. Gray III  
-2026-11-12 15:42 MST
+2026-11-12 16:03 MST
 
 Copyright © 2026 Samuel A. Gray III. All rights reserved.
 
